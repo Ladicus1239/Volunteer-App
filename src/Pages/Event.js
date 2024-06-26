@@ -1,0 +1,24 @@
+import Navigation from '../Components/Navigation'
+import Display from '../Components/eventdisplay'
+import "../styles.css"
+
+
+
+
+export default function Event(){
+    return(
+        <>
+        <div className='center-text'>
+            <Navigation />
+            <h1 className='pageTitle'>Events</h1><br/>
+            <a href="/events/volunteerhistory" ><button className='adminredirect'>Volunteer History</button></a>
+            <a href="/events/eventmanagement"><button className='adminredirect'>Event Manage</button></a>
+            
+
+        </div>
+        <div>
+        <Display />
+        </div>
+        </>
+    )
+}
