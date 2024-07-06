@@ -4,8 +4,10 @@ import "../styles.css";
 
 
 
-
-export default function Profile(){
+//create prop function to use values from ProfileManage
+const Profile = (props) => {
+    const { fullName, getAdd, getCity, getState, getZip } = props;
+    
     return(
         <div>
             <Navigation />
@@ -14,9 +16,9 @@ export default function Profile(){
                 <div className="profileContainer3">
 
                     <div className="profileContainer1">
-                        <h1 className="header">John Doe's Profile</h1>
+                        <h1 className="header">{fullName}'s Profile</h1>
                         <div className="location">
-                        <p>Resides in: Address, City, State, ZIP</p>
+                        <p>Resides in: {getAdd}, {getCity}, {getState}</p>
                         </div>
                     </div>
 
@@ -50,3 +52,5 @@ export default function Profile(){
         </div>
     )
 }
+
+export default Profile;
