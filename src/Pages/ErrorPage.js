@@ -9,7 +9,11 @@ export default function Error(){
         <div>
             <Navigation />
             <h1 className='pageTitle'>Error 404: Page Not found</h1>
+            <br/><br/><br/><br/>
+            <div className="center-text">
             <img src={Crying} alt="crying" ></img>
+            </div>
+            
         </div>
     )
 }

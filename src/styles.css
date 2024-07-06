@@ -315,6 +315,66 @@ input.loginInput{
   .loginButton:active {
     color: black;
   }
+  /*///////////////////////////////////////////////////////////////////////////////////*/
+  /*Register page*/
+  .signup-header{
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  .signup-card{
+    justify-items: center;
+    font-family: "Georgia","Times New Roman", serif;
+    font-size: 20px;
+    margin-top: 50px;
+    width: 800px;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    min-height: 400px;
+  }
+  .SignInRedirect{
+    font-family: "Georgia","Times New Roman", serif;
+    font-size: 24px;
+  }
+  .signup-button{
+    margin-left: 190px;
+    margin-top: 30px;
+    width: 400px;
+    height: 40px;
+    background:linear-gradient(#b9f6c4,transparent);
+    background-color: #86fa9b; 
+    border: none;
+    color: black;
+    border: 2px solid #04AA6D;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    cursor: pointer;
+    transition-duration: 0.5s;
+  }
+
+  .signup-button:hover{
+    background-color: #04AA6D;
+    color: white;
+    transition-duration: 0.3s;
+    border: 2px solid #04AA6D;
+  }
+
+  .signup-button:active{
+    color: black;
+  }
+
+  .signup-container{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  .signup-form{
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Notification component*/
 .msginput{
@@ -592,6 +652,7 @@ td.announcementData{
     justify-content: center;
 }
 .header {
+    font-size: 30px;
     text-align: center;
     background: linear-gradient(#b9f6c4, transparent);
     background-color: #86fa9b;

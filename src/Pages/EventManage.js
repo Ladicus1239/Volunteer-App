@@ -8,7 +8,7 @@ export default function EventManagement() {
       <div>
         <Navigation />
       </div>
-      <h2 className="event-management">Create Event</h2>
+      <h1 className="pageTitle">Create Event</h1><br/>
 
     <div className='container'>
         <div className="eventDiv1">

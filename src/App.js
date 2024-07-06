@@ -4,23 +4,24 @@ import VolunteerHistory from "./Pages/volunteerhistory"
 import EventMangage from "./Pages/EventManage";
 import Event from "./Pages/Event";
 import Home from "./Pages/Home";
-import Register from "./Pages/Register";
+import Signup from "./Pages/Register";
 import Login from "./Pages/Login";
 import Notification from "./Pages/Notifications";
 import Profile from "./Pages/Profile";
 import ProfileManage from "./Pages/ProfileManage";
 import Error from "./Pages/ErrorPage";
 import "./styles.css"
-
+import { AuthProvider } from "./context/AuthContext";
 export default function App() {
   return (
+    <AuthProvider>
       <div>
         <BrowserRouter>
           <Routes>
             <Route index element={<Home />} />
             <Route path="/home" element={<Home />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+            <Route path="/register" element={<Signup />} />
             <Route path="/notification" element={<Notification />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/profile/profilemanagement" element={<ProfileManage />} />
@@ -31,6 +32,7 @@ export default function App() {
           </Routes>
         </BrowserRouter>
       </div>
+      </AuthProvider>
   )
 }
 
