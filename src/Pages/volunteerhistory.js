@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import Navigation from '../Components/Navigation';
 import Checkbox from "@mui/material/Checkbox";
-import "../styles.css";
+import "../styles2.css";
 
-export default function VolunteerHistory() {
+const VolunteerHistory = ({fullName, getAdd, skillArray }) => {
+    //hardcoded data for testing purposes
     const data = [
-        { name: "John Doe", ename: "Event name", description: "Event description", location: "location", skills: "Skills", urgency: "Urgency", date: "Date", state: "Absent" },
+        { name: fullName, ename: "Event name", description: "Event description", location: getAdd, skills: skillArray, urgency: "Urgency", date: "Date", state: "Absent" },
         { name: "Jane Doe", ename: "Event name", description: "Event description", location: "location", skills: "Skills", urgency: "Urgency", date: "Date", state: "Present" },
         { name: "Cookie Dough", ename: "Event name", description: "Event description", location: "location", skills: "Skills", urgency: "Urgency", date: "Date", state: "Absent" }
     ];
@@ -80,3 +81,5 @@ export default function VolunteerHistory() {
         </div>
     );
 }
+
+export default VolunteerHistory;

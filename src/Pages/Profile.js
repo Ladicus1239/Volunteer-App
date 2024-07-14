@@ -1,12 +1,12 @@
 import React from "react";
 import Navigation from '../Components/Navigation';
-import "../styles.css";
+import "../styles2.css";
 
 
 
 //create prop function to use values from ProfileManage
 const Profile = (props) => {
-    const { fullName, getAdd, getCity, getState, getZip } = props;
+    const { fullName, getAdd, getCity, getState, getZip, skillArray, getPref, dateArray} = props;
     
     return(
         <div>
@@ -18,7 +18,7 @@ const Profile = (props) => {
                     <div className="profileContainer1">
                         <h1 className="header">{fullName}'s Profile</h1>
                         <div className="location">
-                        <p>Resides in: {getAdd}, {getCity}, {getState}</p>
+                        <p>Resides in: {getAdd}, {getCity}, {getState}, {getZip}</p>
                         </div>
                     </div>
 
@@ -31,12 +31,12 @@ const Profile = (props) => {
                 <div className="profileContainer4">
 
                     <div className="personalPrefDiv">
-                      <h3>Skills: </h3>
-                      <p>Adapatability</p>
-                      <p>Communication</p>
-                      <p>Creative</p>
+                      <h3>Skills:</h3>
+                      <p> {skillArray} </p>
                       <h3>Preferences: </h3>
-                      <p>I enjoy open environments with a medium-sized team</p>
+                      <p>{getPref}</p>
+                      <h3>Dates available:</h3>
+                      <p> {dateArray} </p>
                     </div>
                     <br/>
                     <button className="pmbutton">

@@ -1,75 +1,31 @@
 import React from "react";
 import Navigation from '../Components/Navigation';
 import Profile from '../Pages/Profile';
-import "../styles.css";
+import VolunteerHistory from '../Pages/volunteerhistory';
+import "../styles2.css";
 import Select from "react-select";    /*use "npm i --save react-select" to install react select (useState is built in) */
 import { useState } from "react";
 
 //skills list start -------------------------------------
 const skills = [
-  { value: "adaptability", label: "Adaptability" },
-  { value: "communication", label: "Communication" },
-  { value: "creative", label: "Creative" },
-  { value: "interpersonal communication", label: "Interpersonal Communication" },
-  { value: "leadership", label: "Leadership" },
-  { value: "problem solving", label: "Problem Solving" },
-  { value: "strong work ethic", label: "Strong Work Ethic" },
-  { value: "teamwork", label: "Teamwork" },
-  { value: "time management", label: "Time Management" }
+  { value: "Adaptability", label: "Adaptability" },
+  { value: "Communication", label: "Communication" },
+  { value: "Creative", label: "Creative" },
+  { value: "Interpersonal Communication", label: "Interpersonal Communication" },
+  { value: "Leadership", label: "Leadership" },
+  { value: "Problem Solving", label: "Problem Solving" },
+  { value: "Strong Work Ethic", label: "Strong Work Ethic" },
+  { value: "Teamwork", label: "Teamwork" },
+  { value: "Time Management", label: "Time Management" }
 ];
 //skills list end -------------------------------------
 
 //days list start -------------------------------------
-const days = [
-  { value: "1", label: "01" },
-  { value: "2", label: "02" },
-  { value: "3", label: "03" },
-  { value: "4", label: "04" },
-  { value: "5", label: "05" },
-  { value: "6", label: "06" },
-  { value: "7", label: "07" },
-  { value: "8", label: "08" },
-  { value: "9", label: "09" },
-  { value: "10", label: "10" },
-  { value: "11", label: "11" },
-  { value: "12", label: "12" },
-  { value: "13", label: "13" },
-  { value: "14", label: "14" },
-  { value: "15", label: "15" },
-  { value: "16", label: "16" },
-  { value: "17", label: "17" },
-  { value: "18", label: "18" },
-  { value: "19", label: "19" },
-  { value: "20", label: "20" },
-  { value: "21", label: "21" },
-  { value: "22", label: "22" },
-  { value: "23", label: "23" },
-  { value: "24", label: "24" },
-  { value: "25", label: "25" },
-  { value: "26", label: "26" },
-  { value: "27", label: "27" },
-  { value: "28", label: "28" },
-  { value: "29", label: "29" },
-  { value: "30", label: "30" },
-  { value: "31", label: "31" }
-];
+const days = [...Array(31)].map((_, i) => ({ value: String(i + 1), label: String(i + 1).padStart(2, '0') }));
 //days list end -------------------------------------
 
 //months list start -------------------------------------
-const months = [
-  { value: "1", label: "01" },
-  { value: "2", label: "02" },
-  { value: "3", label: "03" },
-  { value: "4", label: "04" },
-  { value: "5", label: "05" },
-  { value: "6", label: "06" },
-  { value: "7", label: "07" },
-  { value: "8", label: "08" },
-  { value: "9", label: "09" },
-  { value: "10", label: "10" },
-  { value: "11", label: "11" },
-  { value: "12", label: "12" },
-];
+const months = [...Array(12)].map((_, i) => ({ value: String(i + 1), label: String(i + 1).padStart(2, '0') }));
 //month list end -------------------------------------
 
 //years list start -------------------------------------
@@ -83,8 +39,12 @@ const years = [
 //function for dropdown selection of skills, and date -------------------------------------
 const ProfileManage = () => {
   const [selectedSkill, setSelectedSkill] = useState([]);
+  const [skillArray, setSkillArray] = useState([]);
+
   const handleChangeSkill = (selectedSkill) => {
     setSelectedSkill(selectedSkill);
+    const skillString = selectedSkill.map(skill => skill.value).join(", ");   //separates each skill by comma and space
+    setSkillArray(skillString);
   };
 
   const [selectedDay, setSelectedDay] = useState(null);
@@ -103,12 +63,15 @@ const ProfileManage = () => {
   };
 
   const [selectedDates, setSelectedDates] = useState([]);
+  const [dateArray, setDateArray] = useState([]);
 
   const handleDateSelection = () => {
     if (selectedDay && selectedMonth && selectedYear) {
       const newDate = `${selectedYear.label}-${selectedMonth.label}-${selectedDay.label}`;
       if (!selectedDates.includes(newDate)) {
-        setSelectedDates([...selectedDates, newDate]);
+        const updatedDates = [...selectedDates, newDate];
+        setSelectedDates(updatedDates);
+        setDateArray(updatedDates.join(", "));    //separates each date by comma and space
       }
     } else {
       alert("Please select day, month, and year.");
@@ -129,7 +92,7 @@ const ProfileManage = () => {
   //submit form -------------------------------------
   const handleSubmit = (e) => {
     e.preventDefault();
-    const page = { fullName, getAdd, getCity, getState, getZip, selectedSkill, selectedDates };
+    const page = { fullName, getAdd, getCity, getState, getZip, skillArray, dateArray};
 
     console.log(page);
   }
@@ -253,7 +216,7 @@ const ProfileManage = () => {
             </div>
             <button className="buttonDates" onClick={handleDateSelection}>Select Date</button>
 
-          </div>
+          </div> 
           <button className="button submit">Update Profile</button>
         </div>
       </form>
@@ -273,3 +236,9 @@ export default ProfileManage;
               </div>
             )}
 */
+/*    to test values are being displayed on Profile
+            <Profile fullName = {fullName} getAdd = {getAdd} getCity = {getCity} getState = {getState} 
+            getZip = {getZip} skillArray = {skillArray} selectedDates = {selectedDates}/>
+
+            console.log(page);
+            */
