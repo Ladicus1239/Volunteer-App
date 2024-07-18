@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Navigation from "../Components/Navigation";
 import DropdownMenu from "../Components/dropdownMS";
-import "../styles.css";
+import moment from 'moment';
+import "../styles3.css";
 
 export default function EventManagement() {
   const [eventName, setEventName] = useState("");
@@ -13,6 +14,33 @@ export default function EventManagement() {
   const [events, setEvents] = useState([]);
   const [isEditing, setIsEditing] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
+
+  function createEventMsg(eventname) {
+    const savedMessages = localStorage.getItem('messages');
+    const messages = savedMessages ? JSON.parse(savedMessages) : [];
+    const systemMessage = { sender: "System", message: "The event, "+eventname+" has been created." };
+    const newMessages = [...messages, systemMessage];
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
+  }
+
+  function updateEventMsg(eventname) {
+    const savedMessages = localStorage.getItem('messages');
+    const messages = savedMessages ? JSON.parse(savedMessages) : [];
+    const systemMessage = { sender: "System", message: eventname+" has been updated." };
+    const newMessages = [...messages, systemMessage];
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
+  }
+
+  function deleteEventMsg(eventname) {
+    const savedMessages = localStorage.getItem('messages');
+    const messages = savedMessages ? JSON.parse(savedMessages) : [];
+    const systemMessage = { sender: "System", message: eventname+" has been canceled." };
+    const newMessages = [...messages, systemMessage];
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
+  }
 
   useEffect(() => {
     const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
@@ -38,6 +66,18 @@ export default function EventManagement() {
 
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));
+    
+    createEventMsg(eventName);
+
+    const existingEvents = JSON.parse(localStorage.getItem('event reminder dates')) || [];
+
+    const reminder = {
+      eventName: eventName,
+      eventDate: eventDate
+    };
+    existingEvents.push(reminder);
+
+    localStorage.setItem('event reminder dates', JSON.stringify(existingEvents));
 
     setEventName("");
     setEventDescription("");
@@ -59,9 +99,11 @@ export default function EventManagement() {
     setEventDate(eventToEdit.eventDate);
     setIsEditing(true);
     setCurrentEventId(eventId);
+    updateEventMsg(eventToEdit.eventName)
   };
 
   const handleDelete = (eventId) => {
+    deleteEventMsg(eventId.eventname)
     const updatedEvents = events.filter((event) => event.id !== eventId);
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));

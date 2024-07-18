@@ -17,8 +17,6 @@ export default function Home(){
                 Welcome {currentUser && currentUser.email}<br/>
                 Save people and maybe animals
             </p>
-
-            <button>log out</button>
         </div>
     )
 }
