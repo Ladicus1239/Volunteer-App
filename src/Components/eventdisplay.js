@@ -1,58 +1,41 @@
-import React, { useState } from 'react'
-import '../styles.css';
-//placeholder function 
+import React, { useState, useEffect } from "react";
+import "../styles.css";
 
-export default function Display(){
+export default function EventDisplay() {
+  const [events, setEvents] = useState([]);
 
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+    setEvents(storedEvents);
+  }, []);
 
-    const [inputdata, Setinputdata]=useState({
-        sender:"",
-        message:""
-    })
-
-    const [inputarr, Setinputarr]=useState([])
-
-    function changehandle(e){
-            
-        Setinputdata({...inputdata,[e.target.name]:e.target.value})
-    }
-
-    let {sender,message}=inputdata;
-
-    function changhandle(){
-        Setinputarr([...inputarr,{sender,message}])
-        console.log(inputarr)
-        console.log(inputdata)
-        Setinputdata({sender:"",message:""})
-    }
-    return(
-        <>
-        <div className='msginput'>
-            <input className="sender" type="text" placeholder='Placeholder for event name input' autoComplete='off' name="sender" value={inputdata.sender} onChange={changehandle}/> <br/>
-            <textarea className="message" type="text" autoComplete='off' name="message" placeholder='Placeholder for event disc. input' value={inputdata.message} onChange={changehandle}/>
-            <button className="notificationSend"onClick={changhandle}>Send</button><br/><br/>
-            
-            <table className="announcement" border={1} cellPadding={10}>
-            <tbody>
-            <tr className="announcementNames">
-                <th className="announcementNames">Event Name</th>
-                <th className="announcementNames">Event Description</th>
-            </tr >
-            {
-                inputarr.map(
-                    (info,ind)=>{
-                        return(
-                            <tr className="announcementData">
-                                <td className="announcementData">{info.sender}</td>
-                                <td className="announcementData">{info.message}</td>
-                            </tr>
-                        )
-                    }
-                )
-            }
-            </tbody>
-            </table>
-        </div>
-        </>
-    )
+  return (
+    <div className="container">
+      <h2>Event List</h2>
+      <table className="announcement" border={1} cellPadding={10}>
+        <thead>
+          <tr className="announcementNames">
+            <th>Event Name</th>
+            <th>Event Description</th>
+            <th>Location</th>
+            <th>Required Skills</th>
+            <th>Urgency</th>
+            <th>Event Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          {events.map((event) => (
+            <tr key={event.id} className="announcementData">
+              <td>{event.eventName}</td>
+              <td>{event.eventDescription}</td>
+              <td>{event.location}</td>
+              <td>{event.requiredSkills}</td>
+              <td>{event.urgency}</td>
+              <td>{event.eventDate}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
 }
