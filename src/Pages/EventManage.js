@@ -3,11 +3,11 @@ import Navigation from "../Components/Navigation";
 import DropdownMenu from "../Components/dropdownMS";
 import "../styles.css";
 
-export default function EventManagement() {
+export default function EventManage() {
   const [eventName, setEventName] = useState("");
   const [eventDescription, setEventDescription] = useState("");
   const [location, setLocation] = useState("");
-  const [requiredSkills, setRequiredSkills] = useState("");
+  const [requiredSkills, setRequiredSkills] = useState([]);
   const [urgency, setUrgency] = useState("low");
   const [eventDate, setEventDate] = useState("");
   const [events, setEvents] = useState([]);
@@ -42,7 +42,7 @@ export default function EventManagement() {
     setEventName("");
     setEventDescription("");
     setLocation("");
-    setRequiredSkills("");
+    setRequiredSkills([]);
     setUrgency("low");
     setEventDate("");
     setIsEditing(false);
@@ -106,13 +106,13 @@ export default function EventManagement() {
               onChange={(e) => setLocation(e.target.value)}
             ></textarea>
           </div>
-          //{" "}
           <div className="eventDiv2">
             <h3>Additional Information</h3>
             <h4 htmlFor="requiredSkills">Required Skills*:</h4>
             <DropdownMenu
               value={requiredSkills}
               onChange={(e) => setRequiredSkills(e.target.value)}
+              dataTestId="required-skills"
             />
             <h4 htmlFor="urgency">Urgency*:</h4>
             <select
@@ -138,7 +138,7 @@ export default function EventManagement() {
           </div>
           <br />
           <button type="submit" className="button submit">
-            Create Event
+            {isEditing ? "Update Event" : "Create Event"}
           </button>
         </form>
         <h2>Event List</h2>
@@ -154,14 +154,13 @@ export default function EventManagement() {
               <th>Actions</th>
             </tr>
           </thead>
-
           <tbody>
             {events.map((event) => (
               <tr key={event.id} className="announcementData">
                 <td>{event.eventName}</td>
                 <td>{event.eventDescription}</td>
                 <td>{event.location}</td>
-                <td>{event.requiredSkills}</td>
+                <td>{event.requiredSkills.join(", ")}</td>
                 <td>{event.urgency}</td>
                 <td>{event.eventDate}</td>
                 <td>
