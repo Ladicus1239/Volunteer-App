@@ -1,135 +1,177 @@
 /*Event Pages and Event Management Pages*/
 .adminredirect {
-    margin: 4px;
-    height: 40px;
-    width: 160px;
-    font-size: 18px;
-    background: linear-gradient(#b9f6c4, transparent);
-    background-color: #86fa9b;
-    border: none;
-    color: black;
-    border: 2px solid #04aa6d;
-    padding: 10px;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    font-size: 16px;
-    margin: 4px 2px;
-    cursor: pointer;
-    transition-duration: 0.5s;
-  }
-  .adminredirect:hover {
-    background-color: #04aa6d;
-    color: white;
-    transition-duration: 0.3s;
-  }
-  
-  .adminredirect:active {
-    color: black;
-  }
-  /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-  /*event management Page*/
-  .eventDiv1 {
-    position: relative;
-    width: 800px;
-    height: 400px;
-    justify-content: center;
-    resize: none;
-    vertical-align: middle;
-    align-items: center;
-    text-align: center;
-    font-family: "Georgia", "Times New Roman", serif;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #86fa9b;
-    border-style: double;
-    box-sizing: border-box;
-  }
-  
-  .eventDiv1 input {
-    height: 100px;
-    resize: none;
-    position: left;
-    margin-bottom: 4px;
-    transition-duration: 0.5s;
-  }
-  
-  .eventDiv1 input:hover {
-    padding-bottom: 25px;
-    transition-duration: 0.3s;
-  }
-  
-  .eventDiv2 {
-    width: 800px;
-    height: 400px;
-    justify-content: center;
-    resize: none;
-    vertical-align: middle;
-    align-items: center;
-    text-align: center;
-    font-family: "Georgia", "Times New Roman", serif;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #86fa9b;
-    border-style: double;
-    box-sizing: border-box;
-  }
-  
-  .eventDiv2 input:hover {
-    padding-bottom: 25px;
-    transition-duration: 0.3s;
-  }
-  
-  .eventDiv2 p {
-    font-style: italic;
-    font-size: large;
-  }
-  
-  .container {
-    display: flex;
-    justify-content: center;
-  }
-  /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-  /*Volunteer History Page*/
-  .volunteerContainer {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .volhistory {
-    text-align: center;
-    background: linear-gradient(#b9f6c4, transparent);
-    background-color: #86fa9b;
-    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    padding: 10px;
-    border: solid;
-    border-color: #04aa6d;
-    border-radius: 20%;
-    width: 310px;
-  }
-  
-  .table {
-    width: 850px;
-    box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  }
-  
-  .table table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .table th {
-    background: linear-gradient(#b9f6c4, transparent);
-    background-color: #8bffa0;
-  }
-  
-  .table td {
-    text-align: center;
-    background-color: white;
-    padding: 10px;
-  }
-  
-  .table td:nth-child(odd) {
-    background-color: #b9f6c4;
-  }
-  
+  margin: 4px;
+  height: 40px;
+  width: 160px;
+  font-size: 18px;
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
+  border: none;
+  color: black;
+  border: 2px solid #04aa6d;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+  cursor: pointer;
+  transition-duration: 0.5s;
+}
+.adminredirect:hover {
+  background-color: #04aa6d;
+  color: white;
+  transition-duration: 0.3s;
+}
+
+.adminredirect:active {
+  color: black;
+}
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*event management Page*/
+.eventDiv1 {
+  position: relative;
+  width: 800px;
+  height: 400px;
+  justify-content: center;
+  resize: none;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  font-family: "Georgia", "Times New Roman", serif;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-color: #86fa9b;
+  border-style: double;
+  box-sizing: border-box;
+}
+
+.eventDiv1 input {
+  height: 100px;
+  resize: none;
+  position: left;
+  margin-bottom: 4px;
+  transition-duration: 0.5s;
+}
+
+.eventDiv1 input:hover {
+  padding-bottom: 25px;
+  transition-duration: 0.3s;
+}
+
+.eventDiv2 {
+  width: 800px;
+  height: 400px;
+  justify-content: center;
+  resize: none;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  font-family: "Georgia", "Times New Roman", serif;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-color: #86fa9b;
+  border-style: double;
+  box-sizing: border-box;
+}
+
+.eventDiv2 input:hover {
+  padding-bottom: 25px;
+  transition-duration: 0.3s;
+}
+
+.eventDiv2 p {
+  font-style: italic;
+  font-size: large;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+}
+/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/*Volunteer History Page*/
+.volunteerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.volhistory {
+  text-align: center;
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 10px;
+  border: solid;
+  border-color: #04aa6d;
+  border-radius: 20%;
+  width: 310px;
+}
+
+.table {
+  width: 850px;
+  box-shadow: 0 5px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #8bffa0;
+}
+
+.table td {
+  text-align: center;
+  background-color: white;
+  padding: 10px;
+}
+
+.table td:nth-child(odd) {
+  background-color: #b9f6c4;
+}
+.announcement {
+  position: relative;
+  width: 800px;
+  justify-content: center;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  font-family: "Georgia", "Times New Roman", serif;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background-color: #86fa9b;
+  border-style: double;
+  box-sizing: border-box;
+}
+
+.announcementNames th {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: large;
+  font-weight: bold;
+  background-color: #b2fbc6;
+  padding: 5px; /* Reduce padding for headers */
+}
+
+.announcement tbody {
+  background-color: #ffffff; /* White background for table body */
+}
+
+.announcementData td {
+  font-family: "Georgia", "Times New Roman", serif;
+  padding: 5px; /* Reduce padding for data cells */
+}
+
+.announcementData button {
+  margin: 0 2px; /* Reduce margin for buttons */
+  padding: 3px 5px; /* Reduce padding for buttons */
+  font-family: "Georgia", "Times New Roman", serif;
+  cursor: pointer;
+  transition-duration: 0.5s;
+}
+
+.announcementData button:hover {
+  background-color: #b2fbc6;
+  transition-duration: 0.3s;
+}

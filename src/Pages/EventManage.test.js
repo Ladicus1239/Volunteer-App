@@ -1,111 +1,131 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
 import EventManage from "./EventManage";
 import "@testing-library/jest-dom";
 
-test("renders EventManagement component", () => {
-  render(<EventManage />);
-  expect(screen.getByText(/Create Event/i)).toBeInTheDocument();
-});
-
-test("allows user to create a new event", () => {
-  render(<EventManage />);
-
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
+describe("EventManage Component", () => {
+  beforeEach(() => {
+    localStorage.clear();
   });
 
-  // Open the dropdown menu and select an option
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+  test("renders create event form", () => {
+    render(<EventManage />);
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
-  });
-
-  fireEvent.click(screen.getByText(/Create Event/i));
-
-  expect(screen.getByText(/Test Event/i)).toBeInTheDocument();
-  expect(screen.getByText(/This is a test event/i)).toBeInTheDocument();
-  expect(screen.getByText(/Test Location/i)).toBeInTheDocument();
-  expect(screen.getByText(/Option 1/i)).toBeInTheDocument(); // Verifying the selected option
-  expect(screen.getByText(/medium/i)).toBeInTheDocument();
-  expect(screen.getByText(/2024-07-18/i)).toBeInTheDocument();
-});
-
-test("allows user to edit an event", () => {
-  render(<EventManage />);
-
-  // Create an event
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
+    expect(
+      screen.getByPlaceholderText("Event Name* (100 character limit)")
+    ).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText("Event Description*")
+    ).toBeInTheDocument();
+    expect(screen.getByPlaceholderText("Location*")).toBeInTheDocument();
+    expect(screen.getByLabelText("Required Skills*:")).toBeInTheDocument();
+    expect(screen.getByLabelText("Urgency*:")).toBeInTheDocument();
+    expect(screen.getByLabelText("Event Date*:")).toBeInTheDocument();
   });
 
-  // Open the dropdown menu and select an option
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+  test("creates and displays a new event", () => {
+    render(<EventManage />);
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
-  });
+    fireEvent.change(
+      screen.getByPlaceholderText("Event Name* (100 character limit)"),
+      {
+        target: { value: "Test Event" },
+      }
+    );
+    fireEvent.change(screen.getByPlaceholderText("Event Description*"), {
+      target: { value: "Test Description" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Location*"), {
+      target: { value: "Test Location" },
+    });
+    fireEvent.change(screen.getByLabelText("Required Skills*:"), {
+      target: { value: "Skill1" },
+    });
+    fireEvent.change(screen.getByLabelText("Urgency*:"), {
+      target: { value: "high" },
+    });
+    fireEvent.change(screen.getByLabelText("Event Date*:"), {
+      target: { value: "2024-07-31" },
+    });
 
-  fireEvent.click(screen.getByText(/Create Event/i));
+    fireEvent.click(screen.getByText("Create Event"));
 
-  // Edit the event
-  fireEvent.click(screen.getByText(/Edit/i));
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Updated Event" },
-  });
-
-  fireEvent.click(screen.getByText(/Create Event/i));
-
-  expect(screen.getByText(/Updated Event/i)).toBeInTheDocument();
-});
-
-test("allows user to delete an event", () => {
-  render(<EventManage />);
-
-  // Create an event
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
+    expect(screen.getByText("Test Event")).toBeInTheDocument();
+    expect(screen.getByText("Test Description")).toBeInTheDocument();
+    expect(screen.getByText("Test Location")).toBeInTheDocument();
+    expect(screen.getByText("Skill1")).toBeInTheDocument();
+    expect(screen.getByText("high")).toBeInTheDocument();
+    expect(screen.getByText("2024-07-31")).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+  test("edits an existing event", () => {
+    render(<EventManage />);
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
+    fireEvent.change(
+      screen.getByPlaceholderText("Event Name* (100 character limit)"),
+      {
+        target: { value: "Test Event" },
+      }
+    );
+    fireEvent.change(screen.getByPlaceholderText("Event Description*"), {
+      target: { value: "Test Description" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Location*"), {
+      target: { value: "Test Location" },
+    });
+    fireEvent.change(screen.getByLabelText("Required Skills*:"), {
+      target: { value: "Skill1" },
+    });
+    fireEvent.change(screen.getByLabelText("Urgency*:"), {
+      target: { value: "high" },
+    });
+    fireEvent.change(screen.getByLabelText("Event Date*:"), {
+      target: { value: "2024-07-31" },
+    });
+
+    fireEvent.click(screen.getByText("Create Event"));
+
+    fireEvent.click(screen.getByText("Edit"));
+    fireEvent.change(
+      screen.getByPlaceholderText("Event Name* (100 character limit)"),
+      {
+        target: { value: "Updated Event" },
+      }
+    );
+    fireEvent.click(screen.getByText("Update Event"));
+
+    expect(screen.getByText("Updated Event")).toBeInTheDocument();
   });
 
-  fireEvent.click(screen.getByText(/Create Event/i));
-  fireEvent.click(screen.getByText(/Delete/i));
-  expect(screen.queryByText(/Test Event/i)).not.toBeInTheDocument();
+  test("deletes an event", () => {
+    render(<EventManage />);
+
+    fireEvent.change(
+      screen.getByPlaceholderText("Event Name* (100 character limit)"),
+      {
+        target: { value: "Test Event" },
+      }
+    );
+    fireEvent.change(screen.getByPlaceholderText("Event Description*"), {
+      target: { value: "Test Description" },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Location*"), {
+      target: { value: "Test Location" },
+    });
+    fireEvent.change(screen.getByLabelText("Required Skills*:"), {
+      target: { value: "Skill1" },
+    });
+    fireEvent.change(screen.getByLabelText("Urgency*:"), {
+      target: { value: "high" },
+    });
+    fireEvent.change(screen.getByLabelText("Event Date*:"), {
+      target: { value: "2024-07-31" },
+    });
+
+    fireEvent.click(screen.getByText("Create Event"));
+
+    fireEvent.click(screen.getByText("Delete"));
+
+    expect(screen.queryByText("Test Event")).not.toBeInTheDocument();
+  });
 });
