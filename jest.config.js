@@ -1,12 +1,18 @@
 module.exports = {
-    testEnvironment: 'jsdom',
-    setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
-    collectCoverage: true, // Enable code coverage collection
-    collectCoverageFrom: [
-      'src/**/*.{js,jsx,ts,tsx}', // Specify which files to collect coverage from
-      '!src/**/*.test.{js,jsx,ts,tsx}', // Exclude test files
-    ],
-    coverageReporters: ['json', 'html', 'text'], // Specify coverage reporters
-    coverageDirectory: 'coverage', // Directory to output coverage reports
-  };
-  
+  testEnvironment: 'jsdom',
+  testMatch: ['**/?(*.)+(test).js?(x)'],
+  collectCoverageFrom: [
+    'src/**/*.{js,jsx}',
+    '!src/index.js',
+    '!src/firebase.js',
+    '!src/reportWebVitals.js',
+  ],
+  coveragePathIgnorePatterns: [
+    '/node_modules/',
+    'src/firebase.js',
+    'src/reportWebVitals.js'
+  ],
+  moduleNameMapper: {
+    '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.js',
+  },
+};

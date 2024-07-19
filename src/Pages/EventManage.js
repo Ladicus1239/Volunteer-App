@@ -103,7 +103,8 @@ export default function EventManage() {
   };
 
   const handleDelete = (eventId) => {
-    deleteEventMsg(eventId.eventname)
+    const eventToDelete = events.find((event) => event.id === eventId);
+    deleteEventMsg(eventToDelete.eventName);
     const updatedEvents = events.filter((event) => event.id !== eventId);
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));
@@ -152,8 +153,8 @@ export default function EventManage() {
             <h3>Additional Information</h3>
             <h4 htmlFor="requiredSkills">Required Skills*:</h4>
             <DropdownMenu
-              value={requiredSkills}
-              onChange={(e) => setRequiredSkills(e.target.value)}
+              selectedItems={requiredSkills}
+              setSelectedItems={setRequiredSkills}
               dataTestId="required-skills"
             />
             <h4 htmlFor="urgency">Urgency*:</h4>

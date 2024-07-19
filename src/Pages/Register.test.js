@@ -1,17 +1,15 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Signup from '../Pages/Signup';
+import Signup from './Register'
 import { AuthProvider } from '../context/AuthContext';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-// Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
 }));
 
-// Mock useAuth from AuthContext
 jest.mock('../context/AuthContext', () => ({
   ...jest.requireActual('../context/AuthContext'),
   useAuth: () => ({

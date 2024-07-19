@@ -1,17 +1,17 @@
 import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
-import Signup from '../Pages/Signup';
+import Login from './Login';
 import { AuthProvider } from '../context/AuthContext';
 import { BrowserRouter as Router } from 'react-router-dom';
 
-
+// Mock useNavigate from react-router-dom
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useNavigate: () => jest.fn(),
 }));
 
-
+// Mock useAuth from AuthContext
 jest.mock('../context/AuthContext', () => ({
   ...jest.requireActual('../context/AuthContext'),
   useAuth: () => ({
@@ -19,12 +19,12 @@ jest.mock('../context/AuthContext', () => ({
   }),
 }));
 
-describe('Signup Component', () => {
+describe('Login Component', () => {
   test('renders the login form', () => {
     render(
       <Router>
         <AuthProvider>
-          <Signup />
+          <Login />
         </AuthProvider>
       </Router>
     );
@@ -38,7 +38,7 @@ describe('Signup Component', () => {
     render(
       <Router>
         <AuthProvider>
-          <Signup />
+          <Login />
         </AuthProvider>
       </Router>
     );
@@ -68,7 +68,7 @@ describe('Signup Component', () => {
     render(
       <Router>
         <AuthProvider>
-          <Signup />
+          <Login />
         </AuthProvider>
       </Router>
     );
