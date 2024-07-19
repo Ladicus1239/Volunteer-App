@@ -5,10 +5,11 @@ import {AuthProvider, useAuth} from '../context/AuthContext'
 import "../styles.css"
 import { useNavigate } from 'react-router-dom'
 
+/*
 const USER_REGEX = /^[a-zA-Z0-9._:$!%-]+@[a-zA-Z0-9.-]+.[a-zA-Z]$/;
 const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const REGISTER_URL = '/register';
-
+*/
 export default function Signup() {
 
     const emailRef =useRef()
