@@ -9,6 +9,7 @@ import Login from "./Pages/Login";
 import Notification from "./Pages/Notifications";
 import Profile from "./Pages/Profile";
 import ProfileManage from "./Pages/ProfileManage";
+import VolunteerMatching from "./Pages/VolunteerMatching"; // Import VolunteerMatching
 import Error from "./Pages/ErrorPage";
 import "./styles.css";
 import { AuthProvider } from "./context/AuthContext";
@@ -28,6 +29,7 @@ export default function App() {
           <Route path="/events" element={<Event />} />
           <Route path="/events/eventmanagement" element={<EventManage />} />
           <Route path="/events/volunteerhistory" element={<VolunteerHistory />} />
+          <Route path="/events/volunteermatching" element={<VolunteerMatching />} /> {/* Add VolunteerMatching route */}
           <Route path="*" element={<Error />} />
         </Routes>
       </BrowserRouter>

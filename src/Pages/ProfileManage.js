@@ -1,7 +1,9 @@
 import React from "react";
 import Navigation from '../Components/Navigation';
-//import Profile from '../Pages/Profile';
-import Select from "react-select";
+import Profile from '../Pages/Profile';
+import VolunteerHistory from '../Pages/volunteerhistory';
+import "../styles2.css";
+import Select from "react-select";    /*use "npm i --save react-select" to install react select (useState is built in) */
 import { useState } from "react";
 
 //skills list start -------------------------------------
@@ -34,19 +36,19 @@ const years = [
 ];
 //years list end -------------------------------------
 
+//function for dropdown selection of skills, and date -------------------------------------
 const ProfileManage = () => {
   const [selectedSkill, setSelectedSkill] = useState([]);
   const [skillArray, setSkillArray] = useState([]);
 
-  // Change Handler for Skills Selection
   const handleChangeSkill = (selectedSkill) => {
     setSelectedSkill(selectedSkill);
-    const skillString = selectedSkill.map(skill => skill.value).join(", "); // Separates each skill by comma and space
+    const skillString = selectedSkill.map(skill => skill.value).join(", ");   //separates each skill by comma and space
     setSkillArray(skillString);
   };
 
   const [selectedDay, setSelectedDay] = useState(null);
-  const handleChangeDay = (selectedDay) => {
+  const handleChange = (selectedDay) => {
     setSelectedDay(selectedDay);
   };
 
@@ -63,34 +65,38 @@ const ProfileManage = () => {
   const [selectedDates, setSelectedDates] = useState([]);
   const [dateArray, setDateArray] = useState([]);
 
-  // Date Selection Handler
   const handleDateSelection = () => {
     if (selectedDay && selectedMonth && selectedYear) {
       const newDate = `${selectedYear.label}-${selectedMonth.label}-${selectedDay.label}`;
       if (!selectedDates.includes(newDate)) {
         const updatedDates = [...selectedDates, newDate];
         setSelectedDates(updatedDates);
-        setDateArray(updatedDates.join(", ")); // Separates each date by comma and space
+        setDateArray(updatedDates.join(", "));    //separates each date by comma and space
       }
     } else {
       alert("Please select day, month, and year.");
     }
   };
+  //function for dropdown selection of skills and dates end -------------------------------------
 
-  const [fullName, setName] = useState('');   // Grab name input
-  const [getAdd, setAddr] = useState('');     // Grab address 1 input
-  const [getAdd2, setAddr2] = useState('');   // Grab address 2 input
-  const [getCity, setCity] = useState('');    // Grab city input
-  const [getState, setState] = useState('');  // Grab state input
-  const [getZip, setZip] = useState('');      // Grab zip input
-  const [getPref, setPref] = useState('');    // Grab preferences input
+  //grabbing inputs of each selection -------------------------------------
+  const [fullName, setName] = useState('');   //grab name input
+  const [getAdd, setAddr] = useState('');   //grab address 1 input
+  const [getAdd2, setAddr2] = useState('');   //grab address 2 input
+  const [getCity, setCity] = useState('');   //grab city input
+  const [getState, setState] = useState('');   //grab state input
+  const [getZip, setZip] = useState('');   //grab zip input
+  const [getPref, setPref] = useState('');   //grab preferences input
+  //grabbing inputs of each selection end -------------------------------------
 
-  // Form Submission Handler
+  //submit form -------------------------------------
   const handleSubmit = (e) => {
     e.preventDefault();
-    const page = { fullName, getAdd, getCity, getState, getZip, skillArray, dateArray };
+    const page = { fullName, getAdd, getCity, getState, getZip, skillArray, dateArray};
+
     console.log(page);
-  };
+  }
+  //submit form end -------------------------------------
 
   return (
     <div>
@@ -160,6 +166,7 @@ const ProfileManage = () => {
 
             <div className="skills" style={{ maxWidth: "300px" }}>
               <p>Choose your skill(s)</p>
+
               <Select options={skills}
                 value={selectedSkill}
                 onChange={handleChangeSkill}
@@ -179,10 +186,12 @@ const ProfileManage = () => {
               onChange={(e) => setPref(e.target.value)}></input>
 
             <p>Choose your availability date:</p>
-            <div className="date" style={{ maxWidth: "300px" }}>
+            <div className="date"
+              style={{ maxWidth: "300px" }}>
+
               <Select className="day" options={days}
                 value={selectedDay}
-                onChange={handleChangeDay}
+                onChange={handleChange}
                 isSearchable={true}
                 maxMenuHeight={130}
                 placeholder='DD'
@@ -203,18 +212,20 @@ const ProfileManage = () => {
                 maxMenuHeight={130}
                 placeholder='YYYY'
               />
+
             </div>
             <button className="buttonDates" onClick={handleDateSelection}>Select Date</button>
+
           </div> 
           <button className="button submit">Update Profile</button>
         </div>
       </form>
     </div>
   );
+
 }
 
 export default ProfileManage;
-
 /*    place under "buttonDates"
      <p>Selected Dates:</p>
             {selectedDates.length > 0 && (
