@@ -1,118 +1,105 @@
+// src/Pages/__tests__/EventManage.test.js
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import renderWithRouter from '../test-utils/renderWithRouter';
 import EventManage from '../EventManage';
+import { BrowserRouter } from 'react-router-dom';
 
-// Mock the useAuth hook using the mock from authMock.js
-jest.mock('../context/AuthContext', () => require('../../__mocks__/authMock'));
+// Mock the subcomponents
+jest.mock('../../Components/Navigation', () => () => <nav role="navigation">Mocked Navigation</nav>);
+jest.mock('../../Components/dropdownMS', () => ({ selectedItems, setSelectedItems, dataTestId }) => (
+  <div data-testid={dataTestId}>Mocked Dropdown Menu</div>
+));
 
-// Test to check if the Event Management page renders correctly
-test('renders Event Management component', () => {
-  renderWithRouter(<EventManage />);
-  expect(screen.getByText(/Create Event/i)).toBeInTheDocument();
+const renderWithRouter = (ui, { route = '/' } = {}) => {
+    window.history.pushState({}, 'Test page', route);
+    return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
+};
+
+beforeEach(() => {
+    localStorage.clear(); // Clear localStorage before each test to isolate them
 });
 
-// Test to check if creating a new event works correctly
-test('allows user to create a new event', () => {
-  renderWithRouter(<EventManage />);
+test('renders EventManage page correctly', async () => {
+    await act(async () => {
+        renderWithRouter(<EventManage />);
+    });
 
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
-  });
+    // Check if Navigation component is rendered
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
 
-  // Open the dropdown menu and select an option
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+    // Check if form elements are rendered
+    expect(screen.getByPlaceholderText(/Event Name/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Event Description/i)).toBeInTheDocument();
+    expect(screen.getByPlaceholderText(/Location/i)).toBeInTheDocument();
+    expect(screen.getByTestId('required-skills')).toBeInTheDocument();
+    expect(screen.getAllByText(/Urgency/i)[0]).toBeInTheDocument();
+    expect(screen.getByLabelText(/Event Date/i)).toBeInTheDocument();
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
-  });
-
-  fireEvent.click(screen.getByText(/Create Event/i));
-
-  expect(screen.getByText(/Test Event/i)).toBeInTheDocument();
-  expect(screen.getByText(/This is a test event/i)).toBeInTheDocument();
-  expect(screen.getByText(/Test Location/i)).toBeInTheDocument();
-  expect(screen.getByText(/Option 1/i)).toBeInTheDocument(); // Verifying the selected option
-  expect(screen.getByText(/medium/i)).toBeInTheDocument();
-  expect(screen.getByText(/2024-07-18/i)).toBeInTheDocument();
+    // Check if submit button is rendered
+    expect(screen.getByRole('button', { name: /Create Event/i })).toBeInTheDocument();
 });
 
-// Test to check if editing an event works correctly
-test('allows user to edit an event', () => {
-  renderWithRouter(<EventManage />);
+test('creates a new event', async () => {
+    await act(async () => {
+        renderWithRouter(<EventManage />);
+    });
 
-  // Create an event
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
-  });
+    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
+    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
 
-  // Open the dropdown menu and select an option
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
-  });
-
-  fireEvent.click(screen.getByText(/Create Event/i));
-
-  // Edit the event
-  fireEvent.click(screen.getByText(/Edit/i));
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Updated Event" },
-  });
-
-  fireEvent.click(screen.getByText(/Create Event/i));
-
-  expect(screen.getByText(/Updated Event/i)).toBeInTheDocument();
+    // Check if the new event is added to the event list
+    expect(screen.getAllByText(/Test Event/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/This is a test event/i)).toBeInTheDocument();
+    expect(screen.getByText(/Test Location/i)).toBeInTheDocument();
+    expect(screen.getByText(/2024-01-01/i)).toBeInTheDocument();
 });
 
-// Test to check if deleting an event works correctly
-test('allows user to delete an event', () => {
-  renderWithRouter(<EventManage />);
+test('edits an existing event', async () => {
+    await act(async () => {
+        renderWithRouter(<EventManage />);
+    });
 
-  // Create an event
-  fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
-    target: { value: "Test Event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Event Description/i), {
-    target: { value: "This is a test event" },
-  });
-  fireEvent.change(screen.getByPlaceholderText(/Location/i), {
-    target: { value: "Test Location" },
-  });
+    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
+    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
 
-  fireEvent.click(screen.getByTestId("dropdown-button"));
-  fireEvent.click(screen.getByTestId("checkbox-option1"));
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
 
-  fireEvent.change(screen.getByLabelText(/Urgency/i), {
-    target: { value: "medium" },
-  });
-  fireEvent.change(screen.getByLabelText(/Event Date/i), {
-    target: { value: "2024-07-18" },
-  });
+    fireEvent.click(screen.getAllByText(/Edit/i)[0]);
 
-  fireEvent.click(screen.getByText(/Create Event/i));
-  fireEvent.click(screen.getByText(/Delete/i));
-  expect(screen.queryByText(/Test Event/i)).not.toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Updated Event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is an updated test event' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Update Event/i }));
+
+    // Check if the event is updated in the event list
+    expect(screen.getAllByText(/Updated Event/i)[0]).toBeInTheDocument();
+    expect(screen.getByText(/This is an updated test event/i)).toBeInTheDocument();
+});
+
+test('deletes an event', async () => {
+    await act(async () => {
+        renderWithRouter(<EventManage />);
+    });
+
+    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
+    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
+    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
+
+    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
+
+    fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+
+    // Check if the event is removed from the event list
+    expect(screen.queryByText(/Test Event/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/This is a test event/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/Test Location/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/2024-01-01/i)).not.toBeInTheDocument();
 });

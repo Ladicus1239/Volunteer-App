@@ -170,6 +170,7 @@ export default function EventManage() {
               <option value="high">High</option>
             </select>
             <h4 htmlFor="eventDate">Event Date*:</h4>
+            <label htmlFor="eventDate">Event Date*</label>
             <input
               type="date"
               id="eventDate"
