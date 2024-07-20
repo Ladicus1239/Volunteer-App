@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import Profile from './Profile';
+import Profile from '../Profile';
 import '@testing-library/jest-dom/';
 
 // Mock props to be passed to the Profile component for testing

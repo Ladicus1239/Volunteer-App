@@ -1,6 +1,6 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
-import VolunteerHistory from './volunteerhistory';
+import VolunteerHistory from '../volunteerhistory';
 import '@testing-library/jest-dom/';
 
 // Mock props to be passed to the VolunteerHistory component for testing
