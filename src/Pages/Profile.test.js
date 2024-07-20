@@ -1,4 +1,4 @@
-zimport React from "react";
+import React from "react";
 import Navigation from '../Components/Navigation';
 import "../styles2.css";
 
