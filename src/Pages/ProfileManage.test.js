@@ -1,7 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 import ProfileManage from './ProfileManage';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/';
 
 // Test to check if the Profile Management page renders correctly
 test('renders Profile Management page', () => {
@@ -20,11 +20,15 @@ test('renders input fields', () => {
     expect(screen.getByPlaceholderText(/State/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Zip code/i)).toBeInTheDocument();
     expect(screen.getByPlaceholderText(/Enter preferences/i)).toBeInTheDocument();
+    expect(screen.getByText(/Choose your skill\(s\)/i)).toBeInTheDocument();
+    expect(screen.getByText(/Choose your availability date:/i)).toBeInTheDocument();
 });
 
 // Test to check if input fields accept text
-test('input fields should accept text', () => {
-    render(<ProfileManage />);
+test('input fields should accept text', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
 
     // Test for Full Name input
     const nameInput = screen.getByPlaceholderText(/Full Name/i);
@@ -57,10 +61,62 @@ test('input fields should accept text', () => {
     expect(prefInput.value).toBe('Remote');
 });
 
+// Test to check if skills can be selected
+test('skills can be selected', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
+
+    const skillSelect = screen.getByText(/Choose your skill\(s\)/i);
+    fireEvent.mouseDown(skillSelect);
+
+    const adaptabilityOption = screen.getByText(/Adaptability/i);
+    fireEvent.click(adaptabilityOption);
+
+    const teamworkOption = screen.getByText(/Teamwork/i);
+    fireEvent.click(teamworkOption);
+
+    const selectedSkills = screen.getByText((content, element) => {
+        return /Adaptability/.test(content) && /Teamwork/.test(content);
+    });
+    expect(selectedSkills).toBeInTheDocument();
+});
+
+
+// Test to check if date can be selected
+test('date can be selected', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
+
+    const daySelect = screen.getByPlaceholderText(/DD/i);
+    fireEvent.mouseDown(daySelect);
+    const dayOption = screen.getByText('01');
+    fireEvent.click(dayOption);
+
+    const monthSelect = screen.getByPlaceholderText(/MM/i);
+    fireEvent.mouseDown(monthSelect);
+    const monthOption = screen.getByText('01');
+    fireEvent.click(monthOption);
+
+    const yearSelect = screen.getByPlaceholderText(/YYYY/i);
+    fireEvent.mouseDown(yearSelect);
+    const yearOption = screen.getByText('2024');
+    fireEvent.click(yearOption);
+
+    const selectDateButton = screen.getByText(/Select Date/i);
+    fireEvent.click(selectDateButton);
+
+    const selectedDate = screen.getByText(/2024-01-01/i);
+    expect(selectedDate).toBeInTheDocument();
+});
+
 // Test to check if an alert is displayed when date selection is incomplete
-test('displays alert if date is incomplete', () => {
-    render(<ProfileManage />);
-    window.alert = jest.fn();  // Mock window.alert
+test('displays alert if date is incomplete', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
+    window.alert = jest.fn(); // Mock window.alert
 
     const selectDateButton = screen.getByText(/Select Date/i);
     fireEvent.click(selectDateButton);
@@ -69,15 +125,19 @@ test('displays alert if date is incomplete', () => {
 });
 
 // Test to check if the submit button is rendered
-test('submit button is rendered', () => {
-    render(<ProfileManage />);
+test('submit button is rendered', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
     const submitButton = screen.getByText(/Update Profile/i);
     expect(submitButton).toBeInTheDocument();
 });
 
-// Test to check if the form submits correctly
-test('form submits correctly', () => {
-    render(<ProfileManage />);
+// Test to check if the form submits correctly with selected skills and dates
+test('form submits correctly with selected skills and dates', async () => {
+    await act(async () => {
+        render(<ProfileManage />);
+    });
 
     // Fill in the input fields
     fireEvent.change(screen.getByPlaceholderText(/Full Name/i), { target: { value: 'John Doe' } });
@@ -87,11 +147,48 @@ test('form submits correctly', () => {
     fireEvent.change(screen.getByPlaceholderText(/Zip code/i), { target: { value: '12345' } });
     fireEvent.change(screen.getByPlaceholderText(/Enter preferences/i), { target: { value: 'Remote' } });
 
-    const handleSubmit = jest.fn();  // Mock handleSubmit function
-    const form = screen.getByRole('form');  // Get the form element
-    form.onsubmit = handleSubmit;  // Assign the mock function to the form's onsubmit
+    // Select skills
+    const skillSelect = screen.getByText(/Choose your skill\(s\)/i);
+    fireEvent.mouseDown(skillSelect);
+    const adaptabilityOption = screen.getByText(/Adaptability/i);
+    fireEvent.click(adaptabilityOption);
+    const teamworkOption = screen.getByText(/Teamwork/i);
+    fireEvent.click(teamworkOption);
 
-    fireEvent.submit(form);  // Trigger form submission
+    // Select date
+    const daySelect = screen.getByPlaceholderText(/DD/i);
+    fireEvent.mouseDown(daySelect);
+    const dayOption = screen.getByText('01');
+    fireEvent.click(dayOption);
+    const monthSelect = screen.getByPlaceholderText(/MM/i);
+    fireEvent.mouseDown(monthSelect);
+    const monthOption = screen.getByText('01');
+    fireEvent.click(monthOption);
+    const yearSelect = screen.getByPlaceholderText(/YYYY/i);
+    fireEvent.mouseDown(yearSelect);
+    const yearOption = screen.getByText('2024');
+    fireEvent.click(yearOption);
 
-    expect(handleSubmit).toHaveBeenCalled();  // Check if the mock function was called
+    const selectDateButton = screen.getByText(/Select Date/i);
+    fireEvent.click(selectDateButton);
+
+    // Submit form
+    const handleSubmit = jest.fn(); // Mock handleSubmit function
+    const form = screen.getByRole('form'); // Get the form element
+    form.onsubmit = handleSubmit; // Assign the mock function to the form's onsubmit
+
+    fireEvent.submit(form); // Trigger form submission
+
+    expect(handleSubmit).toHaveBeenCalled(); // Check if the mock function was called
+
+    // Check if the submitted data includes the selected skills and date
+    expect(handleSubmit).toHaveBeenCalledWith(expect.objectContaining({
+        fullName: 'John Doe',
+        getAdd: '123 Main St',
+        getCity: 'Anytown',
+        getState: 'CA',
+        getZip: '12345',
+        skillArray: ['Adaptability', 'Teamwork'],
+        dateArray: ['2024-01-01']
+    }));
 });
