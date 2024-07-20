@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import VolunteerHistory from '..Pages/VolunteerHistory';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/';
 
 // Mock props to be passed to the VolunteerHistory component for testing
 const mockProps = {

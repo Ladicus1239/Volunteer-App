@@ -1,6 +1,5 @@
-import "@testing-library/jest-dom/extend-expect";
 import "@testing-library/jest-dom";
-import { matchVolunteersToEvents } from "./VolunteerMatching";
+import { matchVolunteersToEvents } from "../VolunteerMatching";
 
 describe("matchVolunteersToEvents", () => {
   const volunteers = [

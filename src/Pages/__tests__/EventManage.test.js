@@ -1,16 +1,21 @@
-import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
-import "@testing-library/jest-dom/extend-expect";
-import EventManage from "./EventManage";
-import "@testing-library/jest-dom";
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import renderWithRouter from '../test-utils/renderWithRouter';
+import EventManage from '../EventManage';
 
-test("renders EventManagement component", () => {
-  render(<EventManage />);
+// Mock the useAuth hook using the mock from authMock.js
+jest.mock('../context/AuthContext', () => require('../../__mocks__/authMock'));
+
+// Test to check if the Event Management page renders correctly
+test('renders Event Management component', () => {
+  renderWithRouter(<EventManage />);
   expect(screen.getByText(/Create Event/i)).toBeInTheDocument();
 });
 
-test("allows user to create a new event", () => {
-  render(<EventManage />);
+// Test to check if creating a new event works correctly
+test('allows user to create a new event', () => {
+  renderWithRouter(<EventManage />);
 
   fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
     target: { value: "Test Event" },
@@ -43,8 +48,9 @@ test("allows user to create a new event", () => {
   expect(screen.getByText(/2024-07-18/i)).toBeInTheDocument();
 });
 
-test("allows user to edit an event", () => {
-  render(<EventManage />);
+// Test to check if editing an event works correctly
+test('allows user to edit an event', () => {
+  renderWithRouter(<EventManage />);
 
   // Create an event
   fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {
@@ -81,8 +87,9 @@ test("allows user to edit an event", () => {
   expect(screen.getByText(/Updated Event/i)).toBeInTheDocument();
 });
 
-test("allows user to delete an event", () => {
-  render(<EventManage />);
+// Test to check if deleting an event works correctly
+test('allows user to delete an event', () => {
+  renderWithRouter(<EventManage />);
 
   // Create an event
   fireEvent.change(screen.getByPlaceholderText(/Event Name/i), {

@@ -1,9 +1,9 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import '@testing-library/jest-dom/extend-expect';
+import '@testing-library/jest-dom/';
 import Notification from './Notification';
-import Message from '../Components/Message';
-import Navigation from '../Components/Navigation';
+import Message from '../../Components/Message';
+import Navigation from '../../Components/Navigation';
 
 jest.mock('../Components/Message', () => () => <div>Mocked Message Component</div>);
 jest.mock('../Components/Navigation', () => () => <div>Mocked Navigation Component</div>);
