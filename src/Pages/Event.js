@@ -1,6 +1,6 @@
 import Navigation from '../Components/Navigation'
 import Display from '../Components/eventdisplay'
-import "../styles.css"
+import "../styles3.css"
 
 
 
