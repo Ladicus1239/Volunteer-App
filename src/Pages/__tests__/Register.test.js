@@ -1,4 +1,3 @@
-// src/Pages/__tests__/register.test.js
 import React from 'react';
 import { render, fireEvent, screen, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
@@ -60,7 +59,7 @@ describe('Signup Page Tests', () => {
         expect(screen.getByText(/Loading/i)).toBeInTheDocument();
         await act(async () => {});
 
-        // Check if mockSignup was called with correct arguments
+
         expect(mockSignup).toHaveBeenCalledWith('test@example.com', 'password123');
     });
 });

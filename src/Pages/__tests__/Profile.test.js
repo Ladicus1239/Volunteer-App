@@ -1,7 +1,7 @@
 import React from 'react';
-import { screen } from '@testing-library/react';
-import Profile from '../Profile';
-import renderWithRouterAndAuth from '../../test-router';
+import { render, screen } from '@testing-library/react';
+import Profile from './Profile';
+import '@testing-library/jest-dom/';
 
 // Mock props to be passed to the Profile component for testing
 const mockProps = {
@@ -10,51 +10,50 @@ const mockProps = {
     getCity: "Anytown",
     getState: "CA",
     getZip: "12345",
-    skillArray: ["JavaScript", "React", "Node.js"],
+    skillArray: ["Adaptability", "Teamwork"],
     getPref: "Remote",
     dateArray: ["2023-07-20", "2023-07-21"],
 };
 
 // Test to check if the profile renders with the correct name
 test('renders profile with correct name', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
+    render(<Profile {...mockProps} />);
     const nameElement = screen.getByText(/John Doe's Profile/i);
     expect(nameElement).toBeInTheDocument();
 });
 
 // Test to check if the address is rendered correctly
 test('renders address correctly', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
+    render(<Profile {...mockProps} />);
     const addressElement = screen.getByText(/123 Main St, Anytown, CA, 12345/i);
     expect(addressElement).toBeInTheDocument();
 });
 
 // Test to check if the skills are rendered correctly
 test('renders skills correctly', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
-    const skillsElement = screen.getByText(/JavaScript,React,Node.js/i);
+    render(<Profile {...mockProps} />);
+    const skillsElement = screen.getByText(/Adaptability, Teamwork/i);
     expect(skillsElement).toBeInTheDocument();
 });
 
 // Test to check if the preferences are rendered correctly
 test('renders preferences correctly', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
+    render(<Profile {...mockProps} />);
     const prefElement = screen.getByText(/Remote/i);
     expect(prefElement).toBeInTheDocument();
 });
 
 // Test to check if the dates are rendered correctly
 test('renders dates correctly', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
-    const datesElement = screen.getByText(/2023-07-20,2023-07-21/i);
+    render(<Profile {...mockProps} />);
+    const datesElement = screen.getByText(/2023-07-20, 2023-07-21/i);
     expect(datesElement).toBeInTheDocument();
 });
 
 // Test to check if the profile management link is rendered correctly
 test('renders profile management link correctly', () => {
-    renderWithRouterAndAuth(<Profile {...mockProps} />);
+    render(<Profile {...mockProps} />);
     const linkElement = screen.getByText(/Profile Management/i);
     // Check if the link has the correct href attribute
     expect(linkElement.closest('a')).toHaveAttribute('href', '/profile/profilemanagement');
 });
-``

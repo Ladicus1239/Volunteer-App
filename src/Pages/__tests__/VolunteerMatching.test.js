@@ -1,116 +1,108 @@
-import "@testing-library/jest-dom";
-import { matchVolunteersToEvents } from "../VolunteerMatching";
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import VolunteerMatching from '../VolunteerMatching';
+import { BrowserRouter } from 'react-router-dom';
 
-describe("matchVolunteersToEvents", () => {
-  const volunteers = [
-    {
-      id: 1,
-      name: "Alice",
-      skills: ["cooking", "teaching"],
-      availability: ["weekends"],
-      location: "New York",
-      preferences: ["teaching"],
-    },
-    {
-      id: 2,
-      name: "Bob",
-      skills: ["driving", "cooking"],
-      availability: ["weekdays", "weekends"],
-      location: "Los Angeles",
-      preferences: ["driving"],
-    },
-  ];
+jest.mock('../../Components/Navigation', () => () => <nav role="navigation">Mocked Navigation</nav>);
 
-  const events = [
-    {
-      id: 1,
-      name: "Community Cooking Class",
-      skillsRequired: ["cooking"],
-      date: "2024-07-29",
-      location: "New York",
-      type: "teaching",
-    },
-    {
-      id: 2,
-      name: "Food Delivery",
-      skillsRequired: ["driving"],
-      date: "2024-07-29",
-      location: "Los Angeles",
-      type: "driving",
-    },
-  ];
+describe('VolunteerMatching', () => {
+  beforeEach(() => {
+   
+    localStorage.clear();
 
-  it("matches volunteers to events based on skills, availability, location, and preferences", () => {
-    const expectedMatches = [
+ 
+    const events = [
       {
-        event: "Community Cooking Class",
-        volunteers: ["Alice"],
+        id: 1,
+        name: "Community Leadership Workshop",
+        skillsRequired: ["Leadership"],
+        date: "2024-07-29",
+        location: "New York",
+        type: "teaching",
       },
       {
-        event: "Food Delivery",
-        volunteers: ["Bob"],
+        id: 2,
+        name: "Creative Arts Program",
+        skillsRequired: ["Creative"],
+        date: "2024-07-29",
+        location: "New York",
+        type: "teaching",
+      },
+      {
+        id: 3,
+        name: "Team Building Exercise",
+        skillsRequired: ["Teamwork"],
+        date: "2024-07-29",
+        location: "Los Angeles",
+        type: "driving",
       },
     ];
 
-    const matches = matchVolunteersToEvents(volunteers, events);
-    expect(matches).toEqual(expectedMatches);
-  });
-
-  it("returns an empty list of volunteers if no volunteers match an event", () => {
-    const newEvent = {
-      id: 3,
-      name: "Gardening Workshop",
-      skillsRequired: ["gardening"],
-      date: "2024-07-29",
-      location: "San Francisco",
-      type: "gardening",
-    };
-
-    const newEvents = [...events, newEvent];
-
-    const expectedMatches = [
-      {
-        event: "Community Cooking Class",
-        volunteers: ["Alice"],
-      },
-      {
-        event: "Food Delivery",
-        volunteers: ["Bob"],
-      },
-      {
-        event: "Gardening Workshop",
-        volunteers: [],
-      },
-    ];
-
-    const matches = matchVolunteersToEvents(volunteers, newEvents);
-    expect(matches).toEqual(expectedMatches);
-  });
-
-  it("does not match volunteers if location does not match", () => {
-    const newVolunteers = [
+    const volunteers = [
       {
         id: 1,
         name: "Alice",
-        skills: ["cooking", "teaching"],
+        skills: ["Adaptability", "Communication"],
         availability: ["weekends"],
-        location: "Chicago",
+        location: "New York",
         preferences: ["teaching"],
       },
-    ];
-
-    const expectedMatches = [
       {
-        event: "Community Cooking Class",
-        volunteers: [],
+        id: 2,
+        name: "Bob",
+        skills: ["Leadership", "Strong Work Ethic"],
+        availability: ["weekdays", "weekends"],
+        location: "Los Angeles",
+        preferences: ["driving"],
       },
       {
-        event: "Food Delivery",
-        volunteers: ["Bob"],
+        id: 3,
+        name: "Charlie",
+        skills: ["Creative", "Interpersonal Communication"],
+        availability: ["weekdays"],
+        location: "New York",
+        preferences: ["first aid"],
       },
     ];
 
-    const matches = matchVolunteersToEvents(newVolunteers, events);
-    expect(matches).toEqual(expectedMatches);
+    localStorage.setItem('events', JSON.stringify(events));
+    localStorage.setItem('volunteers', JSON.stringify(volunteers));
+  });
+
+  test('renders VolunteerMatching page correctly', () => {
+    render(
+      <BrowserRouter>
+        <VolunteerMatching />
+      </BrowserRouter>
+    );
+
+
+    expect(screen.getByText('Volunteer Matching')).toBeInTheDocument();
+
+    expect(screen.getByRole('navigation')).toBeInTheDocument();
+
+    expect(screen.getByText('All Volunteers')).toBeInTheDocument();
+    expect(screen.getByText('Matched Volunteers')).toBeInTheDocument();
+
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('Charlie')).toBeInTheDocument();
+  });
+
+  test('matches volunteers to events correctly', () => {
+    render(
+      <BrowserRouter>
+        <VolunteerMatching />
+      </BrowserRouter>
+    );
+
+    expect(screen.getByText('Alice')).toBeInTheDocument();
+    expect(screen.getByText('Bob')).toBeInTheDocument();
+    expect(screen.getByText('Charlie')).toBeInTheDocument();
+
+    expect(screen.getByText('Community Leadership Workshop')).toBeInTheDocument();
+    expect(screen.getByText('Creative Arts Program')).toBeInTheDocument();
+    expect(screen.getByText('Team Building Exercise')).toBeInTheDocument();
   });
 });

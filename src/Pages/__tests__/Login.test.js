@@ -1,4 +1,3 @@
-// src/Pages/__tests__/Login.test.js
 import React from 'react';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
