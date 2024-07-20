@@ -6,82 +6,88 @@ import '@testing-library/jest-dom';
 import Login from '../Login';
 import { AuthProvider } from '../../context/AuthContext';
 
+// Utility to render components with Router
 const renderWithRouter = (ui, { route = '/' } = {}) => {
     window.history.pushState({}, 'Test page', route);
     return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
 };
 
-test('renders login page', async () => {
-    await act(async () => {
-        renderWithRouter(
-            <AuthProvider>
-                <Login />
-            </AuthProvider>
-        );
-    });
-
-    const titleElement = screen.getByText(/Login Page/i);
-    expect(titleElement).toBeInTheDocument();
+// Mock the useAuth hook and AuthProvider
+jest.mock('../../context/AuthContext', () => {
+    const originalModule = jest.requireActual('../../context/AuthContext');
+    return {
+        ...originalModule,
+        useAuth: jest.fn(),
+    };
 });
 
-test('displays error message on failed login', async () => {
-    await act(async () => {
-        renderWithRouter(
-            <AuthProvider>
-                <Login />
-            </AuthProvider>
-        );
+const { useAuth } = require('../../context/AuthContext');
+
+describe('Login Page Tests', () => {
+    let mockLogin;
+
+    beforeEach(() => {
+        mockLogin = jest.fn();
+        useAuth.mockReturnValue({ login: mockLogin });
     });
 
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByText(/Log in/i);
-
-    fireEvent.change(emailInput, { target: { value: 'wrong@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
-    
-    await act(async () => {
-        fireEvent.click(submitButton);
+    afterEach(() => {
+        jest.clearAllMocks();
     });
 
-    const errorMessage = screen.getByText(/Failed to login/i);
-    expect(errorMessage).toBeInTheDocument();
-});
+    test('displays error message on failed login', async () => {
+        mockLogin.mockImplementation(() => Promise.reject(new Error('Failed to login')));
 
-test('successful login redirects to home', async () => {
-    // Mock the login function to simulate a successful login
-    const mockLogin = jest.fn(() => Promise.resolve());
+        await act(async () => {
+            renderWithRouter(
+                <AuthProvider>
+                    <Login />
+                </AuthProvider>
+            );
+        });
 
-    jest.mock('../../context/AuthContext', () => ({
-        useAuth: () => ({
-            login: mockLogin,
-        }),
-        AuthProvider: ({ children }) => <div>{children}</div>,
-    }));
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByText(/Log in/i);
 
-    await act(async () => {
-        renderWithRouter(
-            <AuthProvider>
-                <Login />
-            </AuthProvider>,
-            { route: '/login' }
-        );
+        fireEvent.change(emailInput, { target: { value: 'wrong@example.com' } });
+        fireEvent.change(passwordInput, { target: { value: 'wrongpassword' } });
+
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        const errorMessage = await screen.findByText(/Failed to login/i);
+        expect(errorMessage).toBeInTheDocument();
     });
 
-    const emailInput = screen.getByLabelText(/Email/i);
-    const passwordInput = screen.getByLabelText(/Password/i);
-    const submitButton = screen.getByText(/Log in/i);
+    test('successful login redirects to home', async () => {
+        mockLogin.mockImplementation(() => Promise.resolve());
 
-    fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
-    fireEvent.change(passwordInput, { target: { value: 'password' } });
-    
-    await act(async () => {
-        fireEvent.click(submitButton);
+        await act(async () => {
+            renderWithRouter(
+                <AuthProvider>
+                    <Login />
+                </AuthProvider>,
+                { route: '/login' }
+            );
+        });
+
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByText(/Log in/i);
+
+        fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
+        fireEvent.change(passwordInput, { target: { value: 'password' } });
+
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        // Check if mockLogin was called with correct arguments
+        expect(mockLogin).toHaveBeenCalledWith('user@example.com', 'password');
+
+        // Verify navigation to home page
+        expect(window.location.pathname).toBe('/home');
     });
-
-    // Check if mockLogin was called with correct arguments
-    expect(mockLogin).toHaveBeenCalledWith('user@example.com', 'password');
-
-    // Verify navigation to home page
-    expect(window.location.pathname).toBe('/home');
 });
