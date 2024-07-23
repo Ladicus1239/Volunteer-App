@@ -1,6 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
 import Profile from './Profile';
+import '@testing-library/jest-dom/';
 
 // Mock props to be passed to the Profile component for testing
 const mockProps = {
@@ -9,7 +10,7 @@ const mockProps = {
     getCity: "Anytown",
     getState: "CA",
     getZip: "12345",
-    skillArray: ["JavaScript", "React", "Node.js"],
+    skillArray: ["Adaptability", "Teamwork"],
     getPref: "Remote",
     dateArray: ["2023-07-20", "2023-07-21"],
 };
@@ -31,7 +32,7 @@ test('renders address correctly', () => {
 // Test to check if the skills are rendered correctly
 test('renders skills correctly', () => {
     render(<Profile {...mockProps} />);
-    const skillsElement = screen.getByText(/JavaScript,React,Node.js/i);
+    const skillsElement = screen.getByText(/Adaptability, Teamwork/i);
     expect(skillsElement).toBeInTheDocument();
 });
 
@@ -45,7 +46,7 @@ test('renders preferences correctly', () => {
 // Test to check if the dates are rendered correctly
 test('renders dates correctly', () => {
     render(<Profile {...mockProps} />);
-    const datesElement = screen.getByText(/2023-07-20,2023-07-21/i);
+    const datesElement = screen.getByText(/2023-07-20, 2023-07-21/i);
     expect(datesElement).toBeInTheDocument();
 });
 

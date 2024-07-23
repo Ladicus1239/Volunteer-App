@@ -14,6 +14,11 @@ export default function EventManage() {
   const [isEditing, setIsEditing] = useState(false);
   const [currentEventId, setCurrentEventId] = useState(null);
 
+  useEffect(() => {
+    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
+    setEvents(storedEvents);
+  }, []);
+
   function createEventMsg(eventname) {
     const savedMessages = localStorage.getItem("messages");
     const messages = savedMessages ? JSON.parse(savedMessages) : [];
@@ -50,11 +55,6 @@ export default function EventManage() {
     console.log("Added system message to localStorage:", newMessages);
   }
 
-  useEffect(() => {
-    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-    setEvents(storedEvents);
-  }, []);
-
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -63,7 +63,7 @@ export default function EventManage() {
       eventName,
       eventDescription,
       location,
-      requiredSkills,
+      requiredSkills: Array.isArray(requiredSkills) ? requiredSkills : [],
       urgency,
       eventDate,
     };
@@ -106,7 +106,7 @@ export default function EventManage() {
     setEventName(eventToEdit.eventName);
     setEventDescription(eventToEdit.eventDescription);
     setLocation(eventToEdit.location);
-    setRequiredSkills(eventToEdit.requiredSkills);
+    setRequiredSkills(eventToEdit.requiredSkills || []);
     setUrgency(eventToEdit.urgency);
     setEventDate(eventToEdit.eventDate);
     setIsEditing(true);
@@ -182,6 +182,7 @@ export default function EventManage() {
               <option value="high">High</option>
             </select>
             <h4 htmlFor="eventDate">Event Date*:</h4>
+            <label htmlFor="eventDate">Event Date*</label>
             <input
               type="date"
               id="eventDate"
@@ -215,7 +216,7 @@ export default function EventManage() {
                 <td>{event.eventName}</td>
                 <td>{event.eventDescription}</td>
                 <td>{event.location}</td>
-                <td>{event.requiredSkills.join(", ")}</td>
+                <td>{Array.isArray(event.requiredSkills) ? event.requiredSkills.join(", ") : ''}</td>
                 <td>{event.urgency}</td>
                 <td>{event.eventDate}</td>
                 <td>

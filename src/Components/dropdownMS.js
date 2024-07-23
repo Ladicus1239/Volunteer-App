@@ -18,7 +18,7 @@ export default function DropdownMenu({ selectedItems, setSelectedItems }) {
       <Form.Label>Select Items</Form.Label>
       <DropdownButton
         id="dropdown-multiselect"
-        title="Dropdown"
+        title="Skills"
         variant="secondary"
       >
         {options.map(option => (
