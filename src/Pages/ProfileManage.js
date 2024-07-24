@@ -96,13 +96,15 @@ const ProfileManage = () => {
   };
   
   const [selectedSkill, setSelectedSkill] = useState([]);
-  const [skillArray, setSkillArray] = useState([]);
+  //const [skillArray, setSkillArray] = useState([]);
 
   const handleChangeSkill = (selectedSkill) => {
-    setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
+    setSelectedSkill(selectedSkill);
+  };
+  /*  setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
     const skillString = (selectedSkill || []).map(skill => skill.value).join(", ");
     setSkillArray(skillString);
-  };
+  };*/
 
   const [selectedDay, setSelectedDay] = useState(null);
   const handleChangeDay = (selectedDay) => {
@@ -128,7 +130,7 @@ const ProfileManage = () => {
       if (!selectedDates.includes(newDate)) {
         const updatedDates = [...selectedDates, newDate];
         setSelectedDates(updatedDates);
-        setDateArray(updatedDates.join(", "));
+        //setDateArray(updatedDates.join(", "));
       }
     } else {
       alert("Please select day, month, and year.");
@@ -145,7 +147,7 @@ const ProfileManage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const page = { fullName, getAdd, getCity, selectedState, getZip, skillArray, dateArray };
+    const page = { fullName, getAdd, getCity, selectedState, getZip, selectedSkill, selectedDates };
     console.log(page);
   };
 
