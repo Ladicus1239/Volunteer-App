@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react';
 import { Container, Form, Card, Alert } from 'react-bootstrap';
 import { useAuth } from '../context/AuthContext';
+import db from '../firebase';
+import { collection, addDoc } from 'firebase/firestore';
 import { useNavigate } from 'react-router-dom';
 import Navigation from '../Components/Navigation';
 import "../styles.css";
+import { encryptData } from '../encrypt';
 
 export default function Signup() {
   const emailRef = useRef();
@@ -23,6 +26,17 @@ export default function Signup() {
       setError('');
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+
+      try {
+        const docRef = await addDoc(collection(db, "UserCredentials"), {
+          email: emailRef.current.value,
+          password: encryptData(passwordRef.current.value)
+        });
+        console.log("Document written with ID: ", docRef.id);
+      } catch (e) {
+        console.error("Error adding document: ", e);
+      }
+
       history('/home');
     } catch (error) {
       setError('Failed to create an account');

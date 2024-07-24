@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navigation from "../Components/Navigation";
 import DropdownMenu from "../Components/dropdownMS";
+import moment from 'moment';
 import "../styles3.css";
 
 export default function EventManage() {
@@ -20,39 +21,30 @@ export default function EventManage() {
   }, []);
 
   function createEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
+    const savedMessages = localStorage.getItem('messages');
     const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: "The event, " + eventname + " has been created.",
-    };
+    const systemMessage = { sender: "System", message: "The event, "+eventname+" has been created." };
     const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
   }
 
   function updateEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
+    const savedMessages = localStorage.getItem('messages');
     const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: eventname + " has been updated.",
-    };
+    const systemMessage = { sender: "System", message: eventname+" has been updated." };
     const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
   }
 
   function deleteEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
+    const savedMessages = localStorage.getItem('messages');
     const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: eventname + " has been canceled.",
-    };
+    const systemMessage = { sender: "System", message: eventname+" has been canceled." };
     const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
+    localStorage.setItem('messages', JSON.stringify(newMessages));
+    console.log('Added system message to localStorage:', newMessages);
   }
 
   const handleSubmit = (e) => {
@@ -74,22 +66,18 @@ export default function EventManage() {
 
     setEvents(updatedEvents);
     localStorage.setItem("events", JSON.stringify(updatedEvents));
-
+    
     createEventMsg(eventName);
 
-    const existingEvents =
-      JSON.parse(localStorage.getItem("event reminder dates")) || [];
+    const existingEvents = JSON.parse(localStorage.getItem('event reminder dates')) || [];
 
     const reminder = {
       eventName: eventName,
-      eventDate: eventDate,
+      eventDate: eventDate
     };
     existingEvents.push(reminder);
 
-    localStorage.setItem(
-      "event reminder dates",
-      JSON.stringify(existingEvents)
-    );
+    localStorage.setItem('event reminder dates', JSON.stringify(existingEvents));
 
     setEventName("");
     setEventDescription("");
@@ -111,7 +99,7 @@ export default function EventManage() {
     setEventDate(eventToEdit.eventDate);
     setIsEditing(true);
     setCurrentEventId(eventId);
-    updateEventMsg(eventToEdit.eventName);
+    updateEventMsg(eventToEdit.eventName)
   };
 
   const handleDelete = (eventId) => {
@@ -198,7 +186,7 @@ export default function EventManage() {
           </button>
         </form>
         <h2>Event List</h2>
-        <table className="announcement" border={1} cellPadding={8}>
+        <table className="announcement" border={1} cellPadding={10}>
           <thead>
             <tr className="announcementNames">
               <th>Event Name</th>
