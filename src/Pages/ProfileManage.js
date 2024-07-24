@@ -143,20 +143,20 @@ const ProfileManage = () => {
   const [getZip, setZip] = useState('');     
   const [getPref, setPref] = useState('');   
 
-  /*const handleSubmit = (e) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     const page = { fullName, getAdd, getCity, selectedState, getZip, skillArray, dateArray };
     console.log(page);
-  };*/
+  };
 
-  const handleSubmit = async () => {
+  /*(const handleSubmit = async () => {
     //e.preventDefault();
 
     const collectionRef = collection(db, "UserProfiles");
     const page = { fullName: fullName, getAdd: getAdd, getCity: getCity, getState: selectedState, getZip: getZip, 
     skillArray: skillArray, dateArray: dateArray};
     await addDoc(collectionRef, page);
-  };
+  };*/
 
   return (
     <div>
