@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Navigation from "../Components/Navigation";
 import DropdownMenu from "../Components/dropdownMS";
+import db from "../firebase";
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+} from "firebase/firestore";
 import "../styles3.css";
 
 export default function EventManage() {
@@ -15,51 +24,20 @@ export default function EventManage() {
   const [currentEventId, setCurrentEventId] = useState(null);
 
   useEffect(() => {
-    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-    setEvents(storedEvents);
+    const unsubscribe = onSnapshot(
+      collection(db, "EventDetails"),
+      (snapshot) => {
+        setEvents(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
-  function createEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
-    const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: "The event, " + eventname + " has been created.",
-    };
-    const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
-  }
-
-  function updateEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
-    const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: eventname + " has been updated.",
-    };
-    const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
-  }
-
-  function deleteEventMsg(eventname) {
-    const savedMessages = localStorage.getItem("messages");
-    const messages = savedMessages ? JSON.parse(savedMessages) : [];
-    const systemMessage = {
-      sender: "System",
-      message: eventname + " has been canceled.",
-    };
-    const newMessages = [...messages, systemMessage];
-    localStorage.setItem("messages", JSON.stringify(newMessages));
-    console.log("Added system message to localStorage:", newMessages);
-  }
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const newEvent = {
-      id: isEditing ? currentEventId : Date.now(),
       eventName,
       eventDescription,
       location,
@@ -68,28 +46,15 @@ export default function EventManage() {
       eventDate,
     };
 
-    const updatedEvents = isEditing
-      ? events.map((event) => (event.id === currentEventId ? newEvent : event))
-      : [...events, newEvent];
-
-    setEvents(updatedEvents);
-    localStorage.setItem("events", JSON.stringify(updatedEvents));
-
-    createEventMsg(eventName);
-
-    const existingEvents =
-      JSON.parse(localStorage.getItem("event reminder dates")) || [];
-
-    const reminder = {
-      eventName: eventName,
-      eventDate: eventDate,
-    };
-    existingEvents.push(reminder);
-
-    localStorage.setItem(
-      "event reminder dates",
-      JSON.stringify(existingEvents)
-    );
+    try {
+      if (isEditing) {
+        await updateDoc(doc(db, "EventDetails", currentEventId), newEvent);
+      } else {
+        await addDoc(collection(db, "EventDetails"), newEvent);
+      }
+    } catch (error) {
+      console.error("Error adding/updating document: ", error);
+    }
 
     setEventName("");
     setEventDescription("");
@@ -111,22 +76,19 @@ export default function EventManage() {
     setEventDate(eventToEdit.eventDate);
     setIsEditing(true);
     setCurrentEventId(eventId);
-    updateEventMsg(eventToEdit.eventName);
   };
 
-  const handleDelete = (eventId) => {
-    const eventToDelete = events.find((event) => event.id === eventId);
-    deleteEventMsg(eventToDelete.eventName);
-    const updatedEvents = events.filter((event) => event.id !== eventId);
-    setEvents(updatedEvents);
-    localStorage.setItem("events", JSON.stringify(updatedEvents));
+  const handleDelete = async (eventId) => {
+    try {
+      await deleteDoc(doc(db, "EventDetails", eventId));
+    } catch (error) {
+      console.error("Error deleting document: ", error);
+    }
   };
 
   return (
     <div>
-      <div>
-        <Navigation />
-      </div>
+      <Navigation />
       <h2 className="event-management">Create Event</h2>
       <div className="container">
         <form onSubmit={handleSubmit}>
@@ -216,7 +178,11 @@ export default function EventManage() {
                 <td>{event.eventName}</td>
                 <td>{event.eventDescription}</td>
                 <td>{event.location}</td>
-                <td>{Array.isArray(event.requiredSkills) ? event.requiredSkills.join(", ") : ''}</td>
+                <td>
+                  {Array.isArray(event.requiredSkills)
+                    ? event.requiredSkills.join(", ")
+                    : ""}
+                </td>
                 <td>{event.urgency}</td>
                 <td>{event.eventDate}</td>
                 <td>
