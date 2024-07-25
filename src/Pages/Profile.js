@@ -10,14 +10,15 @@ const Profile = (props) => {
 
   // State for user profile details
   const [profileData, setProfileData] = useState({
-    name: '',
-    address: '',
-    city: '',
-    state: '',
-    zipcode: '',
-    skills: [],
-    preferences: '',
-    datearray: []
+    fullName: '',
+    getAdd: '',
+    getAdd2: '',
+    getCity: '',
+    selectedState: '',
+    getZip: '',
+    selectedSkill: [],
+    getPref: '',
+    selectedDates: []
   });
 
   const queryUserProfile = async (userEmail) => {
@@ -75,14 +76,15 @@ const Profile = (props) => {
         } else {
           console.log('No document found.');
           setProfileData({
-            name: '',
-            address: '',
-            city: '',
-            state: '',
-            zipcode: '',
-            skills: [],
-            preferences: '',
-            datearray: []
+            fullName: '',
+            getAdd: '',
+            getAdd2: '',
+            getCity: '',
+            selectedState: '',
+            getZip: '',
+            selectedSkill: [],
+            getPref: '',
+            selectedDates: []
           });
         }
       }
@@ -97,9 +99,9 @@ const Profile = (props) => {
       <div className="profileContainer5">
         <div className="profileContainer3">
           <div className="profileContainer1">
-            <h1 className="header">{profileData.name}'s Profile</h1>
+            <h1 className="header">{profileData.fullName}'s Profile</h1>
             <div className="location">
-              <p>Resides in: {profileData.address}, {profileData.city}, {profileData.state}, {profileData.zipcode}</p>
+              <p>Resides in: {profileData.getAdd}, {profileData.getCity}, {profileData.selectedState}, {profileData.getZip}</p>
             </div>
           </div>
           <div className="profileContainer2">
@@ -111,9 +113,9 @@ const Profile = (props) => {
             <h3>Skills:</h3>
             <p>{profileData.skills && profileData.skills.length > 0 ? profileData.skills.join(', ') : 'No skills listed'}</p>
             <h3>Preferences: </h3>
-            <p>{profileData.preferences || 'No preferences listed'}</p>
+            <p>{profileData.getPref || 'No preferences listed'}</p>
             <h3>Dates available:</h3>
-            <p>{profileData.datearray && profileData.datearray.length > 0 ? profileData.datearray.join(', ') : 'No dates available'}</p>
+            <p>{profileData.selectedDates && profileData.selectedDates.length > 0 ? profileData.selectedDates.join(', ') : 'No dates available'}</p>
           </div>
           <br />
           <button className="pmbutton">

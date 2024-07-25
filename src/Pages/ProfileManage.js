@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { getFirestore, updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
-//import { useAuth } from "../context/AuthContext";
-import { getAuth } from "firebase/auth";
+import { getFirestore, collection, doc, updateDoc, addDoc, getDoc, setDoc, query, where, getDocs } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
+//import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Navigation from '../Components/Navigation';
 import Select from "react-select";
@@ -82,23 +82,15 @@ const years = [
 ];
 
 const ProfileManage = () => {
-  const auth = getAuth();
-  const user = auth.currentUser;
+  const { currentUser } = useAuth(); // Get current user from useAuth
   const navigate = useNavigate();
-  //const currentEmail = user ? user.email : null;
 
   useEffect(() => {
-    if (!user) {
+    if (!currentUser) {
       alert("User is not logged in. Redirecting to the login page.");
       navigate("/login");
     }
-  }, [user, navigate]);
-
-  const currentEmail = user ? user.email : null;
-
-  if (user) {
-    console.log("Document updated with ID: ", user.uid);
-  }
+  }, [currentUser, navigate]);
 
   /*const { currentUser } = useAuth();
 
@@ -129,16 +121,21 @@ const ProfileManage = () => {
 
   const [selectedState, setSelectedState] = useState(null);
   const handleChangeState = (selectedState) => {
-    setSelectedState(selectedState);
+    setSelectedState(selectedState.value);
   };
 
   const [selectedSkill, setSelectedSkill] = useState([]);
-  //const [skillArray, setSkillArray] = useState([]);
+  const [skillArray, setSkillArray] = useState([]);
 
   const handleChangeSkill = (selectedSkill) => {
     setSelectedSkill(selectedSkill);
+    const skillLabels = (selectedSkill || []).map(skill => skill.label);
+    setSkillArray(skillLabels);
   };
-  /*  setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
+
+  /*const handleChangeSkill = (selectedSkill) => {
+    setSelectedSkill(selectedSkill);
+    setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
     const skillString = (selectedSkill || []).map(skill => skill.value).join(", ");
     setSkillArray(skillString);
   };*/
@@ -191,30 +188,47 @@ const ProfileManage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!currentUser) {
+      alert("User is not logged in.");
+      return;
+    }
+
     const db = getFirestore();
-    const userDocRef = doc(db, "UserProfiles", user.uid);
-    const userDoc = await getDoc(userDocRef);
+    const userEmail = currentUser.email; // Get the user's email
+    const userProfilesCollectionRef = collection(db, "UserProfiles");
 
     const page = {
-        fullName,
-        getAdd,
-        getAdd2,
-        getCity,
-        getState: selectedState,
-        getZip,
-        getPref,
-        selectedSkill,
-        selectedDates
+      email: userEmail,
+      fullName,
+      getAdd,
+      getAdd2,
+      getCity,
+      selectedState,
+      getZip,
+      getPref,
+      skills: skillArray,
+      selectedDates
     };
 
-    if (userDoc.exists()) {
+    try {
+      // Query for documents matching the user's email
+      const q = query(userProfilesCollectionRef, where("email", "==", userEmail));
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // If a document exists, update the first document found
+        const userDocRef = querySnapshot.docs[0].ref;
         await updateDoc(userDocRef, page);
-        console.log("Document updated with ID: ", user.uid);
-    } else {
-        await setDoc(userDocRef, page);
-        console.log("New document created with ID: ", user.uid);
+        console.log("Document updated with email: ", userEmail);
+      } else {
+        // If no document exists, create a new document
+        const newDocRef = await addDoc(userProfilesCollectionRef, page);
+        console.log("New document created with ID: ", newDocRef.id);
+      }
+    } catch (error) {
+      console.error("Error handling document: ", error);
     }
-};
+  };
   
 //  const page = { fullName, getAdd, getAdd2, getCity, getState: selectedState, getZip, getPref, selectedSkill, selectedDates };
 //  const db = getFirestore();
