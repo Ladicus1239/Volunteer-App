@@ -1,12 +1,20 @@
 import React, { useState, useEffect } from "react";
+import db from "../firebase";
+import { collection, onSnapshot } from "firebase/firestore";
 import "../styles3.css";
 
 export default function EventDisplay() {
   const [events, setEvents] = useState([]);
 
   useEffect(() => {
-    const storedEvents = JSON.parse(localStorage.getItem("events")) || [];
-    setEvents(storedEvents);
+    const unsubscribe = onSnapshot(
+      collection(db, "EventDetails"),
+      (snapshot) => {
+        setEvents(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      }
+    );
+
+    return () => unsubscribe();
   }, []);
 
   return (
@@ -29,7 +37,11 @@ export default function EventDisplay() {
               <td>{event.eventName}</td>
               <td>{event.eventDescription}</td>
               <td>{event.location}</td>
-              <td>{event.requiredSkills}</td>
+              <td>
+                {Array.isArray(event.requiredSkills)
+                  ? event.requiredSkills.join(", ")
+                  : ""}
+              </td>
               <td>{event.urgency}</td>
               <td>{event.eventDate}</td>
             </tr>

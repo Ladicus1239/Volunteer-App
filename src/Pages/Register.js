@@ -19,29 +19,40 @@ export default function Signup() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+
+    // Ensure passwords match
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
       return setError('Passwords do not match');
     }
+
+    // Convert email to lowercase
+    const email = emailRef.current.value.toLowerCase();
+
     try {
       setError('');
       setLoading(true);
-      await signup(emailRef.current.value, passwordRef.current.value);
 
+      // Sign up the user
+      await signup(email, passwordRef.current.value);
+
+      // Add user credentials to Firestore
       try {
         const docRef = await addDoc(collection(db, "UserCredentials"), {
-          email: emailRef.current.value,
-          password: encryptData(passwordRef.current.value)
+          email: email,
+          password: encryptData(passwordRef.current.value),
         });
         console.log("Document written with ID: ", docRef.id);
       } catch (e) {
         console.error("Error adding document: ", e);
       }
 
+      // Navigate to home page
       history('/home');
     } catch (error) {
       setError('Failed to create an account');
       console.log(error);
     }
+
     setLoading(false);
   }
 
