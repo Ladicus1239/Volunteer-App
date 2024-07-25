@@ -1,7 +1,9 @@
 import React from "react";
+import { collection, addDoc } from "firebase/firestore";
 import Navigation from '../Components/Navigation';
 import Select from "react-select";
 import { useState } from "react";
+import db from "../firebase";
 
 const skills = [
   { value: "Adaptability", label: "Adaptability" },
@@ -15,6 +17,59 @@ const skills = [
   { value: "Time Management", label: "Time Management" }
 ];
 
+const states = [
+  { value: "AL", label: "Alabama, AL" },
+  { value: "AK", label: "Alaska, AK" },
+  { value: "AZ", label: "Arizona, AK" },
+  { value: "AR", label: "Arkansas, AR" },
+  { value: "CA", label: "California, CA" },
+  { value: "CO", label: "Colorado, CO" },
+  { value: "CT", label: "Connecticut, CT" },
+  { value: "DE", label: "Delaware, DE" },
+  { value: "FL", label: "Florida, FL" },
+  { value: "GA", label: "Georgia, GA" },
+  { value: "HI", label: "Hawaii, HI" },
+  { value: "ID", label: "Idaho, ID" },
+  { value: "IL", label: "Illinois, IL" },
+  { value: "IN", label: "Indiana, IN" },
+  { value: "IA", label: "Iowa, IA" },
+  { value: "KS", label: "Kansas, KS" },
+  { value: "KY", label: "Kentucky, KY" },
+  { value: "LA", label: "Louisiana, LA" },
+  { value: "ME", label: "Maine, ME" },
+  { value: "MD", label: "Maryland, MD" },
+  { value: "MA", label: "Massachusetts, MA" },
+  { value: "MI", label: "Michigan, MI" },
+  { value: "MN", label: "Minnesota, MN" },
+  { value: "MS", label: "Mississippi, MS" },
+  { value: "MO", label: "Missouri, MO" },
+  { value: "MT", label: "Montana, MT" },
+  { value: "NE", label: "Nebraska, NE" },
+  { value: "NV", label: "Nevada, NV" },
+  { value: "NH", label: "New Hampshire, NH" },
+  { value: "NJ", label: "New Jersey, NJ" },
+  { value: "NM", label: "New Mexico, NM" },
+  { value: "NY", label: "New York, NY" },
+  { value: "NC", label: "North Carolina, NC" },
+  { value: "ND", label: "North Dakota, ND" },
+  { value: "OH", label: "Ohio, OH" },
+  { value: "OK", label: "Oklahoma, OK" },
+  { value: "OR", label: "Oregon, OR" },
+  { value: "PA", label: "Pennsylvania, PA" },
+  { value: "RI", label: "Rhode Island, RI" },
+  { value: "SC", label: "South Carolina, SC" },
+  { value: "SD", label: "South Dakota, SD" },
+  { value: "TN", label: "Tennessee, TN" },
+  { value: "TX", label: "Texas, TX" },
+  { value: "UT", label: "Utah, UT" },
+  { value: "VT", label: "Vermont, VT" },
+  { value: "VA", label: "Virginia, VA" },
+  { value: "WA", label: "Washington, WA" },
+  { value: "WV", label: "West Virginia, WV" },
+  { value: "WI", label: "Wisconsin, WI" },
+  { value: "WY", label: "Wyoming, WY" }
+];
+
 const days = [...Array(31)].map((_, i) => ({ value: String(i + 1), label: String(i + 1).padStart(2, '0') }));
 const months = [...Array(12)].map((_, i) => ({ value: String(i + 1), label: String(i + 1).padStart(2, '0') }));
 const years = [
@@ -24,14 +79,32 @@ const years = [
 ];
 
 const ProfileManage = () => {
+
+  /*const { currentUser } = useAuth();
+  const navigate = useNavigate();
+  const emailRef = useRef(null);
+
+  useEffect(() => {
+    if (!currentUser) {
+      navigate("/login");
+    }
+  }, [currentUser, navigate]);*/
+
+  const [selectedState, setSelectedState]  = useState(null);
+  const handleChangeState = (selectedState) => {
+    setSelectedState(selectedState);
+  };
+  
   const [selectedSkill, setSelectedSkill] = useState([]);
-  const [skillArray, setSkillArray] = useState([]);
+  //const [skillArray, setSkillArray] = useState([]);
 
   const handleChangeSkill = (selectedSkill) => {
-    setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
+    setSelectedSkill(selectedSkill);
+  };
+  /*  setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
     const skillString = (selectedSkill || []).map(skill => skill.value).join(", ");
     setSkillArray(skillString);
-  };
+  };*/
 
   const [selectedDay, setSelectedDay] = useState(null);
   const handleChangeDay = (selectedDay) => {
@@ -57,7 +130,7 @@ const ProfileManage = () => {
       if (!selectedDates.includes(newDate)) {
         const updatedDates = [...selectedDates, newDate];
         setSelectedDates(updatedDates);
-        setDateArray(updatedDates.join(", "));
+        //setDateArray(updatedDates.join(", "));
       }
     } else {
       alert("Please select day, month, and year.");
@@ -68,15 +141,24 @@ const ProfileManage = () => {
   const [getAdd, setAddr] = useState('');    
   const [getAdd2, setAddr2] = useState('');  
   const [getCity, setCity] = useState('');   
-  const [getState, setState] = useState(''); 
+  //const [getState, setState] = useState(''); 
   const [getZip, setZip] = useState('');     
   const [getPref, setPref] = useState('');   
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const page = { fullName, getAdd, getCity, getState, getZip, skillArray, dateArray };
+    const page = { fullName, getAdd, getCity, selectedState, getZip, selectedSkill, selectedDates };
     console.log(page);
   };
+
+  /*(const handleSubmit = async () => {
+    //e.preventDefault();
+
+    const collectionRef = collection(db, "UserProfiles");
+    const page = { fullName: fullName, getAdd: getAdd, getCity: getCity, getState: selectedState, getZip: getZip, 
+    skillArray: skillArray, dateArray: dateArray};
+    await addDoc(collectionRef, page);
+  };*/
 
   return (
     <div>
@@ -88,7 +170,7 @@ const ProfileManage = () => {
         <h1 className="pageTitle">Profile Management</h1>
         <p className="center-text">An asterisk '*' means the field is required.</p>
       </div>
-      <form onSubmit={handleSubmit} role="form">
+      <form onSubmit={handleSubmit}>
         <div className="PManageContainer1">
           <div className="registerDiv1">
             <h3>Fill out your Name and Location</h3>
@@ -122,14 +204,16 @@ const ProfileManage = () => {
               required
               value={getCity}
               onChange={(e) => setCity(e.target.value)} /><br />
-
-            <input type="text"
-              id="state"
-              maxLength="2"
-              placeholder='State*'
-              required
-              value={getState}
-              onChange={(e) => setState(e.target.value)} /><br />
+              
+            <div className="state" style={{ maxWidth: "300px" }}>
+              <Select className="state" options={states}
+                value={selectedState}
+                onChange={handleChangeState}
+                isSearchable={true}
+                maxMenuHeight={130}
+                placeholder='State*'
+              />
+              </div>
 
             <input type="text"
               id="zip"
@@ -200,3 +284,14 @@ const ProfileManage = () => {
 }
 
 export default ProfileManage;
+
+/*
+
+            <input type="text"
+              id="state"
+              maxLength="2"
+              placeholder='State*'
+              required
+              value={getState}
+              onChange={(e) => setState(e.target.value)} /><br />
+              */

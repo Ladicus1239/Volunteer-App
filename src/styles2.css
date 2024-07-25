@@ -6,6 +6,13 @@
     margin: 8px;
 }
 
+.state {
+    display: flex;
+    align-items: center;
+    padding-left: 75px;
+    padding-bottom: 10px;
+}
+
 .date {
     display: flex;
     flex-direction: row;
@@ -175,67 +182,6 @@
     display: block;
     margin-bottom: 8px;
   }
-/*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
-/*event management Page*/
-.eventDiv1 {
-    position: relative;
-    width:800px;
-    height: 400px;
-    justify-content: center;
-    resize: none;
-    vertical-align:middle;
-    align-items: center;
-    text-align: center;
-    font-family: "Georgia","Times New Roman", serif;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #86fa9b;
-    border-style: double;
-    box-sizing: border-box;
-}
-
-.eventDiv1 input {
-    height: 100px;
-    resize: none;
-    position:left;
-    margin-bottom: 4px;
-    transition-duration: 0.5s;
-}
-
-.eventDiv1 input:hover {
-    padding-bottom: 25px;
-    transition-duration: 0.3s;
-}
-
-.eventDiv2 {
-    width:800px;
-    height: 400px;
-    justify-content: center;
-    resize: none;
-    vertical-align:middle;
-    align-items: center;
-    text-align: center;
-    font-family: "Georgia","Times New Roman", serif;
-    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    background-color: #86fa9b;
-    border-style: double;
-    box-sizing: border-box;
-}
-
-.eventDiv2 input:hover {
-    padding-bottom: 25px;
-    transition-duration: 0.3s;
-}
-
-.eventDiv2 p {
-    font-style: italic;
-    font-size: large;
-}
-
-.container {
-    display: flex;
-    justify-content: center;
-    
-}
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Volunteer History Page*/
 .volunteerContainer{
