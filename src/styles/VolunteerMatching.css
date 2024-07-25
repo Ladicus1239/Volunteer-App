@@ -1,0 +1,209 @@
+/* Volunteer Matching Page Specific Styles */
+.vm-adminredirect-353 {
+    margin: 4px;
+    height: 40px;
+    width: 180px;
+    font-size: 16px;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    border: none;
+    color: black;
+    border: 2px solid #04aa6d;
+    padding: 10px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    transition-duration: 0.5s;
+}
+  
+.vm-adminredirect-353:hover {
+    background-color: #04aa6d;
+    color: white;
+    transition-duration: 0.3s;
+}
+  
+.vm-adminredirect-353:active {
+    color: black;
+}
+  
+/* Volunteer Matching Table Styles */
+.vm-volunteer-announcement-353,
+.vm-matched-announcement-353 {
+    width: 100%;
+    max-width: 800px;
+    border-collapse: collapse;
+    background-color: white;
+    margin: 20px auto; /* Adjust the margin to center the table */
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 20px; /* Rounded corners */
+    border: none; /* Remove border */
+}
+  
+.vm-volunteer-announcement-353 table,
+.vm-matched-announcement-353 table {
+    width: 100%;
+    border-collapse: collapse;
+    border: none; /* Remove border */
+}
+  
+.vm-volunteer-announcement-353 th,
+.vm-matched-announcement-353 th,
+.vm-volunteer-announcement-353 td,
+.vm-matched-announcement-353 td,
+.vm-volunteer-announcement-353 tr,
+.vm-matched-announcement-353 tr {
+    border: none; /* Remove border from all table elements */
+}
+  
+.vm-volunteer-announcement-353 th,
+.vm-matched-announcement-353 th {
+    background: linear-gradient(#b9f6c4, transparent); /* Gradient color */
+    background-color: #86fa9b;
+    padding: 10px;
+    text-align: left;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+}
+  
+.vm-volunteer-announcement-353 td,
+.vm-matched-announcement-353 td {
+    padding: 10px;
+    text-align: left;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+}
+  
+.vm-volunteer-announcement-353 tr:nth-child(even),
+.vm-matched-announcement-353 tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+  
+.vm-volunteer-announcement-names-353,
+.vm-matched-announcement-names-353 {
+    font-weight: bold;
+}
+  
+.vm-volunteer-announcement-data-353,
+.vm-matched-announcement-data-353 {
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+}
+  
+.vm-center-text-353 {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.vm-page-title-353 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+  
+.vm-main-content-353 {
+    display: flex;
+    justify-content: center; /* Change from space-between to center */
+    align-items: flex-start;
+    flex-direction: row;
+    width: 80%;
+    margin: 0 auto;
+}
+  
+.vm-event-header-353,
+.vm-matched-header-353 {
+    text-align: center;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 20px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 36px;
+    width: 310px;
+    margin: 15px auto 20px; /* Center the header and add margin */
+}
+  
+/* Volunteer Matching Page */
+.vm-volunteerDiv-353 {
+    position: relative;
+    width: 850px;
+    justify-content: center;
+    resize: none;
+    vertical-align: middle;
+    align-items: center;
+    text-align: center;
+    font-family: "Georgia", "Times New Roman", serif;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    padding: 20px;
+    margin-left: 20px; /* Adjust margin to move the div to the right */
+}
+  
+.vm-volunteerDiv-353 input,
+.vm-volunteerDiv-353 textarea,
+.vm-volunteerDiv-353 select {
+    width: 80%;
+    height: auto;
+    resize: none;
+    position: left;
+    margin-bottom: 10px;
+    transition-duration: 0.5s;
+    padding: 10px;
+}
+  
+.vm-volunteerDiv-353 input:hover,
+.vm-volunteerDiv-353 textarea:hover,
+.vm-volunteerDiv-353 select:hover {
+    padding-bottom: 25px;
+    transition-duration: 0.3s;
+}
+  
+.vm-volunteerDiv-353 p {
+    font-style: italic;
+    font-size: large;
+}
+  
+.vm-container-353 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+  
+.vm-volunteer-form-container-353,
+.vm-volunteer-list-container-353 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+  
+.vm-volunteer-list-container-353 {
+    margin-left: 0; /* Reduce margin to move the table closer to the div */
+}
+  
+.vm-volunteer-form-container-353 .vm-create-volunteer-button-353 {
+    margin-top: 20px;
+}
+
+/* Header Box Styles */
+.header-box-353 {
+    text-align: center;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 20px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 36px;
+    width: 310px;
+    margin: 15px auto 20px; /* Center the header and add margin */
+}

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import db from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-import "../styles3.css";
+import "../styles/events.css";  // Ensure the path is correct
 
 export default function EventDisplay() {
   const [events, setEvents] = useState([]);
@@ -17,15 +17,21 @@ export default function EventDisplay() {
     return () => unsubscribe();
   }, []);
 
+  // Function to format date
+  const formatDate = (dateString) => {
+    const options = { year: "numeric", month: "long", day: "numeric" };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   return (
     <div className="container">
-      <h2>Event List</h2>
-      <table className="announcement" border={1} cellPadding={10}>
+      <table className="announcement">
         <thead>
-          <tr className="announcementNames">
+          <tr className="announcement-names">
             <th>Event Name</th>
             <th>Event Description</th>
-            <th>Location</th>
+            <th>City</th>
+            <th>State</th>
             <th>Required Skills</th>
             <th>Urgency</th>
             <th>Event Date</th>
@@ -33,17 +39,18 @@ export default function EventDisplay() {
         </thead>
         <tbody>
           {events.map((event) => (
-            <tr key={event.id} className="announcementData">
+            <tr key={event.id} className="announcement-data">
               <td>{event.eventName}</td>
               <td>{event.eventDescription}</td>
-              <td>{event.location}</td>
+              <td>{event.city}</td>
+              <td>{event.state}</td>
               <td>
                 {Array.isArray(event.requiredSkills)
                   ? event.requiredSkills.join(", ")
                   : ""}
               </td>
               <td>{event.urgency}</td>
-              <td>{event.eventDate}</td>
+              <td>{formatDate(event.eventDate)}</td>
             </tr>
           ))}
         </tbody>

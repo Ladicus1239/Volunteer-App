@@ -1,0 +1,182 @@
+/* Event Management Page Specific Styles */
+.adminredirect {
+  margin: 4px;
+  height: 40px;
+  width: 180px;
+  font-size: 16px;
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
+  border: none;
+  color: black;
+  border: 2px solid #04aa6d;
+  padding: 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  transition-duration: 0.5s;
+}
+
+.adminredirect:hover {
+  background-color: #04aa6d;
+  color: white;
+  transition-duration: 0.3s;
+}
+
+.adminredirect:active {
+  color: black;
+}
+
+/* Event Management Table Styles */
+.event-announcement-manage {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  margin: 0 auto 20px; /* Adjust the top margin to align the table */
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius: 20px; /* Rounded corners */
+  border: none; /* Remove border */
+}
+
+.event-announcement-manage table {
+  width: 100%;
+  border-collapse: collapse;
+  border: none; /* Remove border */
+}
+
+.event-announcement-manage th, .event-announcement-manage td, .event-announcement-manage tr {
+  border: none; /* Remove border from all table elements */
+}
+
+.event-announcement-manage th {
+  background: linear-gradient(#b9f6c4, transparent); /* Gradient color */
+  background-color: #86fa9b;
+  padding: 10px;
+  text-align: left;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 18px;
+}
+
+.event-announcement-manage td {
+  padding: 10px;
+  text-align: left;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 18px;
+}
+
+.event-announcement-manage tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+.event-announcement-names-manage {
+  font-weight: bold;
+}
+
+.event-announcement-data-manage {
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 18px;
+}
+
+.center-text-manage {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page-title-manage {
+  font-size: 36px;
+  margin-bottom: 20px;
+}
+
+.main-content-manage {
+  display: flex;
+  justify-content: center; /* Change from space-between to center */
+  align-items: flex-start;
+  flex-direction: row;
+  width: 80%;
+  margin: 0 auto;
+}
+
+.event-header-manage {
+  text-align: center;
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
+  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  padding: 20px;
+  border: solid;
+  border-color: #04aa6d;
+  border-radius: 20px;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 36px;
+  width: 310px;
+  margin: 15px auto 20px; /* Center the header and add margin */
+}
+
+/* Event Management Page */
+.eventDiv-manage {
+  position: relative;
+  width: 850px;
+  justify-content: center;
+  resize: none;
+  vertical-align: middle;
+  align-items: center;
+  text-align: center;
+  font-family: "Georgia", "Times New Roman", serif;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
+  box-sizing: border-box;
+  margin-bottom: 20px;
+  padding: 20px;
+  margin-right: 40px; /* Adjust to create space on the right */
+}
+
+.eventDiv-manage input, .eventDiv-manage textarea, .eventDiv-manage select, .eventDiv-manage .react-select__control {
+  width: 80%; /* Match width of inputs */
+  height: auto;
+  resize: none;
+  position: left;
+  margin-bottom: 10px;
+  transition-duration: 0.5s;
+  padding: 10px;
+}
+
+.eventDiv-manage input:hover, .eventDiv-manage textarea:hover, .eventDiv-manage select:hover, .eventDiv-manage .react-select__control:hover {
+  padding-bottom: 25px;
+  transition-duration: 0.3s;
+}
+
+.eventDiv-manage p {
+  font-style: italic;
+  font-size: large;
+}
+
+.container-manage {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.event-form-container-manage, .event-list-container-manage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.event-list-container-manage {
+  margin-left: 0;
+}
+
+.event-form-container-manage .create-event-button-manage {
+  margin-top: 20px;
+}
+
+/* State dropdown styling */
+.state {
+  display: flex;
+  align-items: center;
+  padding-left: 75px;
+  padding-bottom: 10px;
+}

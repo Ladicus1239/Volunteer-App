@@ -123,9 +123,6 @@ const Profile = (props) => {
           </button>
         </div>
       </div>
-      <div>
-        Current email: {currentUser ? currentUser.email : ''}
-      </div>
     </div>
   );
 };

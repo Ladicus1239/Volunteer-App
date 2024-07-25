@@ -1,43 +1,75 @@
 import React, { useEffect, useState } from 'react';
 import Navigation from "../Components/Navigation";
-import "../styles.css";
+import db from "../firebase";
+import { collection, getDocs, setDoc, doc, query, where, deleteDoc } from "firebase/firestore";
+import "../styles/VolunteerMatching.css";
 
-const hardCodedVolunteers = [
-  {
-    id: 1,
-    name: "Alice",
-    skills: ["Adaptability", "Communication"],
-    availability: ["weekends"],
-    location: "New York",
-    preferences: ["teaching"],
-  },
-  {
-    id: 2,
-    name: "Bob",
-    skills: ["Leadership", "Strong Work Ethic"],
-    availability: ["weekdays", "weekends"],
-    location: "Los Angeles",
-    preferences: ["driving"],
-  },
-  {
-    id: 3,
-    name: "Charlie",
-    skills: ["Creative", "Interpersonal Communication"],
-    availability: ["weekdays"],
-    location: "New York",
-    preferences: ["first aid"],
-  },
-];
+// Fetch volunteers from Firestore
+async function fetchVolunteers() {
+  const volunteersCollection = collection(db, 'UserProfiles');
+  const volunteerSnapshot = await getDocs(volunteersCollection);
+  const volunteerList = volunteerSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return volunteerList;
+}
+
+// Fetch events from Firestore
+async function fetchEvents() {
+  const eventsCollection = collection(db, 'EventDetails');
+  const eventSnapshot = await getDocs(eventsCollection);
+  const eventList = eventSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return eventList;
+}
+
+// Fetch existing matches from Firestore
+async function fetchExistingMatches() {
+  const matchesCollection = collection(db, 'Matched');
+  const matchSnapshot = await getDocs(matchesCollection);
+  const matchList = matchSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return matchList;
+}
+
+// Check if a match already exists in Firestore
+async function matchExists(volunteerName, eventName) {
+  const matchesCollection = collection(db, 'Matched');
+  const q = query(matchesCollection, where("volunteer", "==", volunteerName), where("event", "==", eventName));
+  const matchSnapshot = await getDocs(q);
+  return !matchSnapshot.empty;
+}
+
+// Save matched volunteers to Firestore
+async function saveMatches(newMatches, existingMatches) {
+  // Find matches to delete
+  const matchesToDelete = existingMatches.filter(
+    existingMatch => !newMatches.some(newMatch => 
+      newMatch.volunteer === existingMatch.volunteer && newMatch.event === existingMatch.event
+    )
+  );
+
+  // Delete outdated matches
+  for (const match of matchesToDelete) {
+    const matchRef = doc(db, 'Matched', match.id);
+    await deleteDoc(matchRef);
+  }
+
+  // Add new matches
+  for (const match of newMatches) {
+    const exists = await matchExists(match.volunteer, match.event);
+    if (!exists) {
+      const matchRef = doc(collection(db, 'Matched'));
+      await setDoc(matchRef, match);
+    }
+  }
+}
 
 function matchVolunteersToEvents(volunteers, events) {
   const matches = [];
 
   events.forEach((event) => {
     const matchedVolunteers = volunteers.filter((volunteer) => {
-      const skillsMatch = event.requiredSkills.some((skill) =>
-        volunteer.skills.includes(skill)
+      const skillsMatch = event.requiredSkills?.some((skill) =>
+        volunteer.skills?.includes(skill)
       );
-      const locationMatch = volunteer.location === event.location;
+      const locationMatch = volunteer.getCity === event.city;
 
       return skillsMatch && locationMatch;
     });
@@ -45,7 +77,7 @@ function matchVolunteersToEvents(volunteers, events) {
     matchedVolunteers.forEach(volunteer => {
       matches.push({
         event: event.eventName,
-        volunteer: volunteer.name,
+        volunteer: volunteer.fullName,
       });
     });
   });
@@ -58,24 +90,36 @@ export default function VolunteerMatching() {
   const [matches, setMatches] = useState([]);
 
   useEffect(() => {
-    // Set volunteers in local storage
-    localStorage.setItem('volunteers', JSON.stringify(hardCodedVolunteers));
+    async function fetchData() {
+      try {
+        const volunteers = await fetchVolunteers();
+        const events = await fetchEvents();
+        const existingMatches = await fetchExistingMatches();
 
-    const storedVolunteers = JSON.parse(localStorage.getItem('volunteers')) || [];
-    setVolunteers(storedVolunteers);
+        setVolunteers(volunteers);
 
-    const storedEvents = JSON.parse(localStorage.getItem('events')) || [];
-    const matchedVolunteers = matchVolunteersToEvents(storedVolunteers, storedEvents);
-    setMatches(matchedVolunteers);
+        if (volunteers.length && events.length) {
+          const matchedVolunteers = matchVolunteersToEvents(volunteers, events);
+          setMatches(matchedVolunteers);
+
+          // Save matched volunteers to Firestore
+          await saveMatches(matchedVolunteers, existingMatches);
+        }
+      } catch (error) {
+        console.error("Error fetching data: ", error);
+      }
+    }
+
+    fetchData();
   }, []);
 
   return (
     <div>
       <Navigation />
-      <h1 className="pageTitle">Volunteer Matching</h1>
-      <div className="container">
-        <h2>All Volunteers</h2>
-        <table className="volunteerTable">
+      <h1 className="header-box-353">Volunteer Matching</h1>
+      <div className="vm-container-353">
+        <h2 className="header-box-353">All Volunteers</h2>
+        <table className="vm-volunteer-announcement-353">
           <thead>
             <tr>
               <th>Name</th>
@@ -87,19 +131,19 @@ export default function VolunteerMatching() {
           </thead>
           <tbody>
             {volunteers.map((volunteer) => (
-              <tr key={volunteer.id}>
-                <td>{volunteer.name}</td>
-                <td>{volunteer.skills.join(', ')}</td>
-                <td>{volunteer.availability.join(', ')}</td>
-                <td>{volunteer.location}</td>
-                <td>{volunteer.preferences.join(', ')}</td>
+              <tr key={volunteer.email}>
+                <td>{volunteer.fullName}</td>
+                <td>{volunteer.skills?.join(', ') || 'N/A'}</td>
+                <td>{volunteer.availability?.join(', ') || 'N/A'}</td>
+                <td>{volunteer.getCity || 'N/A'}</td>
+                <td>{volunteer.getPref || 'N/A'}</td>
               </tr>
             ))}
           </tbody>
         </table>
 
-        <h2>Matched Volunteers</h2>
-        <table className="matchedTable">
+        <h2 className="header-box-353">Matched Volunteers</h2>
+        <table className="vm-matched-announcement-353">
           <thead>
             <tr>
               <th>Volunteer Name</th>
