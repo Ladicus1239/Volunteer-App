@@ -1,9 +1,12 @@
-import React from "react";
-import { collection, addDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { getFirestore, updateDoc, doc, getDoc, setDoc } from "firebase/firestore";
+//import { useAuth } from "../context/AuthContext";
+import { getAuth } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
 import Navigation from '../Components/Navigation';
 import Select from "react-select";
-import { useState } from "react";
-import db from "../firebase";
+//import { Email } from "@mui/icons-material";
+//import db from "../firebase";
 
 const skills = [
   { value: "Adaptability", label: "Adaptability" },
@@ -79,22 +82,56 @@ const years = [
 ];
 
 const ProfileManage = () => {
-
-  /*const { currentUser } = useAuth();
+  const auth = getAuth();
+  const user = auth.currentUser;
   const navigate = useNavigate();
-  const emailRef = useRef(null);
+  //const currentEmail = user ? user.email : null;
 
   useEffect(() => {
+    if (!user) {
+      alert("User is not logged in. Redirecting to the login page.");
+      navigate("/login");
+    }
+  }, [user, navigate]);
+
+  const currentEmail = user ? user.email : null;
+
+  if (user) {
+    console.log("Document updated with ID: ", user.uid);
+  }
+
+  /*const { currentUser } = useAuth();
+
+  const [userId, setUserId] = useState(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (currentUser) {
+        const usersCollection = collection(db, "UserCredentials");
+        const q = query(usersCollection, where("uid", "==", currentUser.uid));
+        const querySnapshot = await getDocs(q);
+        if (!querySnapshot.empty) {
+          setUserId(currentUser.uid);
+        }
+      }
+    };
+
+    fetchUser();
+  }, [currentUser]);*/
+  //const navigate = useNavigate();
+  //const emailRef = useRef(null);
+
+  /*useEffect(() => {
     if (!currentUser) {
       navigate("/login");
     }
   }, [currentUser, navigate]);*/
 
-  const [selectedState, setSelectedState]  = useState(null);
+  const [selectedState, setSelectedState] = useState(null);
   const handleChangeState = (selectedState) => {
     setSelectedState(selectedState);
   };
-  
+
   const [selectedSkill, setSelectedSkill] = useState([]);
   //const [skillArray, setSkillArray] = useState([]);
 
@@ -122,7 +159,7 @@ const ProfileManage = () => {
   };
 
   const [selectedDates, setSelectedDates] = useState([]);
-  const [dateArray, setDateArray] = useState([]);
+  //const [dateArray, setDateArray] = useState([]);
 
   const handleDateSelection = () => {
     if (selectedDay && selectedMonth && selectedYear) {
@@ -137,28 +174,52 @@ const ProfileManage = () => {
     }
   };
 
-  const [fullName, setName] = useState('');  
-  const [getAdd, setAddr] = useState('');    
-  const [getAdd2, setAddr2] = useState('');  
-  const [getCity, setCity] = useState('');   
+  const [fullName, setName] = useState('');
+  const [getAdd, setAddr] = useState('');
+  const [getAdd2, setAddr2] = useState('');
+  const [getCity, setCity] = useState('');
   //const [getState, setState] = useState(''); 
-  const [getZip, setZip] = useState('');     
-  const [getPref, setPref] = useState('');   
+  const [getZip, setZip] = useState('');
+  const [getPref, setPref] = useState('');
 
-  const handleSubmit = (e) => {
+  /*const handleSubmit = (e) => {
     e.preventDefault();
     const page = { fullName, getAdd, getCity, selectedState, getZip, selectedSkill, selectedDates };
     console.log(page);
-  };
-
-  /*(const handleSubmit = async () => {
-    //e.preventDefault();
-
-    const collectionRef = collection(db, "UserProfiles");
-    const page = { fullName: fullName, getAdd: getAdd, getCity: getCity, getState: selectedState, getZip: getZip, 
-    skillArray: skillArray, dateArray: dateArray};
-    await addDoc(collectionRef, page);
   };*/
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const db = getFirestore();
+    const userDocRef = doc(db, "UserProfiles", user.uid);
+    const userDoc = await getDoc(userDocRef);
+
+    const page = {
+        fullName,
+        getAdd,
+        getAdd2,
+        getCity,
+        getState: selectedState,
+        getZip,
+        getPref,
+        selectedSkill,
+        selectedDates
+    };
+
+    if (userDoc.exists()) {
+        await updateDoc(userDocRef, page);
+        console.log("Document updated with ID: ", user.uid);
+    } else {
+        await setDoc(userDocRef, page);
+        console.log("New document created with ID: ", user.uid);
+    }
+};
+  
+//  const page = { fullName, getAdd, getAdd2, getCity, getState: selectedState, getZip, getPref, selectedSkill, selectedDates };
+//  const db = getFirestore();
+//  const userDoc = doc(db, "UserCredentials", user.uid);
+//  await updateDoc(userDoc, page);
 
   return (
     <div>
@@ -204,7 +265,7 @@ const ProfileManage = () => {
               required
               value={getCity}
               onChange={(e) => setCity(e.target.value)} /><br />
-              
+
             <div className="state" style={{ maxWidth: "300px" }}>
               <Select className="state" options={states}
                 value={selectedState}
@@ -213,7 +274,7 @@ const ProfileManage = () => {
                 maxMenuHeight={130}
                 placeholder='State*'
               />
-              </div>
+            </div>
 
             <input type="text"
               id="zip"
@@ -275,7 +336,7 @@ const ProfileManage = () => {
               />
             </div>
             <button className="buttonDates" onClick={handleDateSelection}>Select Date</button>
-          </div> 
+          </div>
           <button className="button submit">Update Profile</button>
         </div>
       </form>
