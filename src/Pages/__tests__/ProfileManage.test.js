@@ -1,9 +1,11 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import ProfileManage from '../ProfileManage';
 import '@testing-library/jest-dom';
 import renderWithRouterAndAuth from '../../test-router';
-import Select from 'react-select';
+import { useAuth } from '../../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { collection, addDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
 
 jest.mock('react-select', () => ({ options, value, onChange, placeholder, isMulti }) => (
   <div data-testid="select-mock">
@@ -21,9 +23,38 @@ jest.mock('react-select', () => ({ options, value, onChange, placeholder, isMult
   </div>
 ));
 
+jest.mock('../../context/AuthContext', () => ({
+  useAuth: jest.fn(),
+}));
+
+jest.mock('firebase/firestore', () => ({
+  collection: jest.fn(),
+  addDoc: jest.fn(),
+  getDocs: jest.fn(),
+  query: jest.fn(),
+  where: jest.fn(),
+  updateDoc: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
+
 async function renderComponent() {
-  await waitFor(() => renderWithRouterAndAuth(<ProfileManage />));
+  await act(async () => {
+    renderWithRouterAndAuth(<ProfileManage />);
+  });
 }
+
+beforeEach(() => {
+  useAuth.mockReturnValue({ currentUser: { email: 'test@example.com' } });
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 test('renders Profile Management page', async () => {
   await renderComponent();
@@ -166,13 +197,16 @@ test('form submits correctly with selected skills and dates', async () => {
   fireEvent.submit(form);
 
   const expectedOutput = {
+    email: 'test@example.com',
     fullName: 'John Doe',
     getAdd: '123 Main St',
+    getAdd2: '',
     getCity: 'Anytown',
-    getState: 'CA',
+    selectedState: 'CA',
     getZip: '12345',
-    skillArray: 'Adaptability, Teamwork',
-    dateArray: '2024-01-01'
+    getPref: 'Remote',
+    skills: ['Adaptability', 'Teamwork'],
+    selectedDates: ['2024-01-01']
   };
 
   const originalConsoleLog = console.log;
@@ -183,4 +217,16 @@ test('form submits correctly with selected skills and dates', async () => {
   expect(console.log).toHaveBeenCalledWith(expectedOutput);
 
   console.log = originalConsoleLog;
+});
+
+test('handles user not logged in', async () => {
+  useAuth.mockReturnValue({ currentUser: null });
+  jest.spyOn(window, 'alert').mockImplementation(() => {});
+
+  await act(async () => {
+    renderWithRouterAndAuth(<ProfileManage />);
+  });
+
+  expect(mockNavigate).toHaveBeenCalledWith('/login');
+  expect(window.alert).toHaveBeenCalledWith("User is not logged in. Redirecting to the login page.");
 });

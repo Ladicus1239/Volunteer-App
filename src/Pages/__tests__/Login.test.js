@@ -89,4 +89,43 @@ describe('Login Page Tests', () => {
         // Verify navigation to home page
         expect(window.location.pathname).toBe('/home');
     });
+
+    test('disables submit button when loading', async () => {
+        await act(async () => {
+            renderWithRouter(
+                <AuthProvider>
+                    <Login />
+                </AuthProvider>
+            );
+        });
+
+        const emailInput = screen.getByLabelText(/Email/i);
+        const passwordInput = screen.getByLabelText(/Password/i);
+        const submitButton = screen.getByText(/Log in/i);
+
+        fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
+        fireEvent.change(passwordInput, { target: { value: 'password' } });
+
+        // Simulate form submission
+        await act(async () => {
+            fireEvent.click(submitButton);
+        });
+
+        // Submit button should be disabled during loading
+        expect(submitButton).toBeDisabled();
+    });
+
+    test('renders all input fields and buttons', () => {
+        renderWithRouter(
+            <AuthProvider>
+                <Login />
+            </AuthProvider>
+        );
+
+        // Check for all input fields and buttons
+        expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
+        expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
+        expect(screen.getByText(/Log in/i)).toBeInTheDocument();
+        expect(screen.getByText(/Need an account\? Sign up/i)).toBeInTheDocument();
+    });
 });

@@ -18,4 +18,10 @@ module.exports = {
   },
   setupFilesAfterEnv: ['./src/setupTests.js'],
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'], // Match test files
+  transform: {
+    '^.+\\.(js|jsx)$': 'babel-jest', // Use babel-jest to transpile JavaScript files
+  },
+  transformIgnorePatterns: [
+    '/node_modules/(?!(firebase)/)', // Ignore node_modules except for firebase
+  ],
 };

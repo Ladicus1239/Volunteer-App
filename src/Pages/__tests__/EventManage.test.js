@@ -1,103 +1,180 @@
-
 import React from 'react';
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen, fireEvent, act, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import EventManage from '../EventManage';
 import { BrowserRouter } from 'react-router-dom';
+import { collection, addDoc, updateDoc, deleteDoc, onSnapshot, doc } from 'firebase/firestore';
+import db from '../../firebase';
 
 jest.mock('../../Components/Navigation', () => () => <nav role="navigation">Mocked Navigation</nav>);
 jest.mock('../../Components/dropdownMS', () => ({ selectedItems, setSelectedItems, dataTestId }) => (
   <div data-testid={dataTestId}>Mocked Dropdown Menu</div>
 ));
 
+jest.mock('firebase/firestore', () => ({
+  collection: jest.fn(),
+  addDoc: jest.fn(),
+  updateDoc: jest.fn(),
+  deleteDoc: jest.fn(),
+  doc: jest.fn((_, id) => ({ id })),
+  onSnapshot: jest.fn(),
+  getFirestore: jest.fn(() => ({})),
+}));
+
 const renderWithRouter = (ui, { route = '/' } = {}) => {
-    window.history.pushState({}, 'Test page', route);
-    return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
+  window.history.pushState({}, 'Test page', route);
+  return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
 };
 
 beforeEach(() => {
-    localStorage.clear(); 
+  localStorage.clear();
+  jest.clearAllMocks();
 });
 
+const mockEvents = [
+  {
+    id: '1',
+    eventName: 'Event 1',
+    eventDescription: 'Description 1',
+    city: 'City 1',
+    state: 'CA',
+    requiredSkills: ['Skill 1', 'Skill 2'],
+    urgency: 'low',
+    eventDate: '2024-01-01',
+  },
+  {
+    id: '2',
+    eventName: 'Event 2',
+    eventDescription: 'Description 2',
+    city: 'City 2',
+    state: 'NY',
+    requiredSkills: ['Skill 3'],
+    urgency: 'high',
+    eventDate: '2024-02-01',
+  },
+];
+
 test('renders EventManage page correctly', async () => {
-    await act(async () => {
-        renderWithRouter(<EventManage />);
-    });
+  onSnapshot.mockImplementation((_, callback) => {
+    callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
+    return jest.fn(); // Return a mock unsubscribe function
+  });
 
+  await act(async () => {
+    renderWithRouter(<EventManage />);
+  });
 
-    expect(screen.getByRole('navigation')).toBeInTheDocument();
-
-    expect(screen.getByPlaceholderText(/Event Name/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Event Description/i)).toBeInTheDocument();
-    expect(screen.getByPlaceholderText(/Location/i)).toBeInTheDocument();
-    expect(screen.getByTestId('required-skills')).toBeInTheDocument();
-    expect(screen.getAllByText(/Urgency/i)[0]).toBeInTheDocument();
-    expect(screen.getByLabelText(/Event Date/i)).toBeInTheDocument();
-
-    
-    expect(screen.getByRole('button', { name: /Create Event/i })).toBeInTheDocument();
+  expect(screen.getByRole('navigation')).toBeInTheDocument();
+  expect(screen.getByLabelText(/Event Name/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/Event Description/i)).toBeInTheDocument();
+  expect(screen.getByLabelText(/City/i)).toBeInTheDocument();
+  expect(screen.getByTestId('required-skills')).toBeInTheDocument();
+  expect(screen.getAllByText(/Urgency/i)[0]).toBeInTheDocument();
+  expect(screen.getByLabelText(/Event Date/i)).toBeInTheDocument();
+  expect(screen.getByRole('button', { name: /Create Event/i })).toBeInTheDocument();
 });
 
 test('creates a new event', async () => {
-    await act(async () => {
-        renderWithRouter(<EventManage />);
+  addDoc.mockResolvedValueOnce({ id: '3' });
+  onSnapshot.mockImplementation((_, callback) => {
+    callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
+    return jest.fn(); // Return a mock unsubscribe function
+  });
+
+  await act(async () => {
+    renderWithRouter(<EventManage />);
+  });
+
+  fireEvent.change(screen.getByLabelText(/Event Name/i), { target: { value: 'Test Event' } });
+  fireEvent.change(screen.getByLabelText(/Event Description/i), { target: { value: 'This is a test event' } });
+  fireEvent.change(screen.getByLabelText(/City/i), { target: { value: 'Test City' } });
+  fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-03-01' } });
+
+  fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
+
+  await waitFor(() => {
+    expect(addDoc).toHaveBeenCalledWith(collection(db, 'EventDetails'), {
+      eventName: 'Test Event',
+      eventDescription: 'This is a test event',
+      city: 'Test City',
+      state: '',
+      requiredSkills: [],
+      urgency: 'low',
+      eventDate: '2024-03-01',
     });
-
-    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
-    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
-
-   
-    expect(screen.getAllByText(/Test Event/i)[0]).toBeInTheDocument();
-    expect(screen.getByText(/This is a test event/i)).toBeInTheDocument();
-    expect(screen.getByText(/Test Location/i)).toBeInTheDocument();
-    expect(screen.getByText(/2024-01-01/i)).toBeInTheDocument();
+  });
 });
 
 test('edits an existing event', async () => {
-    await act(async () => {
-        renderWithRouter(<EventManage />);
+  updateDoc.mockResolvedValueOnce();
+  onSnapshot.mockImplementation((_, callback) => {
+    callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
+    return jest.fn(); // Return a mock unsubscribe function
+  });
+
+  await act(async () => {
+    renderWithRouter(<EventManage />);
+  });
+
+  fireEvent.click(screen.getAllByText(/Edit/i)[0]);
+
+  fireEvent.change(screen.getByLabelText(/Event Name/i), { target: { value: 'Updated Event' } });
+  fireEvent.change(screen.getByLabelText(/Event Description/i), { target: { value: 'Updated Description' } });
+
+  fireEvent.click(screen.getByRole('button', { name: /Update Event/i }));
+
+  await waitFor(() => {
+    expect(updateDoc).toHaveBeenCalledWith(doc(db, 'EventDetails', '1'), {
+      eventName: 'Updated Event',
+      eventDescription: 'Updated Description',
+      city: 'City 1',
+      state: 'CA',
+      requiredSkills: ['Skill 1', 'Skill 2'],
+      urgency: 'low',
+      eventDate: '2024-01-01',
     });
-
-    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
-    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
-
-    fireEvent.click(screen.getAllByText(/Edit/i)[0]);
-
-    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Updated Event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is an updated test event' } });
-
-    fireEvent.click(screen.getByRole('button', { name: /Update Event/i }));
-
-    
-    expect(screen.getAllByText(/Updated Event/i)[0]).toBeInTheDocument();
-    expect(screen.getByText(/This is an updated test event/i)).toBeInTheDocument();
+  });
 });
 
 test('deletes an event', async () => {
-    await act(async () => {
-        renderWithRouter(<EventManage />);
-    });
+  deleteDoc.mockResolvedValueOnce();
+  onSnapshot.mockImplementation((_, callback) => {
+    callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
+    return jest.fn(); // Return a mock unsubscribe function
+  });
 
-    fireEvent.change(screen.getByPlaceholderText(/Event Name/i), { target: { value: 'Test Event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Event Description/i), { target: { value: 'This is a test event' } });
-    fireEvent.change(screen.getByPlaceholderText(/Location/i), { target: { value: 'Test Location' } });
-    fireEvent.change(screen.getByLabelText(/Event Date/i), { target: { value: '2024-01-01' } });
+  await act(async () => {
+    renderWithRouter(<EventManage />);
+  });
 
-    fireEvent.click(screen.getByRole('button', { name: /Create Event/i }));
+  fireEvent.click(screen.getAllByText(/Delete/i)[0]);
 
-    fireEvent.click(screen.getAllByText(/Delete/i)[0]);
+  await waitFor(() => {
+    expect(deleteDoc).toHaveBeenCalledWith(doc(db, 'EventDetails', '1'));
+  });
+});
 
-  
-    expect(screen.queryByText(/Test Event/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/This is a test event/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/Test Location/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/2024-01-01/i)).not.toBeInTheDocument();
+test('displays events in table', async () => {
+  onSnapshot.mockImplementation((_, callback) => {
+    callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
+    return jest.fn(); // Return a mock unsubscribe function
+  });
+
+  await act(async () => {
+    renderWithRouter(<EventManage />);
+  });
+
+  expect(screen.getByText(/Event 1/i)).toBeInTheDocument();
+  expect(screen.getByText(/Description 1/i)).toBeInTheDocument();
+  expect(screen.getByText(/City 1/i)).toBeInTheDocument();
+  expect(screen.getByText(/Skill 1, Skill 2/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/low/i)[0]).toBeInTheDocument();
+  expect(screen.getByText(/2024-01-01/i)).toBeInTheDocument();
+
+  expect(screen.getByText(/Event 2/i)).toBeInTheDocument();
+  expect(screen.getByText(/Description 2/i)).toBeInTheDocument();
+  expect(screen.getByText(/City 2/i)).toBeInTheDocument();
+  expect(screen.getByText(/Skill 3/i)).toBeInTheDocument();
+  expect(screen.getAllByText(/high/i)[0]).toBeInTheDocument();
+  expect(screen.getByText(/2024-02-01/i)).toBeInTheDocument();
 });
