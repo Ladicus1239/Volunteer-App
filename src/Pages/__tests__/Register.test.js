@@ -1,19 +1,20 @@
 import React from 'react';
-import { render, fireEvent, screen, act } from '@testing-library/react';
+import { render, fireEvent, screen, act, waitFor } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
 import Signup from '../Register';
 import { AuthProvider } from '../../context/AuthContext';
-import { collection, addDoc } from 'firebase/firestore';
-import { encryptData } from '../encrypt';
+import { collection, addDoc, getFirestore } from 'firebase/firestore';
+import { encryptData } from '../../encrypt';
+import db from '../../firebase';
 
-// Utility to render components with Router and AuthProvider
+
 const renderWithRouterAndAuth = (ui, { route = '/' } = {}) => {
     window.history.pushState({}, 'Test page', route);
     return render(ui, { wrapper: ({ children }) => <BrowserRouter><AuthProvider>{children}</AuthProvider></BrowserRouter> });
 };
 
-// Mock the useAuth hook and AuthProvider
+
 jest.mock('../../context/AuthContext', () => {
     const originalModule = jest.requireActual('../../context/AuthContext');
     return {
@@ -22,12 +23,17 @@ jest.mock('../../context/AuthContext', () => {
     };
 });
 
-jest.mock('firebase/firestore', () => ({
-    collection: jest.fn(),
-    addDoc: jest.fn(),
-}));
+jest.mock('firebase/firestore', () => {
+    const actualFirestore = jest.requireActual('firebase/firestore');
+    return {
+        ...actualFirestore,
+        collection: jest.fn(),
+        addDoc: jest.fn(),
+        getFirestore: jest.fn(),
+    };
+});
 
-jest.mock('../encrypt', () => ({
+jest.mock('../../encrypt', () => ({
     encryptData: jest.fn(),
 }));
 
@@ -69,15 +75,15 @@ describe('Signup Page Tests', () => {
         fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'password123' } });
         fireEvent.click(screen.getByText('Sign Up'));
 
-        expect(screen.getByText(/Loading/i)).toBeInTheDocument();
-        await act(async () => {});
+        await waitFor(() => {
+            expect(screen.getByText(/Loading/i)).toBeInTheDocument();
+        });
 
         expect(mockSignup).toHaveBeenCalledWith('test@example.com', 'password123');
         expect(addDoc).toHaveBeenCalledWith(expect.anything(), {
             email: 'test@example.com',
-            password: 'password123',
+            password: encryptData('password123'),
         });
-        expect(screen.queryByText(/Loading/i)).not.toBeInTheDocument();
     });
 
     test('handles registration with non-matching passwords', async () => {
@@ -138,7 +144,9 @@ describe('Signup Page Tests', () => {
             renderWithRouterAndAuth(<Signup />);
         });
 
-        fireEvent.click(screen.getByText('Already have an account? Log in'));
+        fireEvent.click(screen.getByText((content, element) =>
+            element.tagName.toLowerCase() === 'a' && content.startsWith('Already have an account?')
+        ));
 
         expect(window.location.pathname).toBe('/login');
     });

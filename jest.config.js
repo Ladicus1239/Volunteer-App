@@ -15,6 +15,7 @@ module.exports = {
   ],
   moduleNameMapper: {
     '\\.(css|less)$': '<rootDir>/src/__mocks__/styleMock.js',
+    '\\.(jpg|jpeg|png|gif|svg)$': '<rootDir>/src/__mocks__/fileMock.js'
   },
   setupFilesAfterEnv: ['./src/setupTests.js'],
   testMatch: ['**/__tests__/**/*.js?(x)', '**/?(*.)+(spec|test).js?(x)'], // Match test files

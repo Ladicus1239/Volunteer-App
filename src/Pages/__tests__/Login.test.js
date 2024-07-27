@@ -5,13 +5,13 @@ import '@testing-library/jest-dom';
 import Login from '../Login';
 import { AuthProvider } from '../../context/AuthContext';
 
-// Utility to render components with Router
+
 const renderWithRouter = (ui, { route = '/' } = {}) => {
     window.history.pushState({}, 'Test page', route);
     return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
 };
 
-// Mock the useAuth hook and AuthProvider
+
 jest.mock('../../context/AuthContext', () => {
     const originalModule = jest.requireActual('../../context/AuthContext');
     return {
@@ -83,10 +83,10 @@ describe('Login Page Tests', () => {
             fireEvent.click(submitButton);
         });
 
-        // Check if mockLogin was called with correct arguments
+        
         expect(mockLogin).toHaveBeenCalledWith('user@example.com', 'password');
 
-        // Verify navigation to home page
+       
         expect(window.location.pathname).toBe('/home');
     });
 
@@ -106,12 +106,12 @@ describe('Login Page Tests', () => {
         fireEvent.change(emailInput, { target: { value: 'user@example.com' } });
         fireEvent.change(passwordInput, { target: { value: 'password' } });
 
-        // Simulate form submission
+        
         await act(async () => {
             fireEvent.click(submitButton);
         });
 
-        // Submit button should be disabled during loading
+        
         expect(submitButton).toBeDisabled();
     });
 
@@ -122,7 +122,7 @@ describe('Login Page Tests', () => {
             </AuthProvider>
         );
 
-        // Check for all input fields and buttons
+        
         expect(screen.getByLabelText(/Email/i)).toBeInTheDocument();
         expect(screen.getByLabelText(/Password/i)).toBeInTheDocument();
         expect(screen.getByText(/Log in/i)).toBeInTheDocument();

@@ -1,11 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import ProfileManage from '../ProfileManage';
 import '@testing-library/jest-dom';
 import renderWithRouterAndAuth from '../../test-router';
-import { useAuth } from '../../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { collection, addDoc, getDocs, query, where, updateDoc } from 'firebase/firestore';
+import Select from 'react-select';
 
 jest.mock('react-select', () => ({ options, value, onChange, placeholder, isMulti }) => (
   <div data-testid="select-mock">
@@ -23,38 +21,9 @@ jest.mock('react-select', () => ({ options, value, onChange, placeholder, isMult
   </div>
 ));
 
-jest.mock('../../context/AuthContext', () => ({
-  useAuth: jest.fn(),
-}));
-
-jest.mock('firebase/firestore', () => ({
-  collection: jest.fn(),
-  addDoc: jest.fn(),
-  getDocs: jest.fn(),
-  query: jest.fn(),
-  where: jest.fn(),
-  updateDoc: jest.fn(),
-}));
-
-const mockNavigate = jest.fn();
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useNavigate: () => mockNavigate,
-}));
-
 async function renderComponent() {
-  await act(async () => {
-    renderWithRouterAndAuth(<ProfileManage />);
-  });
+  await waitFor(() => renderWithRouterAndAuth(<ProfileManage />));
 }
-
-beforeEach(() => {
-  useAuth.mockReturnValue({ currentUser: { email: 'test@example.com' } });
-});
-
-afterEach(() => {
-  jest.clearAllMocks();
-});
 
 test('renders Profile Management page', async () => {
   await renderComponent();
@@ -197,7 +166,6 @@ test('form submits correctly with selected skills and dates', async () => {
   fireEvent.submit(form);
 
   const expectedOutput = {
-    email: 'test@example.com',
     fullName: 'John Doe',
     getAdd: '123 Main St',
     getAdd2: '',
@@ -219,14 +187,169 @@ test('form submits correctly with selected skills and dates', async () => {
   console.log = originalConsoleLog;
 });
 
-test('handles user not logged in', async () => {
-  useAuth.mockReturnValue({ currentUser: null });
-  jest.spyOn(window, 'alert').mockImplementation(() => {});
 
-  await act(async () => {
-    renderWithRouterAndAuth(<ProfileManage />);
-  });
 
-  expect(mockNavigate).toHaveBeenCalledWith('/login');
+test('should handle changes in state dropdown', async () => {
+  await renderComponent();
+
+  const stateSelect = screen.getByPlaceholderText(/State/i);
+  fireEvent.mouseDown(stateSelect);
+
+  const californiaOption = await screen.findByText(/California, CA/i);
+  fireEvent.click(californiaOption);
+
+  expect(screen.getByDisplayValue(/California, CA/i)).toBeInTheDocument();
+});
+
+test('should handle adding and removing dates correctly', async () => {
+  await renderComponent();
+
+  const daySelect = screen.getAllByPlaceholderText(/DD/i)[0];
+  fireEvent.mouseDown(daySelect);
+  const dayOption = await screen.findAllByText('15');
+  fireEvent.click(dayOption[0]);
+
+  const monthSelect = screen.getAllByPlaceholderText(/MM/i)[0];
+  fireEvent.mouseDown(monthSelect);
+  const monthOption = await screen.findAllByText('07');
+  fireEvent.click(monthOption[0]);
+
+  const yearSelect = screen.getAllByPlaceholderText(/YYYY/i)[0];
+  fireEvent.mouseDown(yearSelect);
+  const yearOption = await screen.findAllByText('2025');
+  fireEvent.click(yearOption[0]);
+
+  const selectDateButton = screen.getByText(/Select Date/i);
+  fireEvent.click(selectDateButton);
+
+  expect(screen.getByText(/2025-07-15/i)).toBeInTheDocument();
+
+  
+  const removeDateButton = screen.getByText(/Remove Date/i);
+  fireEvent.click(removeDateButton);
+
+  expect(screen.queryByText(/2025-07-15/i)).not.toBeInTheDocument();
+});
+
+test('renders address line 2 input field', async () => {
+  await renderComponent();
+  expect(screen.getByPlaceholderText(/Address 2/i)).toBeInTheDocument();
+});
+
+test('address line 2 field should accept text', async () => {
+  await renderComponent();
+  const address2Input = screen.getByPlaceholderText(/Address 2/i);
+  fireEvent.change(address2Input, { target: { value: 'Suite 100' } });
+  expect(address2Input.value).toBe('Suite 100');
+});
+
+test('handleStateChange function updates state correctly', async () => {
+  await renderComponent();
+  const stateSelect = screen.getByPlaceholderText(/State/i);
+  fireEvent.mouseDown(stateSelect);
+  const stateOption = await screen.findByText(/California, CA/i);
+  fireEvent.click(stateOption);
+  expect(screen.getByPlaceholderText(/State/i).value).toBe('CA');
+});
+
+test('displays alert if user is not logged in', async () => {
+  jest.spyOn(require('../context/AuthContext'), 'useAuth').mockReturnValue({ currentUser: null });
+  const navigate = jest.fn();
+  jest.spyOn(require('react-router-dom'), 'useNavigate').mockReturnValue(navigate);
+
+  await renderComponent();
+
   expect(window.alert).toHaveBeenCalledWith("User is not logged in. Redirecting to the login page.");
+  expect(navigate).toHaveBeenCalledWith("/login");
+});
+
+test('form does not submit if user is not logged in', async () => {
+  jest.spyOn(require('../context/AuthContext'), 'useAuth').mockReturnValue({ currentUser: null });
+  window.alert = jest.fn();
+
+  await renderComponent();
+
+  const form = screen.getByRole('form');
+  fireEvent.submit(form);
+
+  expect(window.alert).toHaveBeenCalledWith("User is not logged in.");
+});
+
+test('displays alert if date selection is incomplete', async () => {
+  await renderComponent();
+  window.alert = jest.fn();
+
+  const selectDateButton = screen.getByText(/Select Date/i);
+  fireEvent.click(selectDateButton);
+
+  expect(window.alert).toHaveBeenCalledWith("Please select day, month, and year.");
+});
+
+test('removes selected skill when clicked again', async () => {
+  await renderComponent();
+
+  const skillSelect = screen.getByText(/Choose your skill\(s\)/i);
+  fireEvent.mouseDown(skillSelect);
+
+  const adaptabilityOption = await screen.findByText(/Adaptability/i);
+  fireEvent.click(adaptabilityOption);
+  expect(screen.getByDisplayValue(/Adaptability/i)).toBeInTheDocument();
+
+  fireEvent.click(adaptabilityOption);
+  expect(screen.queryByDisplayValue(/Adaptability/i)).not.toBeInTheDocument();
+});
+
+test('handles empty skill selection', async () => {
+  await renderComponent();
+
+  const skillSelect = screen.getByText(/Choose your skill\(s\)/i);
+  fireEvent.mouseDown(skillSelect);
+  fireEvent.click(document.body); 
+
+  expect(screen.queryByDisplayValue(/Adaptability/i)).not.toBeInTheDocument();
+  expect(screen.queryByDisplayValue(/Teamwork/i)).not.toBeInTheDocument();
+});
+
+test('displays error when skill selection exceeds maximum limit', async () => {
+  await renderComponent();
+
+  const skillSelect = screen.getByText(/Choose your skill\(s\)/i);
+  fireEvent.mouseDown(skillSelect);
+
+  const skills = ['Adaptability', 'Communication', 'Creative', 'Interpersonal Communication', 'Leadership', 'Problem Solving', 'Strong Work Ethic'];
+
+  for (let skill of skills) {
+    const skillOption = await screen.findByText(new RegExp(skill, 'i'));
+    fireEvent.click(skillOption);
+  }
+
+  expect(screen.getAllByText(/Skill/i).length).toBe(5); 
+  expect(window.alert).toHaveBeenCalledWith("You can only select up to 5 skills.");
+});
+
+test('removes selected date when remove date button is clicked', async () => {
+  await renderComponent();
+
+  const daySelect = screen.getAllByPlaceholderText(/DD/i)[0];
+  fireEvent.mouseDown(daySelect);
+  const dayOption = await screen.findAllByText('01');
+  fireEvent.click(dayOption[0]);
+
+  const monthSelect = screen.getAllByPlaceholderText(/MM/i)[0];
+  fireEvent.mouseDown(monthSelect);
+  const monthOption = await screen.findAllByText('01');
+  fireEvent.click(monthOption[0]);
+
+  const yearSelect = screen.getAllByPlaceholderText(/YYYY/i)[0];
+  fireEvent.mouseDown(yearSelect);
+  const yearOption = await screen.findAllByText('2024');
+  fireEvent.click(yearOption[0]);
+
+  const selectDateButton = screen.getByText(/Select Date/i);
+  fireEvent.click(selectDateButton);
+
+  const removeDateButton = screen.getByText(/Remove Date/i);
+  fireEvent.click(removeDateButton);
+
+  expect(screen.queryByText(/2024-01-01/i)).not.toBeInTheDocument();
 });

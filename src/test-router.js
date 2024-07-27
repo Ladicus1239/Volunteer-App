@@ -1,10 +1,24 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 
-const renderWithRouterAndAuth = (ui, { route = '/' } = {}) => {
+// Mock the useAuth hook
+jest.mock('./context/AuthContext', () => {
+  const originalModule = jest.requireActual('./context/AuthContext');
+  return {
+    ...originalModule,
+    useAuth: jest.fn(),
+  };
+});
+
+const renderWithRouterAndAuth = (ui, { route = '/', currentUser } = {}) => {
   window.history.pushState({}, 'Test page', route);
+
+  // Mock current user
+  useAuth.mockReturnValue({
+    currentUser: currentUser || { email: 'testuser@example.com' },
+  });
 
   return render(ui, {
     wrapper: ({ children }) => (

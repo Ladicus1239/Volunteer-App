@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Navigation from '../Components/Navigation';
-import db from "../firebase";
 import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
+import db from "../firebase";
 import Checkbox from "@mui/material/Checkbox";
 import "../styles2.css";
 
@@ -22,7 +22,7 @@ const VolunteerHistory = () => {
                 await updateVolunteerHistory(volunteerHistoryData);
 
                 const updatedVolunteerHistorySnapshot = await getDocs(volunteerHistoryRef);
-                const updatedVolunteerHistoryData = updatedVolunteerHistorySnapshot.docs.map(doc => doc.data());
+                const updatedVolunteerHistoryData = updatedVolunteerHistorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 setData(updatedVolunteerHistoryData);
                 setCheckedItems(updatedVolunteerHistoryData.map(() => false));
             } catch (error) {
@@ -111,47 +111,51 @@ const VolunteerHistory = () => {
             <div className="volunteerContainer">
                 <h1 className="volhistory">Volunteer History</h1>
                 <div className="table">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th>
-                                    <Checkbox
-                                        checked={selectAll}
-                                        onChange={handleSelectAllChange}
-                                    />
-                                </th>
-                                <th>Name</th>
-                                <th>EventName</th>
-                                <th>Description</th>
-                                <th>Location</th>
-                                <th>Skills</th>
-                                <th>Urgency</th>
-                                <th>Date</th>
-                                <th>Attendance</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {data.map((val, index) => (
-                                <tr key={index}>
-                                    <td>
+                    {data.length === 0 ? (
+                        <p>No volunteer history found.</p>
+                    ) : (
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>
                                         <Checkbox
-                                            checked={checkedItems[index]}
-                                            onChange={handleCheckboxChange(index)}
-                                            className="dataCheckbox"
+                                            checked={selectAll}
+                                            onChange={handleSelectAllChange}
                                         />
-                                    </td>
-                                    <td>{val.name}</td>
-                                    <td>{val.ename}</td>
-                                    <td>{val.description}</td>
-                                    <td>{val.location}</td>
-                                    <td>{val.skills.join(', ')}</td>
-                                    <td>{val.urgency}</td>
-                                    <td>{val.date}</td>
-                                    <td>{val.attendance}</td>
+                                    </th>
+                                    <th>Name</th>
+                                    <th>EventName</th>
+                                    <th>Description</th>
+                                    <th>Location</th>
+                                    <th>Skills</th>
+                                    <th>Urgency</th>
+                                    <th>Date</th>
+                                    <th>Attendance</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {data.map((val, index) => (
+                                    <tr key={index}>
+                                        <td>
+                                            <Checkbox
+                                                checked={checkedItems[index]}
+                                                onChange={handleCheckboxChange(index)}
+                                                className="dataCheckbox"
+                                            />
+                                        </td>
+                                        <td>{val.name}</td>
+                                        <td>{val.ename}</td>
+                                        <td>{val.description}</td>
+                                        <td>{val.location}</td>
+                                        <td>{val.skills.join(', ')}</td>
+                                        <td>{val.urgency}</td>
+                                        <td>{val.date}</td>
+                                        <td>{val.attendance}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
             </div>
         </div>

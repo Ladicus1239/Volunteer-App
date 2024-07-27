@@ -1,59 +1,119 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
-import Profile from './Profile';
-import '@testing-library/jest-dom/';
+import { render, screen, waitFor, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import Profile from '../Profile';
+import { BrowserRouter } from 'react-router-dom';
+import { collection, getDocs, getDoc, query, where } from 'firebase/firestore';
+import { useAuth } from '../../context/AuthContext';
+import db from '../../firebase';
 
-// Mock props to be passed to the Profile component for testing
-const mockProps = {
-    fullName: "John Doe",
-    getAdd: "123 Main St",
-    getCity: "Anytown",
-    getState: "CA",
-    getZip: "12345",
-    skillArray: ["Adaptability", "Teamwork"],
-    getPref: "Remote",
-    dateArray: ["2023-07-20", "2023-07-21"],
+jest.mock('firebase/firestore', () => {
+  const originalModule = jest.requireActual('firebase/firestore');
+  return {
+    ...originalModule,
+    collection: jest.fn(),
+    getDocs: jest.fn(),
+    getDoc: jest.fn(),
+    query: jest.fn(),
+    where: jest.fn(),
+  };
+});
+
+jest.mock('../../context/AuthContext', () => {
+  return {
+    useAuth: jest.fn(),
+  };
+});
+
+jest.mock('../../Components/Navigation', () => () => <nav role="navigation">Mocked Navigation</nav>);
+
+const renderWithRouter = (ui, { route = '/' } = {}) => {
+  window.history.pushState({}, 'Test page', route);
+  return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
 };
 
-// Test to check if the profile renders with the correct name
-test('renders profile with correct name', () => {
-    render(<Profile {...mockProps} />);
-    const nameElement = screen.getByText(/John Doe's Profile/i);
-    expect(nameElement).toBeInTheDocument();
+beforeEach(() => {
+  localStorage.clear();
+  jest.clearAllMocks();
 });
 
-// Test to check if the address is rendered correctly
-test('renders address correctly', () => {
-    render(<Profile {...mockProps} />);
-    const addressElement = screen.getByText(/123 Main St, Anytown, CA, 12345/i);
-    expect(addressElement).toBeInTheDocument();
+const mockProfileData = {
+  fullName: 'John Doe',
+  getAdd: '123 Main St',
+  getAdd2: 'Apt 4',
+  getCity: 'Anytown',
+  selectedState: 'CA',
+  getZip: '12345',
+  selectedSkill: ['Skill 1', 'Skill 2'],
+  getPref: 'Morning',
+  selectedDates: ['2024-01-01', '2024-02-01'],
+};
+
+const mockUser = {
+  email: 'john.doe@example.com',
+};
+
+test('renders Profile page correctly', async () => {
+  useAuth.mockReturnValue({ currentUser: mockUser });
+  getDocs.mockResolvedValue({
+    empty: false,
+    forEach: (callback) => callback({ id: '1', data: () => mockUser }),
+  });
+  getDoc.mockResolvedValue({
+    exists: () => true,
+    data: () => mockProfileData,
+  });
+
+  await act(async () => {
+    renderWithRouter(<Profile />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText("John Doe's Profile")).toBeInTheDocument();
+    expect(screen.getByText('Resides in: 123 Main St, Anytown, CA, 12345')).toBeInTheDocument();
+    expect(screen.getByText('Skills:')).toBeInTheDocument();
+    expect(screen.getByText('Skill 1, Skill 2')).toBeInTheDocument();
+    expect(screen.getByText('Preferences:')).toBeInTheDocument();
+    expect(screen.getByText('Morning')).toBeInTheDocument();
+    expect(screen.getByText('Dates available:')).toBeInTheDocument();
+    expect(screen.getByText('2024-01-01, 2024-02-01')).toBeInTheDocument();
+  });
 });
 
-// Test to check if the skills are rendered correctly
-test('renders skills correctly', () => {
-    render(<Profile {...mockProps} />);
-    const skillsElement = screen.getByText(/Adaptability, Teamwork/i);
-    expect(skillsElement).toBeInTheDocument();
+test('handles no matching profile data', async () => {
+  useAuth.mockReturnValue({ currentUser: mockUser });
+  getDocs.mockResolvedValue({
+    empty: true,
+    forEach: jest.fn(),
+  });
+
+  await act(async () => {
+    renderWithRouter(<Profile />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText("John Doe's Profile")).toBeInTheDocument();
+    expect(screen.getByText('Resides in: , , ,')).toBeInTheDocument();
+    expect(screen.getByText('Skills:')).toBeInTheDocument();
+    expect(screen.getByText('No skills listed')).toBeInTheDocument();
+    expect(screen.getByText('Preferences:')).toBeInTheDocument();
+    expect(screen.getByText('No preferences listed')).toBeInTheDocument();
+    expect(screen.getByText('Dates available:')).toBeInTheDocument();
+    expect(screen.getByText('No dates available')).toBeInTheDocument();
+  });
 });
 
-// Test to check if the preferences are rendered correctly
-test('renders preferences correctly', () => {
-    render(<Profile {...mockProps} />);
-    const prefElement = screen.getByText(/Remote/i);
-    expect(prefElement).toBeInTheDocument();
-});
+test('handles fetching profile data error', async () => {
+  useAuth.mockReturnValue({ currentUser: mockUser });
+  getDocs.mockImplementation(() => {
+    throw new Error('Error fetching profile data');
+  });
 
-// Test to check if the dates are rendered correctly
-test('renders dates correctly', () => {
-    render(<Profile {...mockProps} />);
-    const datesElement = screen.getByText(/2023-07-20, 2023-07-21/i);
-    expect(datesElement).toBeInTheDocument();
-});
+  await act(async () => {
+    renderWithRouter(<Profile />);
+  });
 
-// Test to check if the profile management link is rendered correctly
-test('renders profile management link correctly', () => {
-    render(<Profile {...mockProps} />);
-    const linkElement = screen.getByText(/Profile Management/i);
-    // Check if the link has the correct href attribute
-    expect(linkElement.closest('a')).toHaveAttribute('href', '/profile/profilemanagement');
+  await waitFor(() => {
+    expect(screen.getByText("John Doe's Profile")).toBeInTheDocument();
+  });
 });

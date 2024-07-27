@@ -1,114 +1,181 @@
 import React from 'react';
 import { render, screen, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import VolunteerMatching from '../VolunteerMatching';
-import { collection, getDocs } from 'firebase/firestore';
-import db from '../../firebase';
+import VolunteerMatching, { matchExists, saveMatches } from '../VolunteerMatching';
+import renderWithRouterAndAuth from '../../test-router';
+import { getFirestore, collection, getDocs, setDoc, doc, query, where, deleteDoc } from 'firebase/firestore';
 
-// Mock Firebase functions
+jest.mock('firebase/app', () => ({
+  initializeApp: jest.fn(() => ({})),
+}));
+
 jest.mock('firebase/firestore', () => ({
+  getFirestore: jest.fn(() => ({
+    collection: jest.fn(),
+    getDocs: jest.fn(),
+    query: jest.fn(),
+    where: jest.fn(),
+    setDoc: jest.fn(),
+    doc: jest.fn(),
+    deleteDoc: jest.fn(),
+  })),
   collection: jest.fn(),
   getDocs: jest.fn(),
-  setDoc: jest.fn(),
-  doc: jest.fn(),
   query: jest.fn(),
   where: jest.fn(),
+  setDoc: jest.fn(),
+  doc: jest.fn(),
   deleteDoc: jest.fn(),
 }));
 
-// Mock Navigation component
-jest.mock('../../Components/Navigation', () => () => <nav>Mocked Navigation</nav>);
+jest.mock('firebase/auth', () => ({
+  getAuth: jest.fn(() => ({
+    onAuthStateChanged: jest.fn((callback) => {
+      callback({ uid: '123', email: 'test@example.com' });
+      return jest.fn();
+    }),
+  })),
+  createUserWithEmailAndPassword: jest.fn(),
+  signInWithEmailAndPassword: jest.fn(),
+  signOut: jest.fn(),
+}));
 
-const mockVolunteers = [
-  {
-    id: '1',
-    fullName: 'John Doe',
-    skills: ['Cooking', 'First Aid'],
-    availability: ['Weekends'],
-    getCity: 'New York',
-    getPref: 'Food Events',
-  },
-  {
-    id: '2',
-    fullName: 'Jane Smith',
-    skills: ['Teaching', 'Organizing'],
-    availability: ['Weekdays'],
-    getCity: 'Los Angeles',
-    getPref: 'Educational Events',
-  },
-];
-
-const mockEvents = [
-  {
-    id: '1',
-    eventName: 'Food Drive',
-    requiredSkills: ['Cooking'],
-    city: 'New York',
-  },
-  {
-    id: '2',
-    eventName: 'Math Workshop',
-    requiredSkills: ['Teaching'],
-    city: 'Los Angeles',
-  },
-];
-
-const mockMatches = [
-  {
-    id: '1',
-    volunteer: 'John Doe',
-    event: 'Food Drive',
-  },
-  {
-    id: '2',
-    volunteer: 'Jane Smith',
-    event: 'Math Workshop',
-  },
-];
-
-beforeEach(() => {
-  getDocs.mockImplementation((collectionRef) => {
-    const collectionName = collectionRef._key.path.segments[0];
-    console.log(`Fetching collection: ${collectionName}`);
-    switch (collectionName) {
-      case 'UserProfiles':
-        return Promise.resolve({ docs: mockVolunteers.map((v) => ({ id: v.id, data: () => v })) });
-      case 'EventDetails':
-        return Promise.resolve({ docs: mockEvents.map((e) => ({ id: e.id, data: () => e })) });
-      case 'Matched':
-        return Promise.resolve({ docs: mockMatches.map((m) => ({ id: m.id, data: () => m })) });
-      default:
-        return Promise.resolve({ docs: [] });
-    }
-  });
-});
-
-test('renders VolunteerMatching page correctly', async () => {
-  render(<VolunteerMatching />);
-
-  expect(screen.getByText('Mocked Navigation')).toBeInTheDocument();
-  expect(screen.getByText('Volunteer Matching')).toBeInTheDocument();
-
-  await waitFor(() => {
-    // Logging to ensure the expected data is being fetched and rendered
-    console.log(screen.debug());
-
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
-    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
-    expect(screen.getByText('Food Drive')).toBeInTheDocument();
-    expect(screen.getByText('Math Workshop')).toBeInTheDocument();
+describe('VolunteerMatching Component', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  expect(screen.getByText('Cooking, First Aid')).toBeInTheDocument();
-  expect(screen.getByText('Teaching, Organizing')).toBeInTheDocument();
-  expect(screen.getByText('Weekends')).toBeInTheDocument();
-  expect(screen.getByText('Weekdays')).toBeInTheDocument();
-  expect(screen.getByText('New York')).toBeInTheDocument();
-  expect(screen.getByText('Los Angeles')).toBeInTheDocument();
-  expect(screen.getByText('Food Events')).toBeInTheDocument();
-  expect(screen.getByText('Educational Events')).toBeInTheDocument();
-  expect(screen.getByText('John Doe')).toBeInTheDocument();
-  expect(screen.getByText('Food Drive')).toBeInTheDocument();
-  expect(screen.getByText('Jane Smith')).toBeInTheDocument();
-  expect(screen.getByText('Math Workshop')).toBeInTheDocument();
+  it('should render without crashing', async () => {
+    renderWithRouterAndAuth(<VolunteerMatching />);
+    await waitFor(() => {
+      expect(screen.getByText('Volunteer Matching')).toBeInTheDocument();
+    });
+  });
+
+  it('should fetch volunteer matching data on load', async () => {
+    const mockVolunteers = [
+      { id: '1', fullName: 'John Doe', skills: ['Skill1'], getCity: 'City1', availability: ['Monday'], getPref: 'Morning' }
+    ];
+    const mockEvents = [
+      { id: '1', eventName: 'Test Event', requiredSkills: ['Skill1'], city: 'City1' }
+    ];
+    const mockMatches = [
+      { id: '1', volunteer: 'John Doe', event: 'Test Event' }
+    ];
+
+    getDocs
+      .mockResolvedValueOnce({ docs: mockVolunteers.map(v => ({ id: v.id, data: () => v })) }) 
+      .mockResolvedValueOnce({ docs: mockEvents.map(e => ({ id: e.id, data: () => e })) }) 
+      .mockResolvedValueOnce({ docs: mockMatches.map(m => ({ id: m.id, data: () => m })) }); 
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      const volunteerNames = screen.getAllByText('John Doe');
+      const eventNames = screen.getAllByText('Test Event');
+      expect(volunteerNames).toHaveLength(2); 
+      expect(eventNames).toHaveLength(1);
+    });
+  });
+
+  it('should handle no matching data', async () => {
+    getDocs
+      .mockResolvedValueOnce({ docs: [] }) 
+      .mockResolvedValueOnce({ docs: [] }) 
+      .mockResolvedValueOnce({ docs: [] }); 
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No matches found')).toBeInTheDocument();
+    });
+  });
+
+  it('should display error message on fetch failure', async () => {
+    getDocs.mockRejectedValueOnce(new Error('Failed to fetch'));
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      expect(screen.getByText('Error fetching data')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle no volunteers', async () => {
+    const mockEvents = [
+      { id: '1', eventName: 'Test Event', requiredSkills: ['Skill1'], city: 'City1' }
+    ];
+    const mockMatches = [];
+
+    getDocs
+      .mockResolvedValueOnce({ docs: [] }) 
+      .mockResolvedValueOnce({ docs: mockEvents.map(e => ({ id: e.id, data: () => e })) }) 
+      .mockResolvedValueOnce({ docs: mockMatches.map(m => ({ id: m.id, data: () => m })) }); 
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No matches found')).toBeInTheDocument();
+    });
+  });
+
+  it('should handle no events', async () => {
+    const mockVolunteers = [
+      { id: '1', fullName: 'John Doe', skills: ['Skill1'], getCity: 'City1', availability: ['Monday'], getPref: 'Morning' }
+    ];
+    const mockMatches = [];
+
+    getDocs
+      .mockResolvedValueOnce({ docs: mockVolunteers.map(v => ({ id: v.id, data: () => v })) }) 
+      .mockResolvedValueOnce({ docs: [] }) 
+      .mockResolvedValueOnce({ docs: mockMatches.map(m => ({ id: m.id, data: () => m })) }); 
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      expect(screen.getByText('No matches found')).toBeInTheDocument();
+    });
+  });
+
+  it('should call matchExists and saveMatches correctly', async () => {
+    const mockVolunteers = [
+      { id: '1', fullName: 'John Doe', skills: ['Skill1'], getCity: 'City1', availability: ['Monday'], getPref: 'Morning' }
+    ];
+    const mockEvents = [
+      { id: '1', eventName: 'Test Event', requiredSkills: ['Skill1'], city: 'City1' }
+    ];
+    const mockMatches = [];
+
+    getDocs
+      .mockResolvedValueOnce({ docs: mockVolunteers.map(v => ({ id: v.id, data: () => v })) }) 
+      .mockResolvedValueOnce({ docs: mockEvents.map(e => ({ id: e.id, data: () => e })) }) 
+      .mockResolvedValueOnce({ docs: mockMatches.map(m => ({ id: m.id, data: () => m })) }); 
+
+    const mockSetDoc = jest.fn();
+    const mockDeleteDoc = jest.fn();
+    const mockMatchExists = jest.fn().mockResolvedValue(false);
+
+    setDoc.mockImplementation(mockSetDoc);
+    deleteDoc.mockImplementation(mockDeleteDoc);
+
+   
+    jest.spyOn(require('../VolunteerMatching'), 'matchExists').mockImplementation(mockMatchExists);
+
+    renderWithRouterAndAuth(<VolunteerMatching />);
+
+    await waitFor(() => {
+      const volunteerNames = screen.getAllByText('John Doe');
+      expect(volunteerNames).toHaveLength(2); 
+    });
+
+    
+    await new Promise(resolve => setTimeout(resolve, 100));
+
+    console.log('mockMatchExists calls:', mockMatchExists.mock.calls);
+    console.log('mockSetDoc calls:', mockSetDoc.mock.calls);
+    console.log('mockDeleteDoc calls:', mockDeleteDoc.mock.calls);
+
+    expect(mockMatchExists).toHaveBeenCalled();
+    expect(mockSetDoc).toHaveBeenCalled();
+    expect(mockDeleteDoc).not.toHaveBeenCalled();
+  });
 });

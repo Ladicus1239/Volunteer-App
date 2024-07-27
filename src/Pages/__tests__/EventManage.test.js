@@ -57,7 +57,7 @@ const mockEvents = [
 test('renders EventManage page correctly', async () => {
   onSnapshot.mockImplementation((_, callback) => {
     callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
-    return jest.fn(); // Return a mock unsubscribe function
+    return jest.fn(); 
   });
 
   await act(async () => {
@@ -78,7 +78,7 @@ test('creates a new event', async () => {
   addDoc.mockResolvedValueOnce({ id: '3' });
   onSnapshot.mockImplementation((_, callback) => {
     callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
-    return jest.fn(); // Return a mock unsubscribe function
+    return jest.fn(); 
   });
 
   await act(async () => {
@@ -109,7 +109,7 @@ test('edits an existing event', async () => {
   updateDoc.mockResolvedValueOnce();
   onSnapshot.mockImplementation((_, callback) => {
     callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
-    return jest.fn(); // Return a mock unsubscribe function
+    return jest.fn(); 
   });
 
   await act(async () => {
@@ -140,7 +140,7 @@ test('deletes an event', async () => {
   deleteDoc.mockResolvedValueOnce();
   onSnapshot.mockImplementation((_, callback) => {
     callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
-    return jest.fn(); // Return a mock unsubscribe function
+    return jest.fn(); 
   });
 
   await act(async () => {
@@ -157,7 +157,7 @@ test('deletes an event', async () => {
 test('displays events in table', async () => {
   onSnapshot.mockImplementation((_, callback) => {
     callback({ docs: mockEvents.map(event => ({ id: event.id, data: () => event })) });
-    return jest.fn(); // Return a mock unsubscribe function
+    return jest.fn(); 
   });
 
   await act(async () => {
