@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from "react";
 import db from "../firebase";
 import { collection, onSnapshot } from "firebase/firestore";
-import "../styles/events.css";  // Ensure the path is correct
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { CSVLink } from "react-csv";
+import "../styles/events.css";  
 
 export default function EventDisplay() {
   const [events, setEvents] = useState([]);
@@ -17,44 +20,104 @@ export default function EventDisplay() {
     return () => unsubscribe();
   }, []);
 
-  // Function to format date
+  
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
+  
+  const exportPDF = () => {
+    const doc = new jsPDF();
+
+    doc.text("Event Details", 14, 16);
+    doc.autoTable({
+      startY: 20,
+      head: [
+        ["Event Name", "Event Description", "City", "State", "Required Skills", "Urgency", "Event Date"]
+      ],
+      body: events.map(event => [
+        event.eventName,
+        event.eventDescription,
+        event.city,
+        event.state,
+        Array.isArray(event.requiredSkills) ? event.requiredSkills.join(", ") : "",
+        event.urgency,
+        formatDate(event.eventDate)
+      ]),
+    });
+
+    doc.save("event-details.pdf");
+  };
+
+  
+  const csvHeaders = [
+    { label: "Event Name", key: "eventName" },
+    { label: "Event Description", key: "eventDescription" },
+    { label: "City", key: "city" },
+    { label: "State", key: "state" },
+    { label: "Required Skills", key: "requiredSkills" },
+    { label: "Urgency", key: "urgency" },
+    { label: "Event Date", key: "eventDate" },
+  ];
+
+  const csvData = events.map(event => ({
+    eventName: event.eventName,
+    eventDescription: event.eventDescription,
+    city: event.city,
+    state: event.state,
+    requiredSkills: Array.isArray(event.requiredSkills) ? event.requiredSkills.join(", ") : "",
+    urgency: event.urgency,
+    eventDate: formatDate(event.eventDate)
+  }));
+
   return (
-    <div className="container">
-      <table className="announcement">
-        <thead>
-          <tr className="announcement-names">
-            <th>Event Name</th>
-            <th>Event Description</th>
-            <th>City</th>
-            <th>State</th>
-            <th>Required Skills</th>
-            <th>Urgency</th>
-            <th>Event Date</th>
-          </tr>
-        </thead>
-        <tbody>
-          {events.map((event) => (
-            <tr key={event.id} className="announcement-data">
-              <td>{event.eventName}</td>
-              <td>{event.eventDescription}</td>
-              <td>{event.city}</td>
-              <td>{event.state}</td>
-              <td>
-                {Array.isArray(event.requiredSkills)
-                  ? event.requiredSkills.join(", ")
-                  : ""}
-              </td>
-              <td>{event.urgency}</td>
-              <td>{formatDate(event.eventDate)}</td>
+    <>
+      <div className="container">
+        <table className="announcement">
+          <thead>
+            <tr className="announcement-names">
+              <th>Event Name</th>
+              <th>Event Description</th>
+              <th>City</th>
+              <th>State</th>
+              <th>Required Skills</th>
+              <th>Urgency</th>
+              <th>Event Date</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {events.map((event) => (
+              <tr key={event.id} className="announcement-data">
+                <td>{event.eventName}</td>
+                <td>{event.eventDescription}</td>
+                <td>{event.city}</td>
+                <td>{event.state}</td>
+                <td>
+                  {Array.isArray(event.requiredSkills)
+                    ? event.requiredSkills.join(", ")
+                    : ""}
+                </td>
+                <td>{event.urgency}</td>
+                <td>{formatDate(event.eventDate)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div>
+        <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
+        <CSVLink
+          data={csvData}
+          headers={csvHeaders}
+          filename={"event-details.csv"}
+          className="adminredirect"
+          target="_blank"
+        >
+          Export to CSV
+        </CSVLink>
+      </div>
+    </>
   );
 }

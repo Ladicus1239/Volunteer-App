@@ -1,151 +1,246 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import VolunteerHistory from './volunteerhistory';
-import '@testing-library/jest-dom/';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import VolunteerHistory from '../volunteerhistory';
+import { BrowserRouter } from 'react-router-dom';
+import { collection, getDocs } from 'firebase/firestore';
+import db from '../../firebase';
 
-// Render the component before each testimport React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
-import VolunteerHistory from './volunteerhistory';
-import '@testing-library/jest-dom/';
+jest.mock('../../Components/Navigation', () => () => <nav role="navigation">Mocked Navigation</nav>);
 
-// Mock props to be passed to the VolunteerHistory component for testing
-const mockProps = {
-    fullName: "John Doe",
-    getAdd: "123 Main St",
-    skillArray: ["Adaptability", "Teamwork"]
+jest.mock('firebase/firestore', () => {
+  const originalModule = jest.requireActual('firebase/firestore');
+  return {
+    ...originalModule,
+    collection: jest.fn(),
+    getDocs: jest.fn(),
+  };
+});
+
+const renderWithRouter = (ui, { route = '/' } = {}) => {
+  window.history.pushState({}, 'Test page', route);
+  return render(ui, { wrapper: ({ children }) => <BrowserRouter>{children}</BrowserRouter> });
 };
 
-// Render the component before each test
 beforeEach(() => {
-    render(<VolunteerHistory {...mockProps} />);
+  localStorage.clear();
+  jest.clearAllMocks();
 });
 
-test('renders Volunteer History title', () => {
-    const titleElement = screen.getByText(/Volunteer History/i);
-    expect(titleElement).toBeInTheDocument();
+const mockVolunteerHistoryData = [
+  {
+    id: '1',
+    name: 'John Doe',
+    ename: 'Event 1',
+    description: 'Description 1',
+    location: 'Location 1',
+    skills: ['Skill 1', 'Skill 2'],
+    urgency: 'Low',
+    date: '2024-01-01',
+    attendance: 'Absent',
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    ename: 'Event 2',
+    description: 'Description 2',
+    location: 'Location 2',
+    skills: ['Skill 3'],
+    urgency: 'High',
+    date: '2024-02-01',
+    attendance: 'Present',
+  },
+];
+
+test('renders VolunteerHistory page correctly', async () => {
+  getDocs.mockImplementation(() =>
+    Promise.resolve({
+      docs: mockVolunteerHistoryData.map(doc => ({ id: doc.id, data: () => doc })),
+    })
+  );
+
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Event 1')).toBeInTheDocument();
+    expect(screen.getByText('Jane Smith')).toBeInTheDocument();
+    expect(screen.getByText('Event 2')).toBeInTheDocument();
+  });
 });
 
-test('renders table headers correctly', () => {
-    const headers = ['Name', 'EventName', 'Description', 'Location', 'Skills', 'Urgency', 'Date', 'Attendance'];
-    headers.forEach(header => {
-        expect(screen.getByText(header)).toBeInTheDocument();
-    });
+test('handles select all checkbox correctly', async () => {
+  getDocs.mockImplementation(() =>
+    Promise.resolve({
+      docs: mockVolunteerHistoryData.map(doc => ({ id: doc.id, data: () => doc })),
+    })
+  );
+
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+  });
+
+  const selectAllCheckbox = screen.getAllByRole('checkbox')[0];
+  fireEvent.click(selectAllCheckbox);
+
+  const checkboxes = screen.getAllByRole('checkbox');
+  checkboxes.forEach((checkbox) => {
+    expect(checkbox).toBeChecked();
+  });
+
+  fireEvent.click(selectAllCheckbox);
+
+  checkboxes.forEach((checkbox) => {
+    expect(checkbox).not.toBeChecked();
+  });
 });
 
-test('renders hardcoded data correctly', () => {
-    expect(screen.getByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-    expect(screen.getByText("Cookie Dough")).toBeInTheDocument();
+test('handles individual checkbox correctly', async () => {
+  getDocs.mockImplementation(() =>
+    Promise.resolve({
+      docs: mockVolunteerHistoryData.map(doc => ({ id: doc.id, data: () => doc })),
+    })
+  );
+
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+  });
+
+  const individualCheckbox = screen.getAllByRole('checkbox')[1];
+  fireEvent.click(individualCheckbox);
+  expect(individualCheckbox).toBeChecked();
+
+  fireEvent.click(individualCheckbox);
+  expect(individualCheckbox).not.toBeChecked();
 });
 
-test('renders location correctly', () => {
-    const locationElement = screen.getByText(/123 Main St/i);
-    expect(locationElement).toBeInTheDocument();
+test('handles no volunteer history data', async () => {
+  getDocs.mockImplementation(() =>
+    Promise.resolve({
+      docs: [],
+    })
+  );
+
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+    expect(screen.getByText('No volunteer history found.')).toBeInTheDocument();
+  });
 });
 
-test('renders skills correctly', () => {
-    const skillsElement = screen.getByText(/Adaptability, Teamwork/i);
-    expect(skillsElement).toBeInTheDocument();
+test('handles error fetching volunteer history', async () => {
+  getDocs.mockImplementation(() => {
+    throw new Error('Error fetching volunteer history');
+  });
+
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+  });
 });
 
-test('select all checkbox selects all rows', () => {
-    const selectAllCheckbox = screen.getAllByRole('checkbox')[0];
-    fireEvent.click(selectAllCheckbox);
+test('handles no event data for matched volunteer', async () => {
+  getDocs.mockImplementation((ref) => {
+    if (ref._path.segments.includes('VolunteerHistory')) {
+      return Promise.resolve({
+        docs: [],
+      });
+    }
+    if (ref._path.segments.includes('Matched')) {
+      return Promise.resolve({
+        docs: [{ id: '1', data: () => ({ volunteer: 'John Doe', event: 'Event 3' }) }],
+      });
+    }
+    if (ref._path.segments.includes('EventDetails')) {
+      return Promise.resolve({
+        docs: [],
+      });
+    }
+  });
 
-    const checkboxes = screen.getAllByRole('checkbox');
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).toBeChecked();
-    });
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
+
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+    expect(screen.getByText('No volunteer history found.')).toBeInTheDocument();
+  });
 });
 
-test('individual checkboxes work correctly', () => {
-    const checkboxes = screen.getAllByRole('checkbox');
+test('handles existing volunteer history record', async () => {
+  getDocs.mockImplementation((ref) => {
+    if (ref._path.segments.includes('VolunteerHistory')) {
+      return Promise.resolve({
+        docs: mockVolunteerHistoryData.map(doc => ({ id: doc.id, data: () => doc })),
+      });
+    }
+    if (ref._path.segments.includes('Matched')) {
+      return Promise.resolve({
+        docs: [{ id: '1', data: () => ({ volunteer: 'John Doe', event: 'Event 1' }) }],
+      });
+    }
+    if (ref._path.segments.includes('EventDetails')) {
+      return Promise.resolve({
+        docs: [{ id: '1', data: () => ({ eventName: 'Event 1', eventDescription: 'Description 1', state: 'State 1', requiredSkills: ['Skill 1', 'Skill 2'], urgency: 'Low', eventDate: '2024-01-01' }) }],
+      });
+    }
+  });
 
-    // Click the first individual checkbox
-    fireEvent.click(checkboxes[1]);
-    expect(checkboxes[1]).toBeChecked();
-    expect(checkboxes[0]).not.toBeChecked(); // Select all checkbox should not be checked
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
 
-    // Click the second individual checkbox
-    fireEvent.click(checkboxes[2]);
-    expect(checkboxes[2]).toBeChecked();
-
-    // Click the select all checkbox
-    fireEvent.click(checkboxes[0]);
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).toBeChecked();
-    });
-
-    // Unclick the select all checkbox
-    fireEvent.click(checkboxes[0]);
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).not.toBeChecked();
-    });
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Event 1')).toBeInTheDocument();
+  });
 });
 
-beforeEach(() => {
-    render(<VolunteerHistory {...mockProps} />);
-});
+test('handles undefined fields in new volunteer history data', async () => {
+  getDocs.mockImplementation((ref) => {
+    if (ref._path.segments.includes('VolunteerHistory')) {
+      return Promise.resolve({
+        docs: [],
+      });
+    }
+    if (ref._path.segments.includes('Matched')) {
+      return Promise.resolve({
+        docs: [{ id: '1', data: () => ({ volunteer: 'John Doe', event: 'Event 4' }) }],
+      });
+    }
+    if (ref._path.segments.includes('EventDetails')) {
+      return Promise.resolve({
+        docs: [{ id: '1', data: () => ({ eventName: 'Event 4', eventDescription: undefined, state: undefined, requiredSkills: undefined, urgency: 'Low', eventDate: undefined }) }],
+      });
+    }
+  });
 
-test('renders Volunteer History title', () => {
-    const titleElement = screen.getByText(/Volunteer History/i);
-    expect(titleElement).toBeInTheDocument();
-});
+  await act(async () => {
+    renderWithRouter(<VolunteerHistory />);
+  });
 
-test('renders table headers correctly', () => {
-    const headers = ['Name', 'EventName', 'Description', 'Location', 'Skills', 'Urgency', 'Date', 'Attendance'];
-    headers.forEach(header => {
-        expect(screen.getByText(header)).toBeInTheDocument();
-    });
-});
-
-test('renders hardcoded data correctly', () => {
-    expect(screen.getByText("John Doe")).toBeInTheDocument();
-    expect(screen.getByText("Jane Doe")).toBeInTheDocument();
-    expect(screen.getByText("Cookie Dough")).toBeInTheDocument();
-});
-
-test('renders location correctly', () => {
-    const locationElement = screen.getByText(/123 Main St/i);
-    expect(locationElement).toBeInTheDocument();
-});
-
-test('renders skills correctly', () => {
-    const skillsElement = screen.getByText(/Adaptability, Teamwork/i);
-    expect(skillsElement).toBeInTheDocument();
-});
-
-test('select all checkbox selects all rows', () => {
-    const selectAllCheckbox = screen.getAllByRole('checkbox')[0];
-    fireEvent.click(selectAllCheckbox);
-
-    const checkboxes = screen.getAllByRole('checkbox');
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).toBeChecked();
-    });
-});
-
-test('individual checkboxes work correctly', () => {
-    const checkboxes = screen.getAllByRole('checkbox');
-
-    // Click the first individual checkbox
-    fireEvent.click(checkboxes[1]);
-    expect(checkboxes[1]).toBeChecked();
-    expect(checkboxes[0]).not.toBeChecked(); // Select all checkbox should not be checked
-
-    // Click the second individual checkbox
-    fireEvent.click(checkboxes[2]);
-    expect(checkboxes[2]).toBeChecked();
-
-    // Click the select all checkbox
-    fireEvent.click(checkboxes[0]);
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).toBeChecked();
-    });
-
-    // Unclick the select all checkbox
-    fireEvent.click(checkboxes[0]);
-    checkboxes.forEach(checkbox => {
-        expect(checkbox).not.toBeChecked();
-    });
+  await waitFor(() => {
+    expect(screen.getByText('Volunteer History')).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Event 4')).toBeInTheDocument();
+  });
 });

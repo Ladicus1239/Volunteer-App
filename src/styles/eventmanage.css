@@ -29,22 +29,26 @@
 
 /* Event Management Table Styles */
 .event-announcement-manage {
-  width: 100%;
+  width: 40px; /* Adjust this percentage to make the table narrower */
+  max-width: 500px; /* Optional: set a maximum width to ensure it doesn't grow too wide on larger screens */
+  margin: 0 auto 20px; /* Center the table horizontally and add bottom margin */
   border-collapse: collapse;
   background-color: white;
-  margin: 0 auto 20px; /* Adjust the top margin to align the table */
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border-radius: 20px; /* Rounded corners */
   border: none; /* Remove border */
+  margin-right: 200px;
 }
 
 .event-announcement-manage table {
-  width: 100%;
+  width: 40%;
   border-collapse: collapse;
   border: none; /* Remove border */
 }
 
-.event-announcement-manage th, .event-announcement-manage td, .event-announcement-manage tr {
+.event-announcement-manage th,
+.event-announcement-manage td,
+.event-announcement-manage tr {
   border: none; /* Remove border from all table elements */
 }
 
@@ -58,7 +62,7 @@
 }
 
 .event-announcement-manage td {
-  padding: 10px;
+  padding: 5px;
   text-align: left;
   font-family: "Georgia", "Times New Roman", serif;
   font-size: 18px;
@@ -115,8 +119,8 @@
 
 /* Event Management Page */
 .eventDiv-manage {
-  position: relative;
-  width: 850px;
+  position: center;
+  width: 500px;
   justify-content: center;
   resize: none;
   vertical-align: middle;
@@ -129,11 +133,15 @@
   box-sizing: border-box;
   margin-bottom: 20px;
   padding: 20px;
-  margin-right: 40px; /* Adjust to create space on the right */
+  margin-right: 20px;
+  margin-left: 300px; /* Adjust to create space on the right */
 }
 
-.eventDiv-manage input, .eventDiv-manage textarea, .eventDiv-manage select, .eventDiv-manage .react-select__control {
-  width: 80%; /* Match width of inputs */
+.eventDiv-manage input,
+.eventDiv-manage textarea,
+.eventDiv-manage select,
+.eventDiv-manage .react-select__control {
+  width: 100%; /* Match width of inputs */
   height: auto;
   resize: none;
   position: left;
@@ -142,7 +150,10 @@
   padding: 10px;
 }
 
-.eventDiv-manage input:hover, .eventDiv-manage textarea:hover, .eventDiv-manage select:hover, .eventDiv-manage .react-select__control:hover {
+.eventDiv-manage input:hover,
+.eventDiv-manage textarea:hover,
+.eventDiv-manage select:hover,
+.eventDiv-manage .react-select__control:hover {
   padding-bottom: 25px;
   transition-duration: 0.3s;
 }
@@ -159,7 +170,8 @@
   flex-direction: column;
 }
 
-.event-form-container-manage, .event-list-container-manage {
+.event-form-container-manage,
+.event-list-container-manage {
   display: flex;
   flex-direction: column;
   align-items: center;

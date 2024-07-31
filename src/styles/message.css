@@ -1,0 +1,30 @@
+.msg-header-232{
+    text-align: center;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 20px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 36px;
+    width: 310px;
+    margin: 15px auto 20px; 
+}
+
+.msg-header2-232{
+    text-align: center;
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    padding: 20px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 20px;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 30px;
+    width: 310px;
+    margin: 15px auto 20px; 
+   
+}

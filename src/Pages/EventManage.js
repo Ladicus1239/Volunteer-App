@@ -96,7 +96,7 @@ export default function EventManage() {
       eventName,
       eventDescription,
       city,
-      state: selectedState ? selectedState.value : "", // Use the value property
+      state: selectedState ? selectedState.value : "",
       requiredSkills: Array.isArray(requiredSkills) ? requiredSkills : [],
       urgency,
       eventDate,
@@ -128,7 +128,7 @@ export default function EventManage() {
     setEventName(eventToEdit.eventName);
     setEventDescription(eventToEdit.eventDescription);
     setCity(eventToEdit.city);
-    setSelectedState(states.find((state) => state.value === eventToEdit.state)); // Find by value
+    setSelectedState(states.find((state) => state.value === eventToEdit.state));
     setRequiredSkills(eventToEdit.requiredSkills || []);
     setUrgency(eventToEdit.urgency);
     setEventDate(eventToEdit.eventDate);
@@ -156,6 +156,7 @@ export default function EventManage() {
         <div className="event-form-container-manage">
           <form className="eventDiv-manage" onSubmit={handleSubmit}>
             <h3>Event Details</h3>
+            <label htmlFor="eventName">Event Name*:</label>
             <input
               type="text"
               id="eventName"
@@ -166,6 +167,7 @@ export default function EventManage() {
               onChange={(e) => setEventName(e.target.value)}
             />
             <br />
+            <label htmlFor="eventDescription">Event Description*:</label>
             <textarea
               id="eventDescription"
               placeholder="Event Description*"
@@ -185,6 +187,7 @@ export default function EventManage() {
                 placeholder="State*"
               />
             </div>
+            <label htmlFor="city">City*:</label>
             <input
               type="text"
               id="city"
@@ -194,13 +197,13 @@ export default function EventManage() {
               onChange={(e) => setCity(e.target.value)}
             />
             <h3>Additional Information</h3>
-            <h4 htmlFor="requiredSkills">Required Skills*:</h4>
+            <label htmlFor="requiredSkills">Required Skills*:</label>
             <DropdownMenu
               selectedItems={requiredSkills}
               setSelectedItems={setRequiredSkills}
               dataTestId="required-skills"
             />
-            <h4 htmlFor="urgency">Urgency*:</h4>
+            <label htmlFor="urgency">Urgency*:</label>
             <select
               id="urgency"
               required
@@ -211,7 +214,7 @@ export default function EventManage() {
               <option value="medium">Medium</option>
               <option value="high">High</option>
             </select>
-            <h4 htmlFor="eventDate">Event Date*:</h4>
+            <label htmlFor="eventDate">Event Date*:</label>
             <input
               type="date"
               id="eventDate"

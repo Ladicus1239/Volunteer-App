@@ -1,4 +1,3 @@
-/* Events Page Specific Styles */
 .adminredirect {
   margin: 4px;
   height: 40px;
@@ -27,41 +26,41 @@
   color: black;
 }
 
-/* Event Page Table Styles */
+
 .announcement {
-  width: 80%; /* Adjusted width to better fit centering */
+  width: 80%; 
   border-collapse: collapse;
   background-color: white;
   margin: 20px auto;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 20px; /* Rounded corners */
-  border: none; /* Remove border */
+  border-radius: 20px; 
+  border: none; 
 }
 
 .announcement table {
   width: 100%;
   border-collapse: collapse;
-  border: none !important; /* Ensure no border for table */
+  border: none !important; 
 }
 
 .announcement th,
 .announcement td,
 .announcement tr {
-  border: none !important; /* Remove border from all table elements */
+  border: none !important; 
 }
 
 .announcement th {
-  background: linear-gradient(#b9f6c4, transparent); /* Gradient color */
+  background: linear-gradient(#b9f6c4, transparent); 
   background-color: #86fa9b;
   padding: 10px;
-  text-align: center; /* Center text */
+  text-align: center;
   font-family: "Georgia", "Times New Roman", serif;
   font-size: 18px;
 }
 
 .announcement td {
   padding: 10px;
-  text-align: center; /* Center text */
+  text-align: center; 
   font-family: "Georgia", "Times New Roman", serif;
   font-size: 18px;
 }
@@ -93,9 +92,9 @@
 
 .main-content {
   display: flex;
-  justify-content: center; /* Center content */
-  align-items: center; /* Center content */
-  flex-direction: column; /* Use column for better centering */
+  justify-content: center; 
+  align-items: center; 
+  flex-direction: column; 
   width: 100%;
   margin: 0 auto;
 }
@@ -112,5 +111,5 @@
   font-family: "Georgia", "Times New Roman", serif;
   font-size: 36px;
   width: 310px;
-  margin: 15px auto 20px; /* Center the header and add margin */
+  margin: 15px auto 20px;
 }

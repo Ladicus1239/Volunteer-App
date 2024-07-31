@@ -2,7 +2,7 @@
 import React from 'react';
 import Message from '../Components/Message';
 import Navigation from '../Components/Navigation';
-import '../styles.css';
+import "../styles/message.css"
 
 export default function Notification() {
     return (
@@ -11,10 +11,10 @@ export default function Notification() {
                 <Navigation />
             </div>
             <div>
-                <h1 className="pageTitle">Notification Page</h1>
+                <h1 className="msg-header-232">Notification Page</h1>
             </div>
             <div>
-                <h2 className="center-text">Messenger</h2>
+                <h2 className="msg-header2-232">Messenger</h2>
                 <Message />
             </div>
         </>

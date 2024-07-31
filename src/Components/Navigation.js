@@ -75,6 +75,7 @@ export default function Navigation() {
                     <button onClick={handleLogout} className="logoutButton">Logout</button>
                 </li>
             </ul>
+            {error1 && <div className="error">{error1}</div>}
         </nav>
     );
 }

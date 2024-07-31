@@ -1,3 +1,4 @@
+//src/encrypt.js
 import CryptoJS from "crypto-js";
 
 const secretKey = "RlcZq8rGV19k50wxAyr10XHQM";
