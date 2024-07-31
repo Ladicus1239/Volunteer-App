@@ -4,12 +4,28 @@
 
 body{
     margin: 0;
-    background-color: #c0ff85;
+    background: linear-gradient(/*background change*/
+    150deg,
+    yellow 0px 160px,
+    white 100px,
+    #8bffa0 500px,
+    transparent
+  );
+  background-color: #c0ff85;
+  background-repeat: no-repeat;
+  background-size: cover;
+  min-height: 100vh;
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Navbar*/
 .nav{
-    background:linear-gradient(#b9f6c4,transparent);        
+    background:linear-gradient(#b9f6c4,transparent); 
+    background: linear-gradient(/*background change*/
+    40deg,
+    yellow 0px 80px,
+    white 100px,
+    transparent
+  );       
     background-color: #8bffa0;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);      
     color:black;

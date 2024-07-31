@@ -4,6 +4,7 @@
     flex-direction: row;
     justify-content: center;
     margin: 8px;
+    padding-bottom: 10px;
 }
 
 .state {
@@ -259,7 +260,7 @@
 .profileContainer5{
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: center;    
 }
 .header {
     font-size: 30px;
@@ -269,10 +270,11 @@
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     padding-left: 10px;
     padding-right: 10px;
-    padding-bottom: 40px;
+    padding-bottom: 45px;
     border: solid;
     border-color: #04AA6D;
-    border-radius: 20%;
+    border-radius: 2px;
+    border-width: 1px;
     width: 310px;
     height: 50px;
     overflow: hidden;
@@ -285,7 +287,8 @@
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     border: solid;
     border-color: #04AA6D;
-    border-radius: 5%;
+    border-radius: 2px;
+    border-width: 1px;
     width: 310px;
     height: 60px;
 }
@@ -299,7 +302,8 @@
     padding: 1px;
     border: solid;
     border-color: #04AA6D;
-    border-radius: 5%;
+    border-radius: 8px;
+    border-width: 1px;
     width: 750px;
     height: 350px;
 }
@@ -309,6 +313,8 @@
     height: 150px;
     border-style: dashed;
     border-color: #04AA6D;
+    border-radius: 20px;
+    border-width: 2px;
     background-color: #b9f6c4;
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
@@ -317,7 +323,8 @@
 .pmbutton {
     width: 200px;
     border: 2px solid #04AA6D;
-    border-radius: 10%;
+    border-radius: 20px;
+    border-width: 1px;
     background: linear-gradient(#b9f6c4, transparent);
     background-color: #86fa9b;
     font-weight: bold;
