@@ -29,54 +29,39 @@
 
 /* Event Page Table Styles */
 .announcement {
-  width: 80%; /* Adjusted width to better fit centering */
+  width: 90%; /* Adjusted width to better fit centering */
+  max-width: 1200px; /* Maximum width to prevent overflow */
   border-collapse: collapse;
   background-color: white;
   margin: 20px auto;
-  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
   border-radius: 20px; /* Rounded corners */
   border: none; /* Remove border */
-}
-
-.announcement table {
-  width: 100%;
-  border-collapse: collapse;
-  border: none !important; /* Ensure no border for table */
+  overflow-x: auto;
 }
 
 .announcement th,
-.announcement td,
-.announcement tr {
-  border: none !important; /* Remove border from all table elements */
+.announcement td {
+  padding: 8px 12px; /* Reduced padding for more compact look */
+  text-align: left; /* Align text to the left */
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 16px; /* Adjusted font size for readability */
+  border-bottom: 1px solid #ddd; /* Add a subtle border for neatness */
 }
 
 .announcement th {
   background: linear-gradient(#b9f6c4, transparent); /* Gradient color */
   background-color: #86fa9b;
-  padding: 10px;
-  text-align: center; /* Center text */
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 18px;
-}
-
-.announcement td {
-  padding: 10px;
-  text-align: center; /* Center text */
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 18px;
+  color: black;
+  font-weight: bold;
 }
 
 .announcement tr:nth-child(even) {
   background-color: #f2f2f2;
 }
 
-.announcement-names {
-  font-weight: bold;
-}
-
-.announcement-data {
-  font-family: "Georgia", "Times New Roman", serif;
-  font-size: 18px;
+.announcement tr:hover {
+  background-color: #ddd; /* Add a hover effect for better UX */
 }
 
 .center-text {
@@ -104,7 +89,7 @@
   text-align: center;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
-  box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.19);
   padding: 20px;
   border: solid;
   border-color: #04aa6d;

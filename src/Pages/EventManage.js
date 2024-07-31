@@ -63,7 +63,7 @@ const states = [
   { value: "WA", label: "Washington, WA" },
   { value: "WV", label: "West Virginia, WV" },
   { value: "WI", label: "Wisconsin, WI" },
-  { value: "WY", label: "Wyoming, WY" }
+  { value: "WY", label: "Wyoming, WY" },
 ];
 
 export default function EventManage() {
@@ -156,6 +156,7 @@ export default function EventManage() {
         <div className="event-form-container-manage">
           <form className="eventDiv-manage" onSubmit={handleSubmit}>
             <h3>Event Details</h3>
+            {/* Form fields */}
             <label htmlFor="eventName">Event Name*:</label>
             <input
               type="text"
@@ -222,13 +223,20 @@ export default function EventManage() {
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
             />
-            <button type="submit" className="adminredirect create-event-button-manage">
+            <button
+              type="submit"
+              className="adminredirect create-event-button-manage"
+            >
               {isEditing ? "Update Event" : "Create Event"}
             </button>
           </form>
         </div>
         <div className="event-list-container-manage">
-          <table className="event-announcement-manage" border={1} cellPadding={8}>
+          <table
+            className="event-announcement-manage"
+            border={1}
+            cellPadding={8}
+          >
             <thead>
               <tr className="event-announcement-names-manage">
                 <th>Event Name</th>
@@ -257,7 +265,9 @@ export default function EventManage() {
                   <td>{event.eventDate}</td>
                   <td>
                     <button onClick={() => handleEdit(event.id)}>Edit</button>
-                    <button onClick={() => handleDelete(event.id)}>Delete</button>
+                    <button onClick={() => handleDelete(event.id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
