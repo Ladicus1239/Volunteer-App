@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { getFirestore, collection, doc, updateDoc, addDoc, getDoc, setDoc, query, where, getDocs } from "firebase/firestore";
+import { getFirestore, collection, updateDoc, addDoc, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 //import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
@@ -92,33 +92,6 @@ const ProfileManage = () => {
     }
   }, [currentUser, navigate]);
 
-  /*const { currentUser } = useAuth();
-
-  const [userId, setUserId] = useState(null);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      if (currentUser) {
-        const usersCollection = collection(db, "UserCredentials");
-        const q = query(usersCollection, where("uid", "==", currentUser.uid));
-        const querySnapshot = await getDocs(q);
-        if (!querySnapshot.empty) {
-          setUserId(currentUser.uid);
-        }
-      }
-    };
-
-    fetchUser();
-  }, [currentUser]);*/
-  //const navigate = useNavigate();
-  //const emailRef = useRef(null);
-
-  /*useEffect(() => {
-    if (!currentUser) {
-      navigate("/login");
-    }
-  }, [currentUser, navigate]);*/
-
   const [selectedState, setSelectedState] = useState(null);
   const handleChangeState = (selectedState) => {
     setSelectedState(selectedState.value);
@@ -132,13 +105,6 @@ const ProfileManage = () => {
     const skillLabels = (selectedSkill || []).map(skill => skill.label);
     setSkillArray(skillLabels);
   };
-
-  /*const handleChangeSkill = (selectedSkill) => {
-    setSelectedSkill(selectedSkill);
-    setSelectedSkill(Array.isArray(selectedSkill) ? selectedSkill : []);
-    const skillString = (selectedSkill || []).map(skill => skill.value).join(", ");
-    setSkillArray(skillString);
-  };*/
 
   const [selectedDay, setSelectedDay] = useState(null);
   const handleChangeDay = (selectedDay) => {
@@ -156,7 +122,6 @@ const ProfileManage = () => {
   };
 
   const [selectedDates, setSelectedDates] = useState([]);
-  //const [dateArray, setDateArray] = useState([]);
 
   const handleDateSelection = () => {
     if (selectedDay && selectedMonth && selectedYear) {
@@ -164,7 +129,6 @@ const ProfileManage = () => {
       if (!selectedDates.includes(newDate)) {
         const updatedDates = [...selectedDates, newDate];
         setSelectedDates(updatedDates);
-        //setDateArray(updatedDates.join(", "));
       }
     } else {
       alert("Please select day, month, and year.");
@@ -175,15 +139,8 @@ const ProfileManage = () => {
   const [getAdd, setAddr] = useState('');
   const [getAdd2, setAddr2] = useState('');
   const [getCity, setCity] = useState('');
-  //const [getState, setState] = useState(''); 
   const [getZip, setZip] = useState('');
   const [getPref, setPref] = useState('');
-
-  /*const handleSubmit = (e) => {
-    e.preventDefault();
-    const page = { fullName, getAdd, getCity, selectedState, getZip, selectedSkill, selectedDates };
-    console.log(page);
-  };*/
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -230,11 +187,6 @@ const ProfileManage = () => {
     }
   };
   
-//  const page = { fullName, getAdd, getAdd2, getCity, getState: selectedState, getZip, getPref, selectedSkill, selectedDates };
-//  const db = getFirestore();
-//  const userDoc = doc(db, "UserCredentials", user.uid);
-//  await updateDoc(userDoc, page);
-
   return (
     <div>
       <div>
@@ -359,14 +311,3 @@ const ProfileManage = () => {
 }
 
 export default ProfileManage;
-
-/*
-
-            <input type="text"
-              id="state"
-              maxLength="2"
-              placeholder='State*'
-              required
-              value={getState}
-              onChange={(e) => setState(e.target.value)} /><br />
-              */

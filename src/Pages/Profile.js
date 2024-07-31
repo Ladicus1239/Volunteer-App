@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import Navigation from '../Components/Navigation';
+import Navigation from "../Components/Navigation";
 import db from "../firebase";
 import { collection, getDocs, getDoc, doc, query, where } from "firebase/firestore";
 import "../styles2.css";
 import { useAuth } from "../context/AuthContext";
 
-const Profile = (props) => {
+const Profile = () => {
   const { currentUser } = useAuth();
 
   // State for user profile details
