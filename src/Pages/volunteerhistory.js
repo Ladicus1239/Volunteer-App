@@ -3,6 +3,9 @@ import Navigation from '../Components/Navigation';
 import { collection, getDocs, query, where, addDoc } from "firebase/firestore";
 import db from "../firebase";
 import Checkbox from "@mui/material/Checkbox";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
+import { CSVLink } from "react-csv";
 import "../styles2.css";
 
 const VolunteerHistory = () => {
@@ -105,6 +108,60 @@ const VolunteerHistory = () => {
         setSelectAll(newCheckedItems.every(item => item));
     };
 
+    // Function to format date
+    const formatDate = (dateString) => {
+        const options = { year: "numeric", month: "long", day: "numeric" };
+        return new Date(dateString).toLocaleDateString(undefined, options);
+    };
+
+    // Function to export table to PDF
+    const exportPDF = () => {
+        const doc = new jsPDF();
+
+        doc.text("Volunteer History", 14, 16);
+        doc.autoTable({
+            startY: 20,
+            head: [
+                ["Name", "Event Name", "Description", "Location", "Skills", "Urgency", "Date", "Attendance"]
+            ],
+            body: data.map(volunteer => [
+                volunteer.name,
+                volunteer.ename,
+                volunteer.description,
+                volunteer.location,
+                Array.isArray(volunteer.skills) ? volunteer.skills.join(", ") : "",
+                volunteer.urgency,
+                formatDate(volunteer.date),
+                volunteer.attendance
+            ]),
+        });
+
+        doc.save("volunteer-history.pdf");
+    };
+
+    // CSV data and headers
+    const csvHeaders = [
+        { label: "Name", key: "name" },
+        { label: "Event Name", key: "ename" },
+        { label: "Description", key: "description" },
+        { label: "Location", key: "location" },
+        { label: "Skills", key: "skills" },
+        { label: "Urgency", key: "urgency" },
+        { label: "Date", key: "date" },
+        { label: "Attendance", key: "attendance" },
+    ];
+
+    const csvData = data.map(volunteer => ({
+        name: volunteer.name,
+        ename: volunteer.ename,
+        description: volunteer.description,
+        location: volunteer.location,
+        skills: Array.isArray(volunteer.skills) ? volunteer.skills.join(", ") : "",
+        urgency: volunteer.urgency,
+        date: formatDate(volunteer.date),
+        attendance: volunteer.attendance
+    }));
+
     return (
         <div>
             <Navigation />
@@ -124,7 +181,7 @@ const VolunteerHistory = () => {
                                         />
                                     </th>
                                     <th>Name</th>
-                                    <th>EventName</th>
+                                    <th>Event Name</th>
                                     <th>Description</th>
                                     <th>Location</th>
                                     <th>Skills</th>
@@ -156,6 +213,18 @@ const VolunteerHistory = () => {
                             </tbody>
                         </table>
                     )}
+                </div>
+                <div>
+                    <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
+                    <CSVLink
+                        data={csvData}
+                        headers={csvHeaders}
+                        filename={"volunteer-history.csv"}
+                        className="adminredirect"
+                        target="_blank"
+                    >
+                        Export to CSV
+                    </CSVLink>
                 </div>
             </div>
         </div>

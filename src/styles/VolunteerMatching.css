@@ -27,24 +27,24 @@
     color: black;
 }
   
-/* Volunteer Matching Table Styles */
+
 .vm-volunteer-announcement-353,
 .vm-matched-announcement-353 {
     width: 100%;
     max-width: 800px;
     border-collapse: collapse;
     background-color: white;
-    margin: 20px auto; /* Adjust the margin to center the table */
+    margin: 20px auto; 
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 20px; /* Rounded corners */
-    border: none; /* Remove border */
+    border-radius: 20px;
+    border: none; 
 }
   
 .vm-volunteer-announcement-353 table,
 .vm-matched-announcement-353 table {
     width: 100%;
     border-collapse: collapse;
-    border: none; /* Remove border */
+    border: none; 
 }
   
 .vm-volunteer-announcement-353 th,
@@ -53,12 +53,12 @@
 .vm-matched-announcement-353 td,
 .vm-volunteer-announcement-353 tr,
 .vm-matched-announcement-353 tr {
-    border: none; /* Remove border from all table elements */
+    border: none;
 }
   
 .vm-volunteer-announcement-353 th,
 .vm-matched-announcement-353 th {
-    background: linear-gradient(#b9f6c4, transparent); /* Gradient color */
+    background: linear-gradient(#b9f6c4, transparent); 
     background-color: #86fa9b;
     padding: 10px;
     text-align: left;
@@ -124,10 +124,9 @@
     font-family: "Georgia", "Times New Roman", serif;
     font-size: 36px;
     width: 310px;
-    margin: 15px auto 20px; /* Center the header and add margin */
+    margin: 15px auto 20px;
 }
-  
-/* Volunteer Matching Page */
+
 .vm-volunteerDiv-353 {
     position: relative;
     width: 850px;
@@ -143,7 +142,7 @@
     box-sizing: border-box;
     margin-bottom: 20px;
     padding: 20px;
-    margin-left: 20px; /* Adjust margin to move the div to the right */
+    margin-left: 20px;
 }
   
 .vm-volunteerDiv-353 input,
@@ -185,14 +184,14 @@
 }
   
 .vm-volunteer-list-container-353 {
-    margin-left: 0; /* Reduce margin to move the table closer to the div */
+    margin-left: 0;
 }
   
 .vm-volunteer-form-container-353 .vm-create-volunteer-button-353 {
     margin-top: 20px;
 }
 
-/* Header Box Styles */
+
 .header-box-353 {
     text-align: center;
     background: linear-gradient(#b9f6c4, transparent);
@@ -205,5 +204,5 @@
     font-family: "Georgia", "Times New Roman", serif;
     font-size: 36px;
     width: 310px;
-    margin: 15px auto 20px; /* Center the header and add margin */
+    margin: 15px auto 20px;
 }
