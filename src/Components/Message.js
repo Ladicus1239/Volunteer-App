@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import moment from 'moment';
 import "../styles/message.css";
-import { getFirestore, doc, setDoc, collection, query, orderBy, getDocs, deleteDoc } from "firebase/firestore";
+import { getFirestore, doc, setDoc, collection, query, orderBy, getDocs, deleteDoc, where, getDocs as getDocsByQuery } from "firebase/firestore";
 import { useNavigate } from 'react-router-dom';
 import db from '../firebase';
 import { getAuth, onAuthStateChanged } from "firebase/auth";
@@ -15,15 +15,27 @@ export default function Message() {
   const [inputarr, setInputarr] = useState([]);
   const [user, setUser] = useState(null);
   const [deleteCountdown, setDeleteCountdown] = useState({});
+  const [isAdmin, setIsAdmin] = useState(false);
   const navigate = useNavigate();
   const auth = getAuth();
 
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
-        setUser(user);
-        setInputdata({ ...inputdata, sender: user.email });
-        loadMessages(user.email);
+        const userEmail = user.email;
+        const querySnapshot = await getDocsByQuery(query(collection(db, "UserCredentials"), where("email", "==", userEmail)));
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          if (userData.email === userEmail) {
+            setUser(user);
+            setIsAdmin(userData.admin);
+            setInputdata({ ...inputdata, sender: user.email });
+            loadMessages(user.email);
+          }
+        } else {
+          alert("Register to view this page.");
+          navigate('/');
+        }
       } else {
         alert("You need to be logged in to access this page.");
         navigate('/');
@@ -120,42 +132,44 @@ export default function Message() {
 
   return (
     <>
-      <div className='message-container-232'>
-        <div className='input-container-232'>
-          <input
-            className="sender-232"
-            type="text"
-            placeholder='Sender...'
-            autoComplete='off'
-            name="sender"
-            value={inputdata.sender}
-            onChange={changehandle}
-            disabled
-          /> <br/>
-          <input
-            className="receiver-232"
-            type="text"
-            placeholder='Receiver...'
-            autoComplete='off'
-            name="receiver"
-            value={inputdata.receiver}
-            onChange={changehandle}
-          /> <br/>
+      {isAdmin && (
+        <div className='message-container-232'>
+          <div className='input-container-232'>
+            <input
+              className="sender-232"
+              type="text"
+              placeholder='Sender...'
+              autoComplete='off'
+              name="sender"
+              value={inputdata.sender}
+              onChange={changehandle}
+              disabled
+            /> <br/>
+            <input
+              className="receiver-232"
+              type="text"
+              placeholder='Receiver...'
+              autoComplete='off'
+              name="receiver"
+              value={inputdata.receiver}
+              onChange={changehandle}
+            /> <br/>
+          </div>
+          <div className='message-box-232'>
+            <textarea
+              className="message-232"
+              autoComplete='off'
+              name="message"
+              placeholder='Message...'
+              value={inputdata.message}
+              onChange={changehandle}
+              style={{ height: '300px' }}
+            />
+            <button className="notificationSend-232" onClick={saveMessage}>Send</button>
+          </div>
         </div>
-        <div className='message-box-232'>
-          <textarea
-            className="message-232"
-            autoComplete='off'
-            name="message"
-            placeholder='Message...'
-            value={inputdata.message}
-            onChange={changehandle}
-            style={{ height: '300px' }}
-          />
-          <button className="notificationSend-232" onClick={saveMessage}>Send</button>
-        </div>
-      </div>
-      
+      )}
+
       <table className="announcement-232" border={1} cellPadding={8}>
         <thead>
           <tr className="announcementNames-232">
