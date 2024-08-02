@@ -1,4 +1,5 @@
-.msg-header-232{
+/* Message Page Specific Styles */
+.msg-header-232 {
     text-align: center;
     background: linear-gradient(#b9f6c4, transparent);
     background-color: #86fa9b;
@@ -13,7 +14,7 @@
     margin: 15px auto 20px; 
 }
 
-.msg-header2-232{
+.msg-header2-232 {
     text-align: center;
     background: linear-gradient(#b9f6c4, transparent);
     background-color: #86fa9b;
@@ -26,5 +27,105 @@
     font-size: 30px;
     width: 310px;
     margin: 15px auto 20px; 
-   
+}
+
+.message-container-232 {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    background-color: #86fa9b;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 20px;
+    width: 800px;
+    margin: 0 auto 20px auto;
+}
+
+.input-container-232 {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin-bottom: 20px;
+}
+
+.message-box-232 {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+}
+
+.sender-232, .receiver-232 {
+    width: 500px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 10px;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+
+.message-232 {
+    width: 750px;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: solid;
+    border-color: #04aa6d;
+    border-radius: 10px;
+    font-family: "Georgia", "Times New Roman", serif;
+}
+
+.notificationSend-232 {
+    padding: 10px 20px;
+    border: none;
+    background-color: #04aa6d;
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    align-self: center;
+}
+
+.notificationSend-232:hover {
+    background-color: #028a5e;
+}
+
+.announcement-232 {
+    width: 800px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    border-radius: 20px;
+    border: none;
+}
+
+.announcement-232 th,
+.announcement-232 td,
+.announcement-232 tr {
+    border: none;
+}
+
+.announcement-232 th,
+.announcement-232 td {
+    padding: 15px;
+}
+
+.announcementNames-232 {
+    background: linear-gradient(#b9f6c4, transparent);
+    background-color: #86fa9b;
+    text-align: left;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+}
+
+.announcementData-232 {
+    text-align: left;
+    font-family: "Georgia", "Times New Roman", serif;
+    font-size: 18px;
+}
+
+.announcement-232 tr:nth-child(even) {
+    background-color: #f2f2f2;
 }

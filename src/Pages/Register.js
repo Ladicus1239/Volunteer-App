@@ -40,6 +40,7 @@ export default function Signup() {
         const docRef = await addDoc(collection(db, "UserCredentials"), {
           email: email,
           password: encryptData(passwordRef.current.value),
+          admin: false, // Set admin field to false
         });
         console.log("Document written with ID: ", docRef.id);
       } catch (e) {
