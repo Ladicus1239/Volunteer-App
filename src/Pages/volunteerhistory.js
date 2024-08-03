@@ -7,92 +7,63 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { CSVLink } from "react-csv";
 import "../styles2.css";
+import { useNavigate } from "react-router-dom";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 const VolunteerHistory = () => {
     const [data, setData] = useState([]);
     const [checkedItems, setCheckedItems] = useState([]);
     const [selectAll, setSelectAll] = useState(false);
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+    const auth = getAuth();
 
     useEffect(() => {
-        const fetchVolunteerHistory = async () => {
-            try {
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userEmail = user.email;
+                const querySnapshot = await getDocs(query(collection(db, "UserCredentials"), where("email", "==", userEmail)));
+                if (!querySnapshot.empty) {
+                    const userData = querySnapshot.docs[0].data();
+                    setIsAdmin(userData.admin);
+                    fetchVolunteerHistory(userData.admin, userData.email);
+                } else {
+                    alert("Register to view this page.");
+                    navigate('/');
+                }
+            } else {
+                alert("You need to be logged in to access this page.");
+                navigate('/');
+            }
+            setLoading(false);
+        });
+    }, []);
+
+    const fetchVolunteerHistory = async (isAdmin, userEmail) => {
+        try {
+            if (isAdmin) {
                 const volunteerHistoryRef = collection(db, 'VolunteerHistory');
                 const volunteerHistorySnapshot = await getDocs(volunteerHistoryRef);
                 const volunteerHistoryData = volunteerHistorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setData(volunteerHistoryData.sort((a, b) => a.name.localeCompare(b.name)));
+            } else {
+                const userProfileRef = collection(db, 'UserProfiles');
+                const userQuery = query(userProfileRef, where("email", "==", userEmail));
+                const userSnapshot = await getDocs(userQuery);
+                const userName = userSnapshot.docs[0].data().fullName;
 
-                console.log("Volunteer History Data:", volunteerHistoryData);
-
-                await updateVolunteerHistory(volunteerHistoryData);
-
-                const updatedVolunteerHistorySnapshot = await getDocs(volunteerHistoryRef);
-                const updatedVolunteerHistoryData = updatedVolunteerHistorySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                setData(updatedVolunteerHistoryData);
-                setCheckedItems(updatedVolunteerHistoryData.map(() => false));
-            } catch (error) {
-                console.error("Error fetching volunteer history:", error);
+                const volunteerHistoryRef = collection(db, 'VolunteerHistory');
+                const historyQuery = query(volunteerHistoryRef, where("name", "==", userName));
+                const historySnapshot = await getDocs(historyQuery);
+                const historyData = historySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                setData(historyData);
             }
-        };
-
-        const updateVolunteerHistory = async (volunteerHistoryData) => {
-            try {
-                const matchedRef = collection(db, 'Matched');
-                const matchedSnapshot = await getDocs(matchedRef);
-                const matchedData = matchedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-
-                console.log("Matched Data:", matchedData);
-
-                for (const matched of matchedData) {
-                    const eventDetailsRef = collection(db, 'EventDetails');
-                    const eventQuery = query(eventDetailsRef, where("eventName", "==", matched.event));
-                    const eventSnapshot = await getDocs(eventQuery);
-
-                    console.log(`Event Details for event ${matched.event}:`, eventSnapshot.docs.map(doc => doc.data()));
-
-                    if (!eventSnapshot.empty) {
-                        const eventData = eventSnapshot.docs[0].data();
-                        const existingHistory = volunteerHistoryData.find(vh => vh.name === matched.volunteer && vh.ename === eventData.eventName);
-
-                        if (!existingHistory) {
-                            const newVolunteerHistoryData = {
-                                name: matched.volunteer,
-                                ename: eventData.eventName,
-                                description: eventData.eventDescription,
-                                location: eventData.state || '',
-                                skills: eventData.requiredSkills || [],
-                                urgency: eventData.urgency,
-                                date: eventData.eventDate,
-                                attendance: "Absent"
-                            };
-
-                            console.log("Adding new volunteer history data:", newVolunteerHistoryData);
-
-                            Object.keys(newVolunteerHistoryData).forEach(key => {
-                                if (newVolunteerHistoryData[key] === undefined) {
-                                    console.error(`Field ${key} is undefined for volunteer ${matched.volunteer} and event ${eventData.eventName}`);
-                                }
-                            });
-
-                            await addDoc(collection(db, 'VolunteerHistory'), newVolunteerHistoryData);
-                        } else {
-                            console.log("Volunteer history already exists for", matched.volunteer, eventData.eventName);
-                        }
-                    }
-                }
-            } catch (error) {
-                console.error("Error updating volunteer history:", error);
-            }
-        };
-
-        fetchVolunteerHistory();
-    }, []);
-
-    useEffect(() => {
-        console.log("Data state updated:", data);
-    }, [data]);
-
-    useEffect(() => {
-        console.log("Checked Items state updated:", checkedItems);
-    }, [checkedItems]);
+            setCheckedItems(data.map(() => false));
+        } catch (error) {
+            console.error("Error fetching volunteer history:", error);
+        }
+    };
 
     const handleSelectAllChange = (event) => {
         const newCheckedItems = data.map(() => event.target.checked);
@@ -104,20 +75,16 @@ const VolunteerHistory = () => {
         const newCheckedItems = [...checkedItems];
         newCheckedItems[index] = event.target.checked;
         setCheckedItems(newCheckedItems);
-
         setSelectAll(newCheckedItems.every(item => item));
     };
 
-    // Function to format date
     const formatDate = (dateString) => {
         const options = { year: "numeric", month: "long", day: "numeric" };
         return new Date(dateString).toLocaleDateString(undefined, options);
     };
 
-    // Function to export table to PDF
     const exportPDF = () => {
         const doc = new jsPDF();
-
         doc.text("Volunteer History", 14, 16);
         doc.autoTable({
             startY: 20,
@@ -135,11 +102,9 @@ const VolunteerHistory = () => {
                 volunteer.attendance
             ]),
         });
-
         doc.save("volunteer-history.pdf");
     };
 
-    // CSV data and headers
     const csvHeaders = [
         { label: "Name", key: "name" },
         { label: "Event Name", key: "ename" },
@@ -161,6 +126,10 @@ const VolunteerHistory = () => {
         date: formatDate(volunteer.date),
         attendance: volunteer.attendance
     }));
+
+    if (loading) {
+        return <div>Loading...</div>;
+    }
 
     return (
         <div>
@@ -215,16 +184,20 @@ const VolunteerHistory = () => {
                     )}
                 </div>
                 <div>
-                    <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
-                    <CSVLink
-                        data={csvData}
-                        headers={csvHeaders}
-                        filename={"volunteer-history.csv"}
-                        className="adminredirect"
-                        target="_blank"
-                    >
-                        Export to CSV
-                    </CSVLink>
+                    {isAdmin && (
+                        <>
+                            <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
+                            <CSVLink
+                                data={csvData}
+                                headers={csvHeaders}
+                                filename={"volunteer-history.csv"}
+                                className="adminredirect"
+                                target="_blank"
+                            >
+                                Export to CSV
+                            </CSVLink>
+                        </>
+                    )}
                 </div>
             </div>
         </div>

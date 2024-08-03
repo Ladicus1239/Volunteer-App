@@ -175,7 +175,7 @@ export default function Message() {
           <tr className="announcementNames-232">
             <th className="announcementNames-232">Sender</th>
             <th className="announcementNames-232">Message</th>
-            <th className="announcementNames-232">Actions</th>
+            <th className="announcementNames-232">Delete</th>
           </tr>
         </thead>
         <tbody>

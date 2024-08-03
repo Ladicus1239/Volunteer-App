@@ -1,41 +1,76 @@
 import React, { useState, useEffect } from "react";
 import db from "../firebase";
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, query, where, onSnapshot, getDocs } from "firebase/firestore";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { CSVLink } from "react-csv";
-import "../styles/events.css";  
+import "../styles/events.css";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function EventDisplay() {
   const [events, setEvents] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const auth = getAuth();
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "EventDetails"),
-      (snapshot) => {
-        setEvents(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userEmail = user.email;
+        const querySnapshot = await getDocs(query(collection(db, "UserCredentials"), where("email", "==", userEmail)));
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          setIsAdmin(userData.admin);
+          if (userData.admin) {
+            loadAllEvents();
+          } else {
+            loadMatchedEvents(userEmail);
+          }
+        } else {
+          alert("Register to view this page.");
+          // navigate to home or login page
+        }
+      } else {
+        alert("You need to be logged in to access this page.");
+        // navigate to home or login page
       }
-    );
-
-    return () => unsubscribe();
+    });
   }, []);
 
-  
+  const loadAllEvents = () => {
+    const unsubscribe = onSnapshot(collection(db, "EventDetails"), (snapshot) => {
+      setEvents(snapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+    });
+    return () => unsubscribe();
+  };
+
+  const loadMatchedEvents = async (userEmail) => {
+    const userProfilesSnapshot = await getDocs(query(collection(db, "UserProfiles"), where("email", "==", userEmail)));
+    if (!userProfilesSnapshot.empty) {
+      const userName = userProfilesSnapshot.docs[0].data().fullName;
+      const matchedSnapshot = await getDocs(query(collection(db, "Matched"), where("volunteer", "==", userName)));
+      const eventNames = matchedSnapshot.docs.map((doc) => doc.data().event);
+
+      if (eventNames.length > 0) {
+        const eventsQuery = query(collection(db, "EventDetails"), where("eventName", "in", eventNames));
+        const eventsSnapshot = await getDocs(eventsQuery);
+        setEvents(eventsSnapshot.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+      } else {
+        setEvents([]);
+      }
+    }
+  };
+
   const formatDate = (dateString) => {
     const options = { year: "numeric", month: "long", day: "numeric" };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  
   const exportPDF = () => {
     const doc = new jsPDF();
-
     doc.text("Event Details", 14, 16);
     doc.autoTable({
       startY: 20,
-      head: [
-        ["Event Name", "Event Description", "City", "State", "Required Skills", "Urgency", "Event Date"]
-      ],
+      head: [["Event Name", "Event Description", "City", "State", "Required Skills", "Urgency", "Event Date"]],
       body: events.map(event => [
         event.eventName,
         event.eventDescription,
@@ -46,11 +81,9 @@ export default function EventDisplay() {
         formatDate(event.eventDate)
       ]),
     });
-
     doc.save("event-details.pdf");
   };
 
-  
   const csvHeaders = [
     { label: "Event Name", key: "eventName" },
     { label: "Event Description", key: "eventDescription" },
@@ -105,19 +138,20 @@ export default function EventDisplay() {
           </tbody>
         </table>
       </div>
-
-      <div>
-        <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
-        <CSVLink
-          data={csvData}
-          headers={csvHeaders}
-          filename={"event-details.csv"}
-          className="adminredirect"
-          target="_blank"
-        >
-          Export to CSV
-        </CSVLink>
-      </div>
+      {isAdmin && (
+        <div>
+          <button onClick={exportPDF} className="adminredirect">Export to PDF</button>
+          <CSVLink
+            data={csvData}
+            headers={csvHeaders}
+            filename={"event-details.csv"}
+            className="adminredirect"
+            target="_blank"
+          >
+            Export to CSV
+          </CSVLink>
+        </div>
+      )}
     </>
   );
 }

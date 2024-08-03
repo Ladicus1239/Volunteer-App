@@ -1,8 +1,9 @@
-// src/Pages/VolunteerMatching.js
 import React, { useEffect, useState } from 'react';
 import Navigation from "../Components/Navigation";
 import db from "../firebase";
 import { collection, getDocs, setDoc, doc, query, where, deleteDoc } from "firebase/firestore";
+import { useNavigate } from 'react-router-dom';
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import "../styles/VolunteerMatching.css";
 
 // Fetch volunteers from Firestore
@@ -96,6 +97,43 @@ export default function VolunteerMatching() {
   const [volunteers, setVolunteers] = useState([]);
   const [matches, setMatches] = useState([]);
   const [error, setError] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [alertMessage, setAlertMessage] = useState("");
+  const navigate = useNavigate();
+  const auth = getAuth();
+
+  useEffect(() => {
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        const userEmail = user.email;
+        const querySnapshot = await getDocs(query(collection(db, "UserCredentials"), where("email", "==", userEmail)));
+        if (!querySnapshot.empty) {
+          const userData = querySnapshot.docs[0].data();
+          if (userData.admin) {
+            setIsAdmin(true);
+          } else {
+            setAlertMessage("You don't have permission to view this page.");
+            navigate('/');
+          }
+        } else {
+          setAlertMessage("Register to view this page.");
+          navigate('/');
+        }
+      } else {
+        setAlertMessage("You need to be logged in to access this page.");
+        navigate('/');
+      }
+      setLoading(false);
+    });
+  }, [auth, navigate]);
+
+  useEffect(() => {
+    if (alertMessage) {
+      alert(alertMessage);
+      setAlertMessage(""); // Clear the alert message after showing it
+    }
+  }, [alertMessage]);
 
   useEffect(() => {
     async function fetchData() {
@@ -121,6 +159,14 @@ export default function VolunteerMatching() {
 
     fetchData();
   }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAdmin) {
+    return null;
+  }
 
   return (
     <div>
