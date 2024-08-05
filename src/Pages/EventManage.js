@@ -12,9 +12,9 @@ import {
   onSnapshot,
   query,
   where,
-  getDocs
+  getDocs,
 } from "firebase/firestore";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 import "../styles/eventmanage.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 
@@ -68,7 +68,7 @@ const states = [
   { value: "WA", label: "Washington, WA" },
   { value: "WV", label: "West Virginia, WV" },
   { value: "WI", label: "Wisconsin, WI" },
-  { value: "WY", label: "Wyoming, WY" }
+  { value: "WY", label: "Wyoming, WY" },
 ];
 
 export default function EventManage() {
@@ -92,22 +92,27 @@ export default function EventManage() {
     onAuthStateChanged(auth, async (user) => {
       if (user) {
         const userEmail = user.email;
-        const querySnapshot = await getDocs(query(collection(db, "UserCredentials"), where("email", "==", userEmail)));
+        const querySnapshot = await getDocs(
+          query(
+            collection(db, "UserCredentials"),
+            where("email", "==", userEmail)
+          )
+        );
         if (!querySnapshot.empty) {
           const userData = querySnapshot.docs[0].data();
           if (userData.admin) {
             setIsAdmin(true);
           } else {
             setAlertMessage("You don't have permission to view this page.");
-            navigate('/');
+            navigate("/");
           }
         } else {
           setAlertMessage("Register to view this page.");
-          navigate('/');
+          navigate("/");
         }
       } else {
         setAlertMessage("You need to be logged in to access this page.");
-        navigate('/');
+        navigate("/");
       }
       setLoading(false);
     });
@@ -226,17 +231,18 @@ export default function EventManage() {
               onChange={(e) => setEventDescription(e.target.value)}
             ></textarea>
             <br />
-            <div className="state">
-              <Select
-                className="state"
-                options={states}
-                value={selectedState}
-                onChange={handleChangeState}
-                isSearchable={true}
-                maxMenuHeight={130}
-                placeholder="State*"
-              />
-            </div>
+            <label htmlFor="state">State*:</label>
+            <Select
+              className="state"
+              options={states}
+              value={selectedState}
+              onChange={handleChangeState}
+              required
+              isSearchable={true}
+              maxMenuHeight={130}
+              placeholder="State*"
+            />
+
             <label htmlFor="city">City*:</label>
             <input
               type="text"
@@ -272,13 +278,20 @@ export default function EventManage() {
               value={eventDate}
               onChange={(e) => setEventDate(e.target.value)}
             />
-            <button type="submit" className="adminredirect create-event-button-manage">
+            <button
+              type="submit"
+              className="adminredirect create-event-button-manage"
+            >
               {isEditing ? "Update Event" : "Create Event"}
             </button>
           </form>
         </div>
         <div className="event-list-container-manage">
-          <table className="event-announcement-manage" border={1} cellPadding={8}>
+          <table
+            className="event-announcement-manage"
+            border={1}
+            cellPadding={8}
+          >
             <thead>
               <tr className="event-announcement-names-manage">
                 <th>Event Name</th>
@@ -307,7 +320,9 @@ export default function EventManage() {
                   <td>{event.eventDate}</td>
                   <td>
                     <button onClick={() => handleEdit(event.id)}>Edit</button>
-                    <button onClick={() => handleDelete(event.id)}>Delete</button>
+                    <button onClick={() => handleDelete(event.id)}>
+                      Delete
+                    </button>
                   </td>
                 </tr>
               ))}
