@@ -1,14 +1,52 @@
 import React, { useEffect, useState } from "react";
 import Navigation from "../Components/Navigation";
 import db from "../firebase";
-import { collection, getDocs, getDoc, doc, query, where } from "firebase/firestore";
+import { collection, getDocs, getDoc, doc, query, where, updateDoc } from "firebase/firestore";
 import "../styles2.css";
 import { useAuth } from "../context/AuthContext";
+import { Avatar, Button, Modal, Box, Typography } from "@mui/material";
+import { storage } from "../firebase";
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const Profile = () => {
   const { currentUser } = useAuth();
+  const [url, setUrl] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [tempImage, setTempImage] = useState(null);
+  const [errorModalOpen, setErrorModalOpen] = useState(false);
 
-  // State for user profile details
+  const handleImageChange = (e) => {
+    if (e.target.files[0]) {
+      setTempImage(e.target.files[0]);
+    }
+  };
+
+  const handleImageSubmit = async () => {
+    if (!tempImage) return;
+
+    const imageRef = ref(storage, `images/${currentUser.uid}/${tempImage.name}`);
+    await uploadBytes(imageRef, tempImage);
+    const imageUrl = await getDownloadURL(imageRef);
+
+    const docId = await queryUserProfile(currentUser.email);
+    if (docId) {
+      const userRef = doc(db, "UserProfiles", docId);
+      await updateDoc(userRef, { imageUrl });
+      setUrl(imageUrl);
+    }
+
+    setTempImage(null);
+    setModalOpen(false);
+  };
+
+  const openImageChangeModal = () => {
+    if (currentUser) {
+      setModalOpen(true);
+    } else {
+      setErrorModalOpen(true);
+    }
+  };
+
   const [profileData, setProfileData] = useState({
     fullName: '',
     getAdd: '',
@@ -23,27 +61,17 @@ const Profile = () => {
 
   const queryUserProfile = async (userEmail) => {
     try {
-      console.log('Current User Email:', userEmail);
-
-      // Reference to the Firestore collection
       const userProfileRef = collection(db, 'UserProfiles');
-
-      // Create a query against the collection to find the document with the matching email
       const q = query(userProfileRef, where("email", "==", userEmail));
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        console.log('No matching documents.');
         return null;
       }
 
       let docId = null;
       querySnapshot.forEach(doc => {
-        const docData = doc.data();
-        console.log('Matching Document Data:', docData);
-        console.log('Stored Email:', docData.email);
         docId = doc.id;
-        console.log('Matching Document ID:', docId);
       });
 
       return docId;
@@ -56,25 +84,17 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       if (currentUser) {
-        const currentUserEmail = currentUser.email; // Get the current user's email
-        console.log('Current user email:', currentUserEmail);
-
+        const currentUserEmail = currentUser.email;
         const docId = await queryUserProfile(currentUserEmail);
         if (docId) {
-          console.log('Found document ID:', docId);
-
-          // Fetch the document with the found docId
           const docRef = doc(db, "UserProfiles", docId);
           const docSnap = await getDoc(docRef);
 
           if (docSnap.exists()) {
-            console.log('Document Data:', docSnap.data());
             setProfileData(docSnap.data());
-          } else {
-            console.log('No such document!');
+            setUrl(docSnap.data().imageUrl || null);
           }
         } else {
-          console.log('No document found.');
           setProfileData({
             fullName: '',
             getAdd: '',
@@ -105,7 +125,10 @@ const Profile = () => {
             </div>
           </div>
           <div className="profileContainer2">
-            <div className="image">Profile image</div>
+            <div className="image">
+              <Avatar className= "avatar" src={url} variant = "square" sx={{ width: 150, height: 150 }} />
+              <Button className="imageButton" onClick={openImageChangeModal}>Change Image</Button>
+            </div>
           </div>
         </div>
         <div className="profileContainer4">
@@ -118,13 +141,42 @@ const Profile = () => {
             <p>{profileData.selectedDates && profileData.selectedDates.length > 0 ? profileData.selectedDates.join(', ') : 'No dates available'}</p>
           </div>
           <br />
-          <button className="pmbutton">
-            <a href="/profile/profilemanagement">Profile Management</a>
-          </button>
+          <Button className="pmbutton" component="a" href="/profile/profilemanagement">Profile Management</Button>
         </div>
       </div>
+      
+      <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
+        <Box sx={{ ...style }}>
+          <Typography variant="h6">Select a new image</Typography>
+          <input type="file" onChange={handleImageChange} />
+          <div>
+            <Button className= "change" onClick={handleImageSubmit}>Change</Button>
+            <Button className= "cancel" onClick={() => setModalOpen(false)}>Cancel</Button>
+          </div>
+        </Box>
+      </Modal>
+
+      <Modal open={errorModalOpen} onClose={() => setErrorModalOpen(false)}>
+        <Box sx={{ ...style }}>
+          <Typography variant="h6" color="error">Error</Typography>
+          <Typography variant="body1">You must be signed in to change the image.</Typography>
+          <Button className = "close" onClick={() => setErrorModalOpen(false)}>Close</Button>
+        </Box>
+      </Modal>
     </div>
   );
+};
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
 };
 
 export default Profile;
