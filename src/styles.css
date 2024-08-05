@@ -5,13 +5,11 @@
 body{
     margin: 0;
     background: linear-gradient(/*background change*/
-    150deg,
-    yellow 0px 160px,
-    white 100px,
-    #8bffa0 500px,
+    #FFF95B 0px 100px,
+    #8bffa0 300px,
     transparent
   );
-  background-color: #c0ff85;
+  background-color: #8bffa0;
   background-repeat: no-repeat;
   background-size: cover;
   min-height: 100vh;
@@ -19,13 +17,9 @@ body{
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Navbar*/
 .nav{
-    background:linear-gradient(#b9f6c4,transparent); 
-    background: linear-gradient(/*background change*/
-    40deg,
-    yellow 0px 80px,
-    white 100px,
-    transparent
-  );       
+    background:linear-gradient(
+        #b9f6c4 0px 110px,
+        transparent); 
     background-color: #8bffa0;
     box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);      
     color:black;
@@ -726,7 +720,7 @@ td.announcementData{
     height: 350px;
 }
 
-.image {
+/*.image {
     width: 250px;
     height: 150px;
     border-style: dashed;
@@ -734,7 +728,7 @@ td.announcementData{
     background-color: #b9f6c4;
     box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
     text-align: center;
-}
+}*/
 
 .pmbutton {
     width: 200px;
