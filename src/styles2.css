@@ -1,5 +1,5 @@
 /* profile management page*/
-.PManageContainer1{
+.PManageContainer1 {
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -10,12 +10,12 @@
 .center-text {
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  align-items: center; 
+  justify-content: center;
+  align-items: center;
   margin-top: 30px;
 }
 .center-text .pageTitle {
-  border: 2px solid #04AA6D;
+  border: 2px solid #04aa6d;
   border-radius: 20%;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
@@ -35,7 +35,6 @@
   flex-direction: row;
 }
 
-
 .day {
   padding-left: 5px;
 }
@@ -54,7 +53,7 @@
 .buttonDates {
   position: relative;
   margin-top: 5%;
-  border: 2px solid #04AA6D;
+  border: 2px solid #04aa6d;
   border-radius: 10%;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
@@ -87,7 +86,7 @@
   margin-left: 70px;
   margin-top: 15px;
   border: solid;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   max-height: 90px;
   overflow: scroll;
 }
@@ -95,7 +94,7 @@
   resize: none;
   justify-content: center;
   text-align: center;
-  font-family: "Georgia","Times New Roman", serif;
+  font-family: "Georgia", "Times New Roman", serif;
   width: 600px;
   height: 500px;
   margin-right: 10px;
@@ -105,13 +104,13 @@
   background-color: #86fa9b;
   border-style: solid;
   border-radius: 8px;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   box-sizing: border-box;
 }
 
 .registerDiv1 input {
   resize: none;
-  width:300px;
+  width: 300px;
   padding: 2%;
   margin-bottom: 20px;
   transition-duration: 0.5s;
@@ -130,18 +129,18 @@
   margin-left: 10px;
   justify-content: center;
   align-items: center;
-  font-family: "Georgia","Times New Roman", serif;
+  font-family: "Georgia", "Times New Roman", serif;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
   border-style: solid;
   border-radius: 8px;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   box-sizing: border-box;
 }
 
 .registerDiv2 input {
-  padding:10px;
+  padding: 10px;
   transition-duration: 0.5s;
 }
 
@@ -159,11 +158,11 @@
 .submit {
   width: 125px;
   height: 80px;
-  background:linear-gradient(#b9f6c4,transparent);
-  background-color: #86fa9b; 
+  background: linear-gradient(#b9f6c4, transparent);
+  background-color: #86fa9b;
   border: none;
   color: black;
-  border: 2px solid #04AA6D;
+  border: 2px solid #04aa6d;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -175,7 +174,7 @@
 }
 
 .submit:hover {
-  background-color: #04AA6D;
+  background-color: #04aa6d;
   color: white;
   transition-duration: 0.3s;
 }
@@ -209,12 +208,12 @@
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Volunteer History Page*/
-.volunteerContainer{
-display: flex;
-flex-direction: column;
-justify-content: center; 
-align-items: center; 
-margin-top: 30px;
+.volunteerContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-top: 30px;
 }
 
 .volhistory {
@@ -222,11 +221,14 @@ margin-top: 30px;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  padding: 10px;
+  padding: 20px;
   border: solid;
-  border-color: #04AA6D;
-  border-radius: 20%;
+  border-color: #04aa6d;
+  border-radius: 20px;
+  font-family: "Georgia", "Times New Roman", serif;
+  font-size: 36px;
   width: 310px;
+  margin: 15px auto 20px;
 }
 
 .table {
@@ -251,40 +253,39 @@ margin-top: 30px;
   padding: 10px;
 }
 
-.table td:nth-child(odd){
+.table td:nth-child(odd) {
   background-color: #b9f6c4;
 }
 
-
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Profile Page*/
-.profileContainer1{
+.profileContainer1 {
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 8px;
 }
-.profileContainer2{
+.profileContainer2 {
   display: flex;
   flex-direction: column;
-  justify-content:end;
+  justify-content: end;
   margin: 8px;
 }
-.profileContainer3{
+.profileContainer3 {
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 8px;
 }
-.profileContainer4{
+.profileContainer4 {
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.profileContainer5{
+.profileContainer5 {
   display: flex;
   flex-direction: column;
-  justify-content: center;    
+  justify-content: center;
 }
 .header {
   font-size: 30px;
@@ -296,7 +297,7 @@ margin-top: 30px;
   padding-right: 10px;
   padding-bottom: 45px;
   border: solid;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   border-radius: 2px;
   border-width: 2px;
   width: 310px;
@@ -310,7 +311,7 @@ margin-top: 30px;
   background-color: #86fa9b;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border: solid;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   border-radius: 2px;
   border-width: 2px;
   width: 310px;
@@ -325,7 +326,7 @@ margin-top: 30px;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 1px;
   border: solid;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   border-radius: 8px;
   border-width: 3px;
   width: 750px;
@@ -346,7 +347,7 @@ margin-top: 30px;
 
 .avatar {
   border: solid;
-  border-color: #04AA6D;
+  border-color: #04aa6d;
   border-radius: 8px;
   border-width: 3px;
 }
@@ -354,7 +355,7 @@ margin-top: 30px;
 .profileContainer2 .imageButton {
   width: 150px;
   height: 30px;
-  border: 2px solid #04AA6D;
+  border: 2px solid #04aa6d;
   border-radius: 2px;
   border-width: 1px;
   background: linear-gradient(#b9f6c4, transparent);
@@ -379,7 +380,7 @@ margin-top: 30px;
 
 .profileContainer4 .pmbutton {
   width: 200px;
-  border: 2px solid #04AA6D;
+  border: 2px solid #04aa6d;
   border-radius: 20px;
   border-width: 1px;
   background: linear-gradient(#b9f6c4, transparent);
