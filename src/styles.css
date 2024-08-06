@@ -1,43 +1,37 @@
-* {
+*{
   box-sizing: border-box;
 }
 
-body {
+body{
   margin: 0;
-  background: linear-gradient(
-    /*background change*/ 150deg,
-    yellow 0px 160px,
-    white 100px,
-    #8bffa0 500px,
-    transparent
-  );
-  background-color: #c0ff85;
-  background-repeat: no-repeat;
-  background-size: cover;
-  min-height: 100vh;
+  background: linear-gradient(/*background change*/
+  #FFF95B 0px 100px,
+  #8bffa0 300px,
+  transparent
+);
+background-color: #8bffa0;
+background-repeat: no-repeat;
+background-size: cover;
+min-height: 100vh;
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Navbar*/
-.nav {
-  background: linear-gradient(#b9f6c4, transparent);
-  background: linear-gradient(
-    /*background change*/ 40deg,
-    yellow 0px 80px,
-    white 100px,
-    transparent
-  );
+.nav{
+  background:linear-gradient(
+      #b9f6c4 0px 110px,
+      transparent); 
   background-color: #8bffa0;
-  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  color: black;
+  box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);      
+  color:black;
   display: flex;
   justify-content: space-between;
-  font-family: "Georgia", "Times New Roman", serif;
-  font-style: italic;
+  font-family: "Georgia","Times New Roman", serif;
+  font-style: italic;      
   align-items: center;
   gap: 2rem;
   padding: 0 1rem;
 }
-.nav ul {
+.nav ul{
   padding: 2rem;
   margin: 0;
   list-style: none;
@@ -46,67 +40,67 @@ body {
 }
 .nav a {
   color: inherit;
-  text-decoration: none;
+  text-decoration:none;
 }
 
 .nav .HomeButton:hover {
-  color: white; /*added white text change and animation upon hover to VolunteerOrg text*/
+  color: white;           /*added white text change and animation upon hover to VolunteerOrg text*/
   transition-duration: 0.3s;
 }
 
 .nav li {
-  transition: all ease-in-out 0.5s; /*added transition for when mouse no longer hovering links*/
+  transition: all ease-in-out 0.5s;       /*added transition for when mouse no longer hovering links*/
 }
 
-.nav li.active {
+.nav li.active{
   background-color: #89f39c;
 }
 
-.nav li:hover {
+.nav li:hover{
   /*background-color: #86fa9b;*/
-  color: white; /*added white text transition animation and padding upon hover for aesthetics*/
+  color: white;                   /*added white text transition animation and padding upon hover for aesthetics*/
   transition-duration: 0.3s;
   margin-top: 10px;
 }
-.HomeButton {
+.HomeButton{
   font-size: 40px;
-  transition-duration: 0.5s; /*added animation for when mouse comes off of hover*/
+  transition-duration: 0.5s;      /*added animation for when mouse comes off of hover*/
 }
 
-.navbutton {
+.navbutton{
   font-size: 25px;
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*General text*/
-.center-text {
+.center-text{
   text-align: center;
 }
 
-.p {
-  font-family: "Georgia", "Times New Roman", serif;
+.p{
+  font-family: "Georgia","Times New Roman", serif;
   font-size: 40px;
 }
 
 .register {
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   text-align: center;
   margin: auto;
   margin-top: 5px;
   padding-top: 20px;
 }
 
-.center-text {
+.center-text{
   text-align: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
 }
 
-p.center-text {
+p.center-text{
   text-align: center;
   font-size: 30px;
 }
 
-h1.pageTitle {
-  font-family: "Georgia", "Times New Roman", serif;
+h1.pageTitle{
+  font-family: "Georgia","Times New Roman", serif;
   text-align: center;
   margin: auto;
   margin-top: 5px;
@@ -114,7 +108,7 @@ h1.pageTitle {
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /* profile management page*/
-.PManageContainer1 {
+.PManageContainer1{
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -125,6 +119,7 @@ h1.pageTitle {
   display: flex;
   flex-direction: row;
 }
+
 
 .day {
   padding-left: 5px;
@@ -144,7 +139,7 @@ h1.pageTitle {
 .buttonDates {
   position: relative;
   margin-top: 5%;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   border-radius: 10%;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
@@ -177,7 +172,7 @@ h1.pageTitle {
   margin-left: 70px;
   margin-top: 15px;
   border: solid;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   max-height: 90px;
   overflow: scroll;
 }
@@ -185,7 +180,7 @@ h1.pageTitle {
   resize: none;
   justify-content: center;
   text-align: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   width: 600px;
   height: 500px;
   padding-bottom: 2%;
@@ -197,7 +192,7 @@ h1.pageTitle {
 
 .registerDiv1 input {
   resize: none;
-  width: 300px;
+  width:300px;
   padding: 2%;
   margin-bottom: 20px;
   transition-duration: 0.5s;
@@ -215,7 +210,7 @@ h1.pageTitle {
   height: 500px;
   justify-content: center;
   align-items: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: #86fa9b;
   border-style: double;
@@ -223,7 +218,7 @@ h1.pageTitle {
 }
 
 .registerDiv2 input {
-  padding: 10px;
+  padding:10px;
   transition-duration: 0.5s;
 }
 
@@ -241,11 +236,11 @@ h1.pageTitle {
 .submit {
   width: 125px;
   height: 80px;
-  background: linear-gradient(#b9f6c4, transparent);
-  background-color: #86fa9b;
+  background:linear-gradient(#b9f6c4,transparent);
+  background-color: #86fa9b; 
   border: none;
   color: black;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -257,7 +252,7 @@ h1.pageTitle {
 }
 
 .submit:hover {
-  background-color: #04aa6d;
+  background-color: #04AA6D;
   color: white;
   transition-duration: 0.3s;
 }
@@ -267,7 +262,7 @@ h1.pageTitle {
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Home Page*/
-.logo {
+.logo{
   text-align: center;
   display: block;
   justify-content: center;
@@ -275,32 +270,32 @@ h1.pageTitle {
   margin: auto;
 }
 
-h2.Home {
+h2.Home{
   text-align: center;
   font-size: 40px;
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*logout button*/
-.logoutButton {
+.logoutButton{
   margin-top: 1px;
-  background: none;
-  border: none;
-  padding: 0;
+  background:none;
+  border:none;
+  padding:0;
   cursor: pointer;
   font-size: 25px;
-  font-family: "Georgia", "Times New Roman", serif;
-  font-style: italic;
+  font-family: "Georgia","Times New Roman", serif;
+  font-style: italic;     
 }
 
-.logoutButton:hover {
+.logoutButton:hover{
   /*background-color: #86fa9b;*/
-  color: white; /*added white text transition animation and padding upon hover for aesthetics*/
+  color: white;                   /*added white text transition animation and padding upon hover for aesthetics*/
   transition-duration: 0.3s;
 }
 
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Login Page*/
-.login {
+.login{
   text-align: center;
   display: block;
   justify-content: center;
@@ -308,11 +303,11 @@ h2.Home {
   margin: 5px;
   height: 80px;
 }
-img.googlelogin {
-  height: 80px;
+img.googlelogin{
+height: 80px;
 }
 
-input.loginInput {
+input.loginInput{
   text-align: center;
   justify-content: center;
   border: 2px solid black;
@@ -325,11 +320,11 @@ input.loginInput {
 .loginButton {
   width: 80px;
   height: 40px;
-  background: linear-gradient(#b9f6c4, transparent);
-  background-color: #86fa9b;
+  background:linear-gradient(#b9f6c4,transparent);
+  background-color: #86fa9b; 
   border: none;
   color: black;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -341,7 +336,7 @@ input.loginInput {
 }
 
 .loginButton:hover {
-  background-color: #04aa6d;
+  background-color: #04AA6D;
   color: white;
   transition-duration: 0.3s;
 }
@@ -351,13 +346,13 @@ input.loginInput {
 }
 /*///////////////////////////////////////////////////////////////////////////////////*/
 /*Register page*/
-.signup-header {
+.signup-header{
   text-align: center;
   margin-bottom: 10px;
 }
-.signup-card {
+.signup-card{
   justify-items: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   font-size: 20px;
   margin-top: 50px;
   width: 800px;
@@ -365,20 +360,20 @@ input.loginInput {
   background-color: #86fa9b;
   min-height: 400px;
 }
-.SignInRedirect {
-  font-family: "Georgia", "Times New Roman", serif;
+.SignInRedirect{
+  font-family: "Georgia","Times New Roman", serif;
   font-size: 24px;
 }
-.signup-button {
+.signup-button{
   margin-left: 190px;
   margin-top: 30px;
   width: 400px;
   height: 40px;
-  background: linear-gradient(#b9f6c4, transparent);
-  background-color: #86fa9b;
+  background:linear-gradient(#b9f6c4,transparent);
+  background-color: #86fa9b; 
   border: none;
   color: black;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -388,79 +383,79 @@ input.loginInput {
   transition-duration: 0.5s;
 }
 
-.signup-button:hover {
-  background-color: #04aa6d;
+.signup-button:hover{
+  background-color: #04AA6D;
   color: white;
   transition-duration: 0.3s;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
 }
 
-.signup-button:active {
+.signup-button:active{
   color: black;
 }
 
-.signup-container {
+.signup-container{
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
-.signup-form {
+.signup-form{
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Notification component*/
-.msginput {
+.msginput{
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
 }
 
-input.sender {
+input.sender{
   border: 2px solid black;
   width: 210px;
 }
 
-textarea.message {
-  font-family: "Georgia", "Times New Roman", serif;
+textarea.message{
+  font-family: "Georgia","Times New Roman", serif;
   resize: none;
-  overflow: scroll;
+  overflow:scroll;
   border: 2px solid black;
   width: 800px;
   height: 200px;
 }
 
-table.announcement {
-  font-family: "Georgia", "Times New Roman", serif;
-
+table.announcement{
+  font-family: "Georgia","Times New Roman", serif;
+  
   width: 800px;
   border-collapse: collapse;
   border: 2px solid black;
 }
 
-th.announcementNames {
-  table-layout: fixed;
-  font-family: "Georgia", "Times New Roman", serif;
+th.announcementNames{
+  table-layout:fixed;
+  font-family: "Georgia","Times New Roman", serif;
   vertical-align: top;
   background-color: #8bffa0;
   border: 2px solid black;
 }
 
-tr.announcementData {
+tr.announcementData{
   resize: none;
-  table-layout: fixed;
+  table-layout:fixed;
   height: 100px;
-  overflow-y: scroll;
+  overflow-y:scroll;
 }
 
-td.announcementData {
+td.announcementData{
   resize: none;
-  table-layout: fixed;
+  table-layout:fixed;
   height: 100px;
-  overflow-y: scroll;
-  font-family: "Georgia", "Times New Roman", serif;
+  overflow-y:scroll;
+  font-family: "Georgia","Times New Roman", serif;
   border: 2px solid black;
   background-color: white;
   vertical-align: top;
@@ -469,11 +464,11 @@ td.announcementData {
 .notificationSend {
   width: 80px;
   height: 40px;
-  background: linear-gradient(#b9f6c4, transparent);
-  background-color: #86fa9b;
+  background:linear-gradient(#b9f6c4,transparent);
+  background-color: #86fa9b; 
   border: none;
   color: black;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -485,7 +480,7 @@ td.announcementData {
 }
 
 .notificationSend:hover {
-  background-color: #04aa6d;
+  background-color: #04AA6D;
   color: white;
   transition-duration: 0.3s;
 }
@@ -519,16 +514,16 @@ td.announcementData {
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Event Page*/
-.adminredirect {
+.adminredirect{
   margin: 4px;
   height: 40px;
   width: 160px;
   font-size: 18px;
-  background: linear-gradient(#b9f6c4, transparent);
-  background-color: #86fa9b;
+  background:linear-gradient(#b9f6c4,transparent);
+  background-color: #86fa9b; 
   border: none;
   color: black;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   padding: 10px;
   text-align: center;
   text-decoration: none;
@@ -539,7 +534,7 @@ td.announcementData {
   transition-duration: 0.5s;
 }
 .adminredirect:hover {
-  background-color: #04aa6d;
+  background-color: #04AA6D;
   color: white;
   transition-duration: 0.3s;
 }
@@ -551,14 +546,14 @@ td.announcementData {
 /*event management Page*/
 .eventDiv1 {
   position: relative;
-  width: 800px;
+  width:800px;
   height: 400px;
   justify-content: center;
   resize: none;
-  vertical-align: middle;
+  vertical-align:middle;
   align-items: center;
   text-align: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: #86fa9b;
   border-style: double;
@@ -568,7 +563,7 @@ td.announcementData {
 .eventDiv1 input {
   height: 100px;
   resize: none;
-  position: left;
+  position:left;
   margin-bottom: 4px;
   transition-duration: 0.5s;
 }
@@ -579,14 +574,14 @@ td.announcementData {
 }
 
 .eventDiv2 {
-  width: 800px;
+  width:800px;
   height: 400px;
   justify-content: center;
   resize: none;
-  vertical-align: middle;
+  vertical-align:middle;
   align-items: center;
   text-align: center;
-  font-family: "Georgia", "Times New Roman", serif;
+  font-family: "Georgia","Times New Roman", serif;
   box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   background-color: #86fa9b;
   border-style: double;
@@ -606,14 +601,15 @@ td.announcementData {
 .container {
   display: flex;
   justify-content: center;
+  
 }
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Volunteer History Page*/
-.volunteerContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
+.volunteerContainer{
+display: flex;
+flex-direction: column;
+justify-content: center; 
+align-items: center; 
 }
 
 .volhistory {
@@ -623,7 +619,7 @@ td.announcementData {
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 10px;
   border: solid;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   border-radius: 20%;
   width: 310px;
 }
@@ -649,36 +645,37 @@ td.announcementData {
   padding: 10px;
 }
 
-.table td:nth-child(odd) {
+.table td:nth-child(odd){
   background-color: #b9f6c4;
 }
 
+
 /*//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 /*Profile Page*/
-.profileContainer1 {
+.profileContainer1{
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 8px;
 }
-.profileContainer2 {
+.profileContainer2{
   display: flex;
   flex-direction: column;
-  justify-content: end;
+  justify-content:end;
   margin: 8px;
 }
-.profileContainer3 {
+.profileContainer3{
   display: flex;
   flex-direction: row;
   justify-content: center;
   margin: 8px;
 }
-.profileContainer4 {
+.profileContainer4{
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-.profileContainer5 {
+.profileContainer5{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -691,7 +688,7 @@ td.announcementData {
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 10px;
   border: solid;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   border-radius: 20%;
   width: 310px;
   height: 70px;
@@ -703,7 +700,7 @@ td.announcementData {
   background-color: #86fa9b;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   border: solid;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   border-radius: 5%;
   width: 310px;
   height: 60px;
@@ -717,25 +714,25 @@ td.announcementData {
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   padding: 1px;
   border: solid;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   border-radius: 5%;
   width: 750px;
   height: 350px;
 }
 
-.image {
+/*.image {
   width: 250px;
   height: 150px;
   border-style: dashed;
-  border-color: #04aa6d;
+  border-color: #04AA6D;
   background-color: #b9f6c4;
   box-shadow: 0 3px 5px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
   text-align: center;
-}
+}*/
 
 .pmbutton {
   width: 200px;
-  border: 2px solid #04aa6d;
+  border: 2px solid #04AA6D;
   border-radius: 10%;
   background: linear-gradient(#b9f6c4, transparent);
   background-color: #86fa9b;
