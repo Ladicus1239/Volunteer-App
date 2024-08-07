@@ -126,7 +126,7 @@ const Profile = () => {
           </div>
           <div className="profileContainer2">
             <div className="image">
-              <Avatar className= "avatar" src={url} variant = "square" sx={{ width: 150, height: 150 }} />
+              <Avatar className="avatar" src={url} variant="square" sx={{ width: 150, height: 150 }} />
               <Button className="imageButton" onClick={openImageChangeModal}>Change Image</Button>
             </div>
           </div>
@@ -144,14 +144,14 @@ const Profile = () => {
           <Button className="pmbutton" component="a" href="/profile/profilemanagement">Profile Management</Button>
         </div>
       </div>
-      
+
       <Modal open={modalOpen} onClose={() => setModalOpen(false)}>
         <Box sx={{ ...style }}>
-          <Typography variant="h6">Select a new image</Typography>
-          <input type="file" onChange={handleImageChange} />
+          <Typography variant="h6" component="label" htmlFor="image-upload">Select a new image</Typography>
+          <input id="image-upload" type="file" onChange={handleImageChange} />
           <div>
-            <Button className= "change" onClick={handleImageSubmit}>Change</Button>
-            <Button className= "cancel" onClick={() => setModalOpen(false)}>Cancel</Button>
+            <Button className="change" onClick={handleImageSubmit}>Change</Button>
+            <Button className="cancel" onClick={() => setModalOpen(false)}>Cancel</Button>
           </div>
         </Box>
       </Modal>
@@ -160,7 +160,7 @@ const Profile = () => {
         <Box sx={{ ...style }}>
           <Typography variant="h6" color="error">Error</Typography>
           <Typography variant="body1">You must be signed in to change the image.</Typography>
-          <Button className = "close" onClick={() => setErrorModalOpen(false)}>Close</Button>
+          <Button className="close" onClick={() => setErrorModalOpen(false)}>Close</Button>
         </Box>
       </Modal>
     </div>
