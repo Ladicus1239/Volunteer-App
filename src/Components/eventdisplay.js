@@ -6,6 +6,7 @@ import "jspdf-autotable";
 import { CSVLink } from "react-csv";
 import "../styles/events.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
+import moment from 'moment';
 
 export default function EventDisplay() {
   const [events, setEvents] = useState([]);
@@ -61,8 +62,7 @@ export default function EventDisplay() {
   };
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "long", day: "numeric" };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    return moment(dateString).format('MMMM D, YYYY'); // Ensure consistent date format
   };
 
   const exportPDF = () => {
