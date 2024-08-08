@@ -13,12 +13,12 @@ import {
   query,
   where,
   getDocs,
-  setDoc
+  setDoc,
 } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import "../styles/eventmanage.css";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import moment from 'moment';
+import moment from "moment";
 
 const states = [
   { value: "AL", label: "Alabama, AL" },
@@ -148,13 +148,13 @@ export default function EventManage() {
       state: selectedState ? selectedState.value : "",
       requiredSkills: Array.isArray(requiredSkills) ? requiredSkills : [],
       urgency,
-      eventDate: moment(eventDate).format('YYYY-MM-DD'), // Ensure consistent date format
+      eventDate: moment(eventDate).format("YYYY-MM-DD"), // Ensure consistent date format
     };
 
     try {
       if (isEditing) {
         await updateDoc(doc(db, "EventDetails", currentEventId), newEvent);
-        await sendUpdateMessage(eventName);  // Send update message
+        await sendUpdateMessage(eventName); // Send update message
       } else {
         await addDoc(collection(db, "EventDetails"), newEvent);
       }
@@ -175,36 +175,42 @@ export default function EventManage() {
 
   const sendUpdateMessage = async (eventName) => {
     // Fetch matched volunteers for the event
-    const matchedVolunteersRef = collection(db, 'Matched');
-    const matchedQuery = query(matchedVolunteersRef, where("event", "==", eventName));
+    const matchedVolunteersRef = collection(db, "Matched");
+    const matchedQuery = query(
+      matchedVolunteersRef,
+      where("event", "==", eventName)
+    );
     const matchedSnapshot = await getDocs(matchedQuery);
 
-    const volunteers = matchedSnapshot.docs.map(doc => doc.data().volunteer);
+    const volunteers = matchedSnapshot.docs.map((doc) => doc.data().volunteer);
 
     // Fetch emails of matched volunteers
-    const userProfilesRef = collection(db, 'UserProfiles');
+    const userProfilesRef = collection(db, "UserProfiles");
     const emails = [];
 
     for (const volunteer of volunteers) {
-      const userProfileQuery = query(userProfilesRef, where("fullName", "==", volunteer));
+      const userProfileQuery = query(
+        userProfilesRef,
+        where("fullName", "==", volunteer)
+      );
       const userProfileSnapshot = await getDocs(userProfileQuery);
-      userProfileSnapshot.forEach(doc => {
+      userProfileSnapshot.forEach((doc) => {
         emails.push(doc.data().email);
       });
     }
 
     // Send update message to each volunteer
     const messagesRef = collection(db, "notifications");
-    const time = moment().format('MM-DD-YYYY-HH-mm');
+    const time = moment().format("MM-DD-YYYY-HH-mm");
     const newMessage = {
       sender: "System",
       message: `${eventName} has been updated`,
-      time
+      time,
     };
 
     for (const email of emails) {
       const userRef = doc(messagesRef, email);
-      await setDoc(userRef, { exists: true }, { merge: true });  // Ensure the document exists
+      await setDoc(userRef, { exists: true }, { merge: true }); // Ensure the document exists
       const userMessagesRef = collection(userRef, "messages");
       await addDoc(userMessagesRef, { ...newMessage, receiver: email });
     }
@@ -218,7 +224,7 @@ export default function EventManage() {
     setSelectedState(states.find((state) => state.value === eventToEdit.state));
     setRequiredSkills(eventToEdit.requiredSkills || []);
     setUrgency(eventToEdit.urgency);
-    setEventDate(moment(eventToEdit.eventDate).format('YYYY-MM-DD')); // Ensure consistent date format
+    setEventDate(moment(eventToEdit.eventDate).format("YYYY-MM-DD")); // Ensure consistent date format
     setIsEditing(true);
     setCurrentEventId(eventId);
   };
@@ -357,7 +363,8 @@ export default function EventManage() {
                       : ""}
                   </td>
                   <td>{event.urgency}</td>
-                  <td>{moment(event.eventDate).format('MMMM D, YYYY')}</td> {/* Ensure consistent date format */}
+                  <td>{moment(event.eventDate).format("MMMM D, YYYY")}</td>{" "}
+                  {/* Ensure consistent date format */}
                   <td>
                     <button onClick={() => handleEdit(event.id)}>Edit</button>
                     <button onClick={() => handleDelete(event.id)}>

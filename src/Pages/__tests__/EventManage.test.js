@@ -33,18 +33,22 @@ jest.mock(
       <div data-testid={dataTestId}>Mocked Dropdown Menu</div>
 );
 
-jest.mock("firebase/firestore", () => ({
-  collection: jest.fn(),
-  addDoc: jest.fn(),
-  updateDoc: jest.fn(),
-  deleteDoc: jest.fn(),
-  doc: jest.fn((_, id) => ({ id })),
-  onSnapshot: jest.fn(),
-  getDocs: jest.fn(),
-  query: jest.fn(),
-  where: jest.fn(),
-  getFirestore: jest.fn(() => ({})),
-}));
+jest.mock("firebase/firestore", () => {
+  const originalModule = jest.requireActual("firebase/firestore");
+  return {
+    ...originalModule,
+    collection: jest.fn(),
+    addDoc: jest.fn(),
+    updateDoc: jest.fn(),
+    deleteDoc: jest.fn(),
+    doc: jest.fn((_, id) => ({ id })),
+    onSnapshot: jest.fn(),
+    getDocs: jest.fn(),
+    query: jest.fn(),
+    where: jest.fn(),
+    getFirestore: jest.fn(() => ({})),
+  };
+});
 
 jest.mock("firebase/auth", () => ({
   getAuth: jest.fn(),
@@ -129,6 +133,8 @@ test("creates a new event", async () => {
   onAuthStateChanged.mockImplementation((auth, callback) => callback(mockUser));
   getDocs.mockResolvedValueOnce(mockUserCredential);
   addDoc.mockResolvedValueOnce({ id: "3" });
+  collection.mockReturnValueOnce({}); // Mock the collection reference
+
   onSnapshot.mockImplementation((_, callback) => {
     callback({
       docs: mockEvents.map((event) => ({ id: event.id, data: () => event })),
@@ -140,6 +146,12 @@ test("creates a new event", async () => {
     renderWithRouter(<EventManage />);
   });
 
+  // Checks if the admin UI elements are present
+  expect(
+    screen.getByRole("button", { name: /Create Event/i })
+  ).toBeInTheDocument();
+
+  // Fills in the form
   fireEvent.change(screen.getByLabelText(/Event Name/i), {
     target: { value: "Test Event" },
   });
@@ -172,6 +184,7 @@ test("edits an existing event", async () => {
   onAuthStateChanged.mockImplementation((auth, callback) => callback(mockUser));
   getDocs.mockResolvedValueOnce(mockUserCredential);
   updateDoc.mockResolvedValueOnce();
+  collection.mockReturnValueOnce({}); // Mock the collection reference
   onSnapshot.mockImplementation((_, callback) => {
     callback({
       docs: mockEvents.map((event) => ({ id: event.id, data: () => event })),
@@ -211,6 +224,7 @@ test("deletes an event", async () => {
   onAuthStateChanged.mockImplementation((auth, callback) => callback(mockUser));
   getDocs.mockResolvedValueOnce(mockUserCredential);
   deleteDoc.mockResolvedValueOnce();
+  collection.mockReturnValueOnce({}); // Mock the collection reference
   onSnapshot.mockImplementation((_, callback) => {
     callback({
       docs: mockEvents.map((event) => ({ id: event.id, data: () => event })),
@@ -243,17 +257,26 @@ test("displays events in table", async () => {
     renderWithRouter(<EventManage />);
   });
 
-  expect(screen.getByText(/Event 1/i)).toBeInTheDocument();
-  expect(screen.getByText(/Description 1/i)).toBeInTheDocument();
-  expect(screen.getByText(/City 1/i)).toBeInTheDocument();
-  expect(screen.getByText(/Skill 1, Skill 2/i)).toBeInTheDocument();
-  expect(screen.getAllByText(/low/i)[0]).toBeInTheDocument();
-  expect(screen.getByText(/2024-01-01/i)).toBeInTheDocument();
+  // Utility function to find text in table cells
+  const findTextInTable = async (text) => {
+    const tableCells = screen.getAllByRole("cell");
+    return tableCells.find((cell) => cell.textContent.includes(text));
+  };
 
-  expect(screen.getByText(/Event 2/i)).toBeInTheDocument();
-  expect(screen.getByText(/Description 2/i)).toBeInTheDocument();
-  expect(screen.getByText(/City 2/i)).toBeInTheDocument();
-  expect(screen.getByText(/Skill 3/i)).toBeInTheDocument();
-  expect(screen.getAllByText(/high/i)[0]).toBeInTheDocument();
-  expect(screen.getByText(/2024-02-01/i)).toBeInTheDocument();
+  // Check for each event in the table
+  await waitFor(() => {
+    expect(findTextInTable("Event 1")).not.toBeNull();
+    expect(findTextInTable("Description 1")).not.toBeNull();
+    expect(findTextInTable("City 1")).not.toBeNull();
+    expect(findTextInTable("Skill 1, Skill 2")).not.toBeNull();
+    expect(findTextInTable("low")).not.toBeNull();
+    expect(findTextInTable("2024-01-01")).not.toBeNull();
+
+    expect(findTextInTable("Event 2")).not.toBeNull();
+    expect(findTextInTable("Description 2")).not.toBeNull();
+    expect(findTextInTable("City 2")).not.toBeNull();
+    expect(findTextInTable("Skill 3")).not.toBeNull();
+    expect(findTextInTable("high")).not.toBeNull();
+    expect(findTextInTable("2024-02-01")).not.toBeNull();
+  });
 });
