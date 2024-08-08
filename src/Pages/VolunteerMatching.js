@@ -77,7 +77,7 @@ function matchVolunteersToEvents(volunteers, events) {
       const skillsMatch = event.requiredSkills?.some((skill) =>
         volunteer.skills?.includes(skill)
       );
-      const locationMatch = volunteer.getCity === event.city;
+      const locationMatch = volunteer.getCity?.toLowerCase() === event.city?.toLowerCase();
 
       return skillsMatch && locationMatch;
     });

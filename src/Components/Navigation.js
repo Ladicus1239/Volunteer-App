@@ -112,27 +112,27 @@ export default function Navigation() {
 
     function matchVolunteersToEvents(volunteers, events) {
         const matches = [];
-
+      
         events.forEach((event) => {
-            const matchedVolunteers = volunteers.filter((volunteer) => {
-                const skillsMatch = event.requiredSkills?.some((skill) =>
-                    volunteer.skills?.includes(skill)
-                );
-                const locationMatch = volunteer.getCity === event.city;
-
-                return skillsMatch && locationMatch;
+          const matchedVolunteers = volunteers.filter((volunteer) => {
+            const skillsMatch = event.requiredSkills?.some((skill) =>
+              volunteer.skills?.includes(skill)
+            );
+            const locationMatch = volunteer.getCity?.toLowerCase() === event.city?.toLowerCase();
+      
+            return skillsMatch && locationMatch;
+          });
+      
+          matchedVolunteers.forEach(volunteer => {
+            matches.push({
+              event: event.eventName,
+              volunteer: volunteer.fullName,
             });
-
-            matchedVolunteers.forEach(volunteer => {
-                matches.push({
-                    event: event.eventName,
-                    volunteer: volunteer.fullName,
-                });
-            });
+          });
         });
-
+      
         return matches;
-    }
+      }
 
     async function checkEventsAndRemind() {
         if (!currentUser) return;

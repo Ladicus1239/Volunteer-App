@@ -1,12 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { getFirestore, collection, updateDoc, addDoc, query, where, getDocs } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
-//import { getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import Navigation from '../Components/Navigation';
 import Select from "react-select";
-//import { Email } from "@mui/icons-material";
-//import db from "../firebase";
 
 const skills = [
   { value: "Adaptability", label: "Adaptability" },
@@ -150,6 +147,11 @@ const ProfileManage = () => {
       return;
     }
 
+    if (!selectedState) {
+      alert("Please select a state.");
+      return;
+    }
+
     const db = getFirestore();
     const userEmail = currentUser.email; // Get the user's email
     const userProfilesCollectionRef = collection(db, "UserProfiles");
@@ -232,14 +234,17 @@ const ProfileManage = () => {
               value={getCity}
               onChange={(e) => setCity(e.target.value)} /><br />
 
-            <div className="state" style={{ maxWidth: "600px" }}>
-              <Select className="state" options={states}
-                value={selectedState}
-                onChange={handleChangeState}
-                isSearchable={true}
-                maxMenuHeight={130}
-                placeholder='State*'
-              />
+            <div className="state-wrapper">
+              <div className="state">
+                <Select classNamePrefix="select" options={states} 
+                  value={states.find(state => state.value === selectedState)}
+                  onChange={handleChangeState}
+                  isSearchable={true}
+                  maxMenuHeight={130}
+                  placeholder='State*'
+                  className="select"
+                />
+              </div>
             </div>
 
             <input type="text"
