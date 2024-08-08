@@ -232,7 +232,7 @@ const ProfileManage = () => {
               value={getCity}
               onChange={(e) => setCity(e.target.value)} /><br />
 
-            <div className="state" style={{ maxWidth: "300px" }}>
+            <div className="state" style={{ maxWidth: "600px" }}>
               <Select className="state" options={states}
                 value={selectedState}
                 onChange={handleChangeState}

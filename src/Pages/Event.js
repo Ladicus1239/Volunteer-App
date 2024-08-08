@@ -6,6 +6,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { collection, query, where, getDocs } from "firebase/firestore";
 import db from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import moment from 'moment';
 
 export default function Event() {
   const [isAdmin, setIsAdmin] = useState(false);

@@ -1,26 +1,15 @@
 // src/Components/dropdownMS.js
-import React, { useState } from "react";
-import { Form, Dropdown, DropdownButton } from "react-bootstrap";
-import "../styles2.css";
+import React, { useState } from 'react';
+import { Form, Dropdown, DropdownButton } from 'react-bootstrap';
 
 export default function DropdownMenu({ selectedItems, setSelectedItems }) {
-  const options = [
-    "Adaptability",
-    "Communication",
-    "Creative",
-    "Interpersonal Communication",
-    "Leadership",
-    "Problem Solving",
-    "Strong Work Ethic",
-    "Teamwork",
-    "Time Management",
-  ];
-
+  const options = ['Adaptability','Communication', 'Creative', 'Interpersonal Communication', 'Leadership','Problem Solving','Strong Work Ethic','Teamwork','Time Management'];
+  
   const handleSelect = (e) => {
-    const value = e.target.getAttribute("data-value");
-    setSelectedItems((prevItems) =>
+    const value = e.target.getAttribute('data-value');
+    setSelectedItems(prevItems =>
       prevItems.includes(value)
-        ? prevItems.filter((item) => item !== value)
+        ? prevItems.filter(item => item !== value)
         : [...prevItems, value]
     );
   };
@@ -33,7 +22,7 @@ export default function DropdownMenu({ selectedItems, setSelectedItems }) {
         title="Skills"
         variant="secondary"
       >
-        {options.map((option) => (
+        {options.map(option => (
           <Dropdown.Item
             key={option}
             data-value={option}
