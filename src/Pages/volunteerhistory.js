@@ -167,7 +167,9 @@ const VolunteerHistory = () => {
                                                 checked={checkedItems[index]}
                                                 onChange={handleCheckboxChange(index)}
                                                 className="dataCheckbox"
+                                                data-testid={`checkbox-${index}`}
                                             />
+
                                         </td>
                                         <td>{val.name}</td>
                                         <td>{val.ename}</td>

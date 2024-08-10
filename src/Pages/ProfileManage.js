@@ -147,11 +147,6 @@ const ProfileManage = () => {
       return;
     }
 
-    if (!selectedState) {
-      alert("Please select a state.");
-      return;
-    }
-
     const db = getFirestore();
     const userEmail = currentUser.email; // Get the user's email
     const userProfilesCollectionRef = collection(db, "UserProfiles");
@@ -239,6 +234,7 @@ const ProfileManage = () => {
                 <Select classNamePrefix="select" options={states} 
                   value={states.find(state => state.value === selectedState)}
                   onChange={handleChangeState}
+                  required
                   isSearchable={true}
                   maxMenuHeight={130}
                   placeholder='State*'

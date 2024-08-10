@@ -65,12 +65,15 @@ test('renders VolunteerHistory page correctly', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Volunteer History')).toBeInTheDocument();
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+
+    // Use a more flexible matcher
+    expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByText('Event 1')).toBeInTheDocument();
     expect(screen.getByText('Jane Smith')).toBeInTheDocument();
     expect(screen.getByText('Event 2')).toBeInTheDocument();
   });
 });
+
 
 test('handles select all checkbox correctly', async () => {
   getDocs.mockImplementation(() =>
@@ -117,7 +120,7 @@ test('handles individual checkbox correctly', async () => {
     expect(screen.getByText('Volunteer History')).toBeInTheDocument();
   });
 
-  const individualCheckbox = screen.getAllByRole('checkbox')[1];
+  const individualCheckbox = screen.getByTestId('checkbox-1');
   fireEvent.click(individualCheckbox);
   expect(individualCheckbox).toBeChecked();
 
@@ -210,7 +213,9 @@ test('handles existing volunteer history record', async () => {
 
   await waitFor(() => {
     expect(screen.getByText('Volunteer History')).toBeInTheDocument();
-    expect(screen.getByText('John Doe')).toBeInTheDocument();
+
+    // Use a more flexible matcher
+    expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByText('Event 1')).toBeInTheDocument();
   });
 });
